@@ -126,7 +126,6 @@
             height: 110px;
             margin: 0 auto 24px;
             position: relative;
-            /* Ambient glow behind avatar */
         }
 
         /* Radial spotlight effect for depth */
@@ -176,7 +175,6 @@
             position: absolute;
             inset: -4px;
             border-radius: 50%;
-            /* Multi-layered ring for depth */
             background: 
                 linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(139, 92, 246, 0.08) 100%);
             padding: 2px;
@@ -186,7 +184,6 @@
                 inset 0 0 15px rgba(99, 102, 241, 0.05);
         }
 
-        /* Inner rotating gradient ring */
         .profile-ring::before {
             content: '';
             position: absolute;
@@ -206,7 +203,6 @@
             -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), black calc(100% - 1px));
         }
 
-        /* Outer pulsing glow effect */
         .profile-ring::after {
             content: '';
             position: absolute;
@@ -235,11 +231,8 @@
             border-radius: 50%;
             overflow: hidden;
             position: relative;
-            /* Transparent-friendly background with subtle depth */
-            background: radial-gradient(circle at 30% 30%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
-                        radial-gradient(circle at 70% 70%, rgba(139, 92, 246, 0.06) 0%, transparent 50%),
-                        linear-gradient(145deg, rgba(17, 17, 20, 0.95), rgba(10, 10, 12, 0.98));
-            /* Enhanced glow for transparent image integration */
+            /* SOLID DARK BACKGROUND - Hides checkerboard completely */
+            background: #0a0a0c;
             box-shadow: 
                 0 0 40px rgba(99, 102, 241, 0.25),
                 0 20px 50px -15px rgba(0, 0, 0, 0.6),
@@ -249,26 +242,16 @@
                 inset 0 -2px 8px rgba(99, 102, 241, 0.08);
         }
 
-        /* Spotlight effect for transparent image depth */
-        .profile-avatar::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 50%;
-            background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.08) 0%, transparent 60%);
-            pointer-events: none;
-            z-index: 2;
-        }
-
         .profile-img-preloader {
             width: 100%;
             height: 100%;
             object-fit: cover;
             object-position: center;
             display: block;
+            position: relative;
+            z-index: 1;
         }
 
-        /* Fallback for missing image */
         .profile-fallback-icon {
             width: 100%;
             height: 100%;
@@ -284,7 +267,6 @@
             height: 46px;
         }
 
-        /* Name in Preloader */
         .profile-name {
             font-family: 'Space Grotesk', sans-serif;
             font-size: 22px;
@@ -316,7 +298,6 @@
             to { opacity: 1; }
         }
 
-        /* Status Text */
         .status-text {
             font-family: 'Space Grotesk', sans-serif;
             font-size: 13px;
@@ -327,7 +308,6 @@
             margin-bottom: 35px;
         }
 
-        /* Progress Section */
         .progress-container {
             margin-bottom: 32px;
         }
@@ -384,7 +364,6 @@
             box-shadow: 0 0 12px var(--accent-glow);
         }
 
-        /* Metrics Row */
         .metrics-row {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -428,7 +407,6 @@
             box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
         }
 
-
         /* ========== MAIN CONTENT ========== */
         .main-content {
             display: none;
@@ -444,7 +422,6 @@
             opacity: 1;
         }
 
-        /* Full-screen Hero Background */
         .hero-background {
             position: fixed;
             inset: 0;
@@ -477,7 +454,6 @@
             );
         }
 
-        /* Glass Hero Container */
         .hero-glass-container {
             flex: 1;
             display: flex;
@@ -521,7 +497,6 @@
             margin: 0;
         }
 
-        /* Footer Navigation */
         .footer-nav {
             position: relative;
             z-index: 1;
@@ -569,7 +544,6 @@
             width: 100%;
         }
 
-        /* Animations */
         @keyframes fadeUp {
             from { 
                 opacity: 0; 
@@ -581,7 +555,6 @@
             }
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .loader-content { padding: 40px 30px; }
             .profile-avatar-wrapper { 
@@ -589,7 +562,6 @@
                 height: 90px; 
                 margin-bottom: 20px;
             }
-            /* Scale ambient effects for mobile */
             .profile-avatar-wrapper::before {
                 inset: -24px;
                 filter: blur(12px);
@@ -599,7 +571,6 @@
                 width: 75%;
                 height: 6px;
             }
-            /* Adjust ring for smaller avatar */
             .profile-ring {
                 inset: -3px;
             }
@@ -650,10 +621,7 @@
                             PLACE YOUR PROFILE IMAGE HERE
                             Path: assets/profile.png
                             
-                            This is a TRANSPARENT PNG that merges seamlessly!
-                            
-                            Make sure your image is at:
-                            assets/profile.png
+                            TRANSPARENT PNG - Now blends perfectly!
                             ============================================
                         -->
                         <img src="assets/profile.png" alt="Nitish Kumar" class="profile-img-preloader"
@@ -669,10 +637,7 @@
                     </div>
                 </div>
 
-                <!-- Name Displayed During Loading -->
                 <h2 class="profile-name">Nitish Kumar</h2>
-                
-                <!-- Status Text -->
                 <p class="profile-status">Initializing System</p>
 
             </div>
@@ -714,22 +679,16 @@
     <!-- ==================== MAIN CONTENT ==================== -->
     <main class="main-content" id="mainContent">
         
-        <!-- Full-screen Hero Image Background -->
         <div class="hero-background">
             <img src="assets/profile.png" alt="Background" class="hero-bg-image"
                  onerror="this.style.display='none'; document.querySelector('.hero-fallback-bg').style.display='flex';">
             
-            <!-- Fallback gradient if no image -->
             <div class="hero-fallback-bg" style="display: none;"></div>
-            
-            <!-- Overlay for better text readability -->
             <div class="hero-overlay"></div>
         </div>
 
-        <!-- Glass Hero Content -->
         <div class="hero-glass-container">
             
-            <!-- Main Headline -->
             <div class="hero-headline">
                 <h1 class="headline-title">Full-stack systems thinking<br>for real-world products</h1>
                 
@@ -742,7 +701,6 @@
 
         </div>
 
-        <!-- Footer Navigation -->
         <footer class="footer-nav">
             <nav class="footer-links">
                 <a href="#homepage" class="footer-link">Homepage</a>
@@ -760,7 +718,6 @@
     <!-- ==================== JAVASCRIPT ==================== -->
     <script>
 
-        // Configuration
         const config = {
             labels: ['Loading', 'Preparing', 'Processing', 'Finalizing', 'Complete'],
             metricValues: [
@@ -798,7 +755,6 @@
             document.getElementById('fillBar').style.width = `${val}%`;
             document.getElementById('numberValue').textContent = Math.floor(val);
             
-            // Label
             const labels = config.labels;
             const lbl = document.getElementById('labelText');
             if (val < 20) lbl.textContent = labels[0];
@@ -807,7 +763,6 @@
             else if (val < 88) lbl.textContent = labels[3];
             else lbl.textContent = labels[4];
 
-            // Metrics
             const points = config.dotPoints;
             const vals = config.metricValues;
             
