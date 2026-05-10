@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loading</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
 
         * {
             margin: 0;
@@ -25,12 +25,11 @@
             --accent-glow: rgba(99, 102, 241, 0.4);
             --success: #10b981;
             --border: rgba(255, 255, 255, 0.06);
-            --glass: rgba(255, 255, 255, 0.03);
             
-            /* Calming colors */
-            --calm-purple: rgba(139, 92, 246, 0.15);
-            --calm-blue: rgba(59, 130, 246, 0.12);
-            --warm-glow: rgba(251, 146, 60, 0.08);
+            /* Tech colors */
+            --circuit-color: rgba(99, 102, 241, 0.4);
+            --circuit-glow: rgba(139, 92, 246, 0.6);
+            --data-packet: #00ff88;
             --soft-white: rgba(255, 255, 255, 0.95);
         }
 
@@ -135,12 +134,7 @@
             position: absolute;
             inset: -30px;
             border-radius: 50%;
-            background: radial-gradient(
-                circle,
-                rgba(99, 102, 241, 0.12) 0%,
-                rgba(139, 92, 246, 0.08) 35%,
-                transparent 70%
-            );
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, rgba(139, 92, 246, 0.08) 35%, transparent 70%);
             filter: blur(15px);
             animation: ambientPulse 5s ease-in-out infinite;
             z-index: -1;
@@ -161,27 +155,18 @@
         }
 
         @keyframes ambientPulse {
-            0%, 100% { 
-                opacity: 0.7; 
-                transform: scale(1); 
-            }
-            50% { 
-                opacity: 1; 
-                transform: scale(1.08); 
-            }
+            0%, 100% { opacity: 0.7; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.08); }
         }
 
         .profile-ring {
             position: absolute;
             inset: -4px;
             border-radius: 50%;
-            background: 
-                linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(139, 92, 246, 0.08) 100%);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(139, 92, 246, 0.08) 100%);
             padding: 2px;
             transition: all 0.5s ease;
-            box-shadow:
-                0 0 20px rgba(99, 102, 241, 0.15),
-                inset 0 0 15px rgba(99, 102, 241, 0.05);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.15), inset 0 0 15px rgba(99, 102, 241, 0.05);
         }
 
         .profile-ring::before {
@@ -189,14 +174,7 @@
             position: absolute;
             inset: 0;
             border-radius: 50%;
-            background: conic-gradient(
-                from 180deg,
-                transparent 0%,
-                var(--accent) 25%,
-                transparent 50%,
-                var(--accent-light) 75%,
-                transparent 100%
-            );
+            background: conic-gradient(from 180deg, transparent 0%, var(--accent) 25%, transparent 50%, var(--accent-light) 75%, transparent 100%);
             opacity: 0.6;
             animation: profileRingSpin 6s linear infinite;
             mask: radial-gradient(farthest-side, transparent calc(100% - 2px), black calc(100% - 1px));
@@ -208,14 +186,7 @@
             position: absolute;
             inset: -8px;
             border-radius: 50%;
-            background: conic-gradient(
-                from 0deg,
-                transparent,
-                rgba(99, 102, 241, 0.08),
-                transparent,
-                rgba(139, 92, 246, 0.06),
-                transparent
-            );
+            background: conic-gradient(from 0deg, transparent, rgba(99, 102, 241, 0.08), transparent, rgba(139, 92, 246, 0.06), transparent);
             animation: profileRingSpin 10s linear infinite reverse;
             opacity: 0.7;
             filter: blur(4px);
@@ -232,13 +203,7 @@
             overflow: hidden;
             position: relative;
             background: #0a0a0c;
-            box-shadow: 
-                0 0 40px rgba(99, 102, 241, 0.25),
-                0 20px 50px -15px rgba(0, 0, 0, 0.6),
-                0 0 0 1px rgba(99, 102, 241, 0.15),
-                0 0 0 3px rgba(99, 102, 241, 0.05),
-                inset 0 2px 12px rgba(0, 0, 0, 0.4),
-                inset 0 -2px 8px rgba(99, 102, 241, 0.08);
+            box-shadow: 0 0 40px rgba(99, 102, 241, 0.25), 0 20px 50px -15px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(99, 102, 241, 0.15), 0 0 0 3px rgba(99, 102, 241, 0.05), inset 0 2px 12px rgba(0, 0, 0, 0.4), inset 0 -2px 8px rgba(99, 102, 241, 0.08);
         }
 
         .profile-img-preloader {
@@ -406,7 +371,7 @@
             box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
         }
 
-        /* ========== MAIN CONTENT - NO CARD AROUND IMAGE ========== */
+        /* ========== MAIN CONTENT - WITH ALL 3 FEATURES ========== */
         .main-content {
             display: none;
             min-height: 100vh;
@@ -430,12 +395,137 @@
             background: linear-gradient(135deg, #0a0a0c 0%, #111114 40%, #0f0a1e 70%, #0a0a0c 100%);
         }
 
+        /* ============================================
+           FEATURE 1: ARCHITECT'S BLUEPRINT REVEAL
+           Circuit lines + Grid + Tech Icons
+           ============================================ */
+        .blueprint-layer {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        /* Circuit SVG Lines */
+        .circuit-svg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .circuit-path {
+            fill: none;
+            stroke: var(--circuit-color);
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            filter: drop-shadow(0 0 8px var(--circuit-glow));
+            animation: drawCircuit 3s ease-out forwards;
+            animation-delay: 1s;
+        }
+
+        .circuit-path-2 {
+            animation-delay: 1.5s;
+        }
+
+        .circuit-path-3 {
+            animation-delay: 2s;
+        }
+
+        @keyframes drawCircuit {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        /* Grid Pattern */
+        .grid-pattern {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(var(--circuit-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--circuit-color) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0;
+            animation: gridReveal 2s ease-out forwards;
+            animation-delay: 0.8s;
+        }
+
+        @keyframes gridReveal {
+            0% { opacity: 0; }
+            100% { opacity: 0.15; }
+        }
+
+        /* Floating Tech Icons */
+        .tech-icon {
+            position: absolute;
+            width: 48px;
+            height: 48px;
+            opacity: 0;
+            transform: scale(0);
+            animation: iconAppear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            filter: drop-shadow(0 0 20px var(--circuit-glow));
+        }
+
+        .tech-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: var(--accent-light);
+        }
+
+        .tech-icon-react {
+            top: 18%;
+            right: 12%;
+            animation-delay: 2.2s;
+        }
+
+        .tech-icon-ai {
+            top: 45%;
+            left: 8%;
+            animation-delay: 2.5s;
+        }
+
+        .tech-icon-cloud {
+            bottom: 32%;
+            right: 8%;
+            animation-delay: 2.8s;
+        }
+
+        @keyframes iconAppear {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Icon pulse after appearing */
+        .tech-icon::after {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--circuit-glow), transparent 70%);
+            opacity: 0;
+            animation: iconPulse 2s ease-in-out infinite;
+            animation-delay: 3.2s;
+        }
+
+        @keyframes iconPulse {
+            0%, 100% { opacity: 0; transform: scale(0.8); }
+            50% { opacity: 0.6; transform: scale(1.2); }
+        }
+
         /* Ambient glow effects */
         .hero-ambient-glow {
             position: absolute;
             inset: 0;
             pointer-events: none;
             overflow: hidden;
+            z-index: 0;
         }
 
         .glow-orb {
@@ -449,7 +539,7 @@
         .glow-orb-1 {
             width: 700px;
             height: 700px;
-            background: radial-gradient(circle, var(--calm-purple), transparent 70%);
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.15), transparent 70%);
             top: -250px;
             left: -200px;
             animation-delay: 0s;
@@ -458,7 +548,7 @@
         .glow-orb-2 {
             width: 600px;
             height: 600px;
-            background: radial-gradient(circle, var(--calm-blue), transparent 70%);
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.12), transparent 70%);
             bottom: -200px;
             right: -150px;
             animation-delay: 4s;
@@ -467,7 +557,7 @@
         .glow-orb-3 {
             width: 450px;
             height: 450px;
-            background: radial-gradient(circle, var(--warm-glow), transparent 70%);
+            background: radial-gradient(circle, rgba(251, 146, 60, 0.08), transparent 70%);
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -475,50 +565,11 @@
         }
 
         @keyframes gentleGlowPulse {
-            0%, 100% {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            50% {
-                opacity: 0.55;
-                transform: scale(1.08);
-            }
+            0%, 100% { opacity: 0; transform: scale(0.95); }
+            50% { opacity: 0.55; transform: scale(1.08); }
         }
 
-        /* Floating particles */
-        .particles-container {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            overflow: hidden;
-        }
-
-        .particle {
-            position: absolute;
-            width: 3px;
-            height: 3px;
-            background: rgba(255, 255, 255, 0.25);
-            border-radius: 50%;
-            animation: floatParticle 20s linear infinite;
-        }
-
-        .particle:nth-child(1) { left: 10%; top: 20%; animation-delay: 0s; animation-duration: 18s; }
-        .particle:nth-child(2) { left: 25%; top: 60%; animation-delay: 3s; animation-duration: 22s; }
-        .particle:nth-child(3) { left: 45%; top: 30%; animation-delay: 6s; animation-duration: 19s; }
-        .particle:nth-child(4) { left: 65%; top: 70%; animation-delay: 9s; animation-duration: 21s; }
-        .particle:nth-child(5) { left: 85%; top: 40%; animation-delay: 12s; animation-duration: 20s; }
-        .particle:nth-child(6) { left: 15%; top: 80%; animation-delay: 2s; animation-duration: 23s; }
-        .particle:nth-child(7) { left: 75%; top: 15%; animation-delay: 7s; animation-duration: 17s; }
-        .particle:nth-child(8) { left: 55%; top: 85%; animation-delay: 11s; animation-duration: 24s; }
-
-        @keyframes floatParticle {
-            0% { transform: translateY(0) translateX(0); opacity: 0; }
-            10% { opacity: 0.5; }
-            90% { opacity: 0.5; }
-            100% { transform: translateY(-100vh) translateX(30px); opacity: 0; }
-        }
-
-        /* HERO CONTAINER - Consistent Layout Across All Devices */
+        /* HERO CONTAINER */
         .hero-container {
             flex: 1;
             display: flex;
@@ -534,64 +585,107 @@
             gap: 28px;
         }
 
-        /* H1 SECTION - Top, Centered, Smaller */
-        .hero-title-section {
-            text-align: center;
+        /* ============================================
+           FEATURE 2: STAGGERED STACK ENTRANCE
+           Backend → AI Logic → Frontend
+           ============================================ */
+
+        /* Part 1: Backend (Sub-headline) - Slides up with blur */
+        .hero-subtext-section {
             width: 100%;
-            animation: fadeInDown 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-            animation-delay: 0.4s;
-        }
-
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-30px); filter: blur(6px); }
-            to { opacity: 1; transform: translateY(0); filter: blur(0); }
-        }
-
-        /* H1 - DECREASED SIZE as requested */
-        .headline-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 42px; /* ← DECREASED from 56px */
-            font-weight: 700;
-            line-height: 1.15;
-            letter-spacing: -1.4px;
-            color: var(--soft-white);
-            margin: 0;
-            text-shadow: 0 2px 30px rgba(0, 0, 0, 0.4);
-            animation: titleReveal 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-            animation-delay: 0.7s;
+            text-align: left;
+            order: 3; /* Appears first visually but positioned below */
             opacity: 0;
+            animation: backendSlideUp 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation-delay: 1.2s;
         }
 
-        @keyframes titleReveal {
-            from { opacity: 0; transform: translateY(20px); filter: blur(4px); }
-            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        @keyframes backendSlideUp {
+            0% {
+                opacity: 0;
+                transform: translateY(60px);
+                filter: blur(12px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+                filter: blur(0);
+            }
         }
 
-        /* IMAGE SECTION - NO CARD! Just raw image blending with background */
+        /* Terminal typing effect for subtext */
+        .headline-subtext {
+            font-size: 16px;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.82);
+            font-weight: 300;
+            margin: 0 0 24px 0;
+            max-width: 650px;
+            text-shadow: 0 1px 15px rgba(0, 0, 0, 0.3);
+            font-family: 'Fira Code', monospace; /* Terminal font */
+            overflow: hidden;
+            border-right: 2px solid var(--accent-light);
+            white-space: nowrap;
+            animation: 
+                typing 2s steps(120, end) forwards,
+                blink 0.75s step-end infinite;
+            animation-delay: 1.8s, 3.8s;
+            width: 0;
+            max-width: 650px;
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 650px; }
+        }
+
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
+
+        /* After typing completes, show full text normally */
+        .headline-subtext.typed {
+            border-right: none;
+            white-space: normal;
+            width: auto;
+            animation: none;
+        }
+
+        /* Part 2: Image - Center piece */
         .hero-image-section {
             display: flex;
             justify-content: center;
             align-items: center;
             width: 100%;
-            animation: fadeInUp 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-            animation-delay: 0.9s;
+            order: 2;
+            opacity: 0;
+            animation: imageReveal 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation-delay: 2.5s;
         }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(40px); filter: blur(8px); }
-            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        @keyframes imageReveal {
+            0% {
+                opacity: 0;
+                transform: scale(0.9) rotate(-2deg);
+                filter: blur(10px);
+            }
+            60% {
+                transform: scale(1.02) rotate(0.5deg);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0);
+                filter: blur(0);
+            }
         }
 
-        /* IMAGE - NO CARD, NO BORDER, NO SHADOW - Blends seamlessly! */
         .hero-image {
             width: 100%;
-            max-width: 480px; /* Large size */
+            max-width: 480px;
             height: auto;
             display: block;
-            /* Subtle float animation only */
             animation: imageFloat 8s ease-in-out infinite;
-            /* NO border-radius, NO box-shadow, NO background */
-            /* Image merges perfectly with dark background! */
+            animation-delay: 3.5s;
         }
 
         @keyframes imageFloat {
@@ -599,26 +693,49 @@
             50% { transform: translateY(-10px); }
         }
 
-        /* H2 / SUBTEXT SECTION - Left aligned, small */
-        .hero-subtext-section {
+        /* Part 3: Frontend (Main Headline) - Springy bounce drop */
+        .hero-title-section {
+            text-align: center;
             width: 100%;
-            text-align: left;
-            animation: fadeInUp 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-            animation-delay: 1.2s;
+            order: 1; /* On top */
+            opacity: 0;
+            animation: frontendBounceDrop 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+            animation-delay: 3s;
         }
 
-        /* H2 - Small subtitle */
-        .headline-subtext {
-            font-size: 16px; /* ← SMALL size */
-            line-height: 1.7;
-            color: rgba(255, 255, 255, 0.82);
-            font-weight: 300;
-            margin: 0 0 24px 0;
-            max-width: 650px;
-            text-shadow: 0 1px 15px rgba(0, 0, 0, 0.3);
+        @keyframes frontendBounceDrop {
+            0% {
+                opacity: 0;
+                transform: translateY(-80px) scale(0.8);
+                filter: blur(8px);
+            }
+            60% {
+                opacity: 1;
+                transform: translateY(10px) scale(1.02);
+                filter: blur(0);
+            }
+            80% {
+                transform: translateY(-5px) scale(0.98);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
         }
 
-        /* CTA Button */
+        .headline-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 42px;
+            font-weight: 700;
+            line-height: 1.15;
+            letter-spacing: -1.4px;
+            color: var(--soft-white);
+            margin: 0;
+            text-shadow: 0 2px 30px rgba(0, 0, 0, 0.4), 0 0 60px var(--accent-glow);
+        }
+
+        /* CTA Button - Feature 3 Target */
         .cta-button {
             display: inline-flex;
             align-items: center;
@@ -632,24 +749,17 @@
             letter-spacing: 0.3px;
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 12px;
-            background: linear-gradient(
-                135deg,
-                rgba(99, 102, 241, 0.25) 0%,
-                rgba(139, 92, 246, 0.2) 100%
-            );
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(139, 92, 246, 0.2) 100%);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            box-shadow:
-                0 8px 32px rgba(0, 0, 0, 0.3),
-                0 0 40px rgba(99, 102, 241, 0.15),
-                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 40px rgba(99, 102, 241, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.15);
             transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             cursor: pointer;
             position: relative;
-            overflow: hidden;
-            animation: buttonReveal 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-            animation-delay: 1.5s;
+            overflow: visible;
             opacity: 0;
+            animation: buttonReveal 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation-delay: 3.8s;
         }
 
         .cta-button::before {
@@ -664,10 +774,10 @@
         }
 
         .cta-button:hover {
-            transform: translateY(-3px);
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.35) 0%, rgba(139, 92, 246, 0.3) 100%);
-            border-color: rgba(255, 255, 255, 0.35);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 60px rgba(99, 102, 241, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px) scale(1.02);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.4) 0%, rgba(139, 92, 246, 0.35) 100%);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 80px rgba(99, 102, 241, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }
 
         .cta-button:hover::before { left: 100%; }
@@ -677,18 +787,235 @@
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        /* FOOTER - FILLS WHOLE SCREEN WIDTH */
+        /* ============================================
+           FEATURE 3: AGENTIC FLOW INTERACTION
+           Data packets on hover
+           ============================================ */
+        
+        /* Data packet container - appears on hover */
+        .data-packets-container {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9998;
+            overflow: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .cta-button:hover ~ .data-packets-container,
+        .data-packets-container.active {
+            opacity: 1;
+        }
+
+        .data-packet {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--data-packet);
+            border-radius: 50%;
+            box-shadow: 0 0 15px var(--data-packet), 0 0 30px var(--data-packet);
+            opacity: 0;
+        }
+
+        /* Packet paths - different routes */
+        .packet-1 {
+            animation: packetPath1 1.5s ease-in-out infinite;
+            animation-delay: 0s;
+        }
+
+        .packet-2 {
+            animation: packetPath2 1.8s ease-in-out infinite;
+            animation-delay: 0.3s;
+        }
+
+        .packet-3 {
+            animation: packetPath3 1.6s ease-in-out infinite;
+            animation-delay: 0.6s;
+        }
+
+        .packet-4 {
+            animation: packetPath4 1.7s ease-in-out infinite;
+            animation-delay: 0.9s;
+        }
+
+        .packet-5 {
+            animation: packetPath5 1.5s ease-in-out infinite;
+            animation-delay: 1.2s;
+        }
+
+        /* Path 1: Headline → Button (direct) */
+        @keyframes packetPath1 {
+            0% { 
+                top: 15%; 
+                left: 50%; 
+                opacity: 0; 
+                transform: scale(0);
+            }
+            10% { 
+                opacity: 1; 
+                transform: scale(1);
+            }
+            90% { 
+                opacity: 1; 
+                transform: scale(1);
+            }
+            100% { 
+                top: 72%; 
+                left: 50%; 
+                opacity: 0; 
+                transform: scale(0);
+            }
+        }
+
+        /* Path 2: Headline → Right side → Image → Button */
+        @keyframes packetPath2 {
+            0% { 
+                top: 15%; 
+                left: 52%; 
+                opacity: 0; 
+                transform: scale(0);
+            }
+            10% { 
+                opacity: 1; 
+                transform: scale(1);
+            }
+            33% { 
+                top: 30%; 
+                left: 75%; 
+            }
+            66% { 
+                top: 55%; 
+                left: 65%; 
+            }
+            90% { 
+                opacity: 1; 
+                transform: scale(1);
+            }
+            100% { 
+                top: 72%; 
+                left: 52%; 
+                opacity: 0; 
+                transform: scale(0);
+            }
+        }
+
+        /* Path 3: Headline → Left side → Image → Button */
+        @keyframes packetPath3 {
+            0% { 
+                top: 15%; 
+                left: 48%; 
+                opacity: 0; 
+                transform: scale(0);
+            }
+            10% { 
+                opacity: 1; 
+                transform: scale(1);
+            }
+            33% { 
+                top: 35%; 
+                left: 25%; 
+            }
+            66% { 
+                top: 58%; 
+                left: 35%; 
+            }
+            90% { 
+                opacity: 1; 
+                transform: scale(1);
+            }
+            100% { 
+                top: 72%; 
+                left: 48%; 
+                opacity: 0; 
+                transform: scale(0);
+            }
+        }
+
+        /* Path 4: Arc over image */
+        @keyframes packetPath4 {
+            0% { 
+                top: 18%; 
+                left: 50%; 
+                opacity: 0; 
+                transform: scale(0);
+            }
+            10% { 
+                opacity: 1; 
+                transform: scale(1);
+            }
+            25% { 
+                top: 25%; 
+                left: 70%; 
+            }
+            50% { 
+                top: 50%; 
+                left: 78%; 
+            }
+            75% { 
+                top: 65%; 
+                left: 62%; 
+            }
+            90% { 
+                opacity: 1; 
+                transform: scale(1);
+            }
+            100% { 
+                top: 72%; 
+                left: 51%; 
+                opacity: 0; 
+                transform: scale(0);
+            }
+        }
+
+        /* Path 5: Arc under image */
+        @keyframes packetPath5 {
+            0% { 
+                top: 17%; 
+                left: 50%; 
+                opacity: 0; 
+                transform: scale(0);
+            }
+            10% { 
+                opacity: 1; 
+                transform: scale(1);
+            }
+            25% { 
+                top: 28%; 
+                left: 30%; 
+            }
+            50% { 
+                top: 56%; 
+                left: 22%; 
+            }
+            75% { 
+                top: 66%; 
+                left: 38%; 
+            }
+            90% { 
+                opacity: 1; 
+                transform: scale(1);
+            }
+            100% { 
+                top: 72%; 
+                left: 49%; 
+                opacity: 0; 
+                transform: scale(0);
+            }
+        }
+
+        /* Footer */
         .footer-nav {
             position: relative;
             z-index: 10;
             width: 100%;
-            padding: 36px 30px; /* ← Fills whole screen */
+            padding: 36px 30px;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.3) 100%);
             border-top: 1px solid rgba(255, 255, 255, 0.08);
             animation: footerFadeIn 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-            animation-delay: 1.8s;
+            animation-delay: 4.2s;
             opacity: 0;
         }
 
@@ -738,166 +1065,78 @@
 
         .footer-link:hover::after { width: 100%; }
 
-        /* ==========================================
-           RESPONSIVE DESIGN - Same Layout Everywhere!
-           ========================================== */
-
-        /* Tablet & Desktop (> 768px) */
+        /* Responsive Design */
         @media (min-width: 769px) {
             .hero-container {
                 padding: 50px 60px;
                 gap: 32px;
             }
 
-            .headline-title {
-                font-size: 42px; /* Consistent size */
-            }
-
-            .hero-image {
-                max-width: 480px; /* Larger image */
-            }
-
-            .headline-subtext {
-                font-size: 16px;
-                max-width: 650px;
-            }
-
-            .footer-nav {
-                padding: 38px 60px;
-            }
-
-            .footer-links {
-                gap: 50px;
-            }
-
-            .footer-link {
-                font-size: 14.5px;
-            }
+            .headline-title { font-size: 42px; }
+            .hero-image { max-width: 480px; }
+            .headline-subtext { font-size: 16px; max-width: 650px; }
+            .footer-nav { padding: 38px 60px; }
+            .footer-links { gap: 50px; }
+            .footer-link { font-size: 14.5px; }
+            
+            .tech-icon { width: 56px; height: 56px; }
         }
 
-        /* Mobile (< 768px) - Same vertical layout! */
         @media (max-width: 768px) {
             .hero-container {
                 padding: 35px 24px;
                 gap: 24px;
             }
 
-            /* H1 - Smaller on mobile */
-            .headline-title {
-                font-size: 32px; /* ← Even smaller on mobile */
-                letter-spacing: -1.1px;
-            }
-
-            /* IMAGE - MUCH LARGER on mobile as requested! */
-            .hero-image {
-                max-width: 420px; /* ← INCREASED from 340px! */
-            }
-
-            /* H2 / Subtext - Small, left-aligned on mobile */
-            .headline-subtext {
-                font-size: 14.5px; /* ← SMALL size */
-                line-height: 1.68;
-                margin-bottom: 20px;
+            .headline-title { font-size: 32px; letter-spacing: -1.1px; }
+            .hero-image { max-width: 420px; }
+            .headline-subtext { 
+                font-size: 14.5px; 
+                line-height: 1.68; 
+                margin-bottom: 20px; 
                 max-width: 100%;
+                animation: typingMobile 2s steps(80, end) forwards;
+            }
+            
+            @keyframes typingMobile {
+                from { width: 0; }
+                to { width: 100%; }
             }
 
-            .cta-button {
-                padding: 13px 28px;
-                font-size: 14px;
-            }
-
-            /* Footer - Still full width */
-            .footer-nav {
-                padding: 30px 24px;
-            }
-
-            .footer-links {
-                gap: 22px;
-            }
-
-            .footer-link {
-                font-size: 13px;
-            }
-
-            /* Reduce ambient effects */
-            .glow-orb {
-                filter: blur(90px);
-                opacity: 0.35 !important;
-            }
-
-            .particle {
-                display: none;
-            }
+            .cta-button { padding: 13px 28px; font-size: 14px; }
+            .footer-nav { padding: 30px 24px; }
+            .footer-links { gap: 22px; }
+            .footer-link { font-size: 13px; }
+            
+            .tech-icon { width: 40px; height: 40px; }
+            .grid-pattern { background-size: 40px 40px; }
+            
+            .glow-orb { filter: blur(90px); opacity: 0.35 !important; }
         }
 
-        /* Small phones (< 480px) */
         @media (max-width: 480px) {
-            .hero-container {
-                padding: 30px 18px;
-                gap: 20px;
-            }
-
-            /* H1 - Very compact */
-            .headline-title {
-                font-size: 26px; /* ← Much smaller */
-                letter-spacing: -0.9px;
-            }
-
-            /* IMAGE - Large even on small screens */
-            .hero-image {
-                max-width: 340px; /* ← Still substantial */
-            }
-
-            /* H2 - Very small */
-            .headline-subtext {
-                font-size: 13.5px;
-                line-height: 1.65;
-                margin-bottom: 18px;
-            }
-
-            .cta-button {
-                padding: 12px 24px;
-                font-size: 13px;
-            }
-
-            .footer-nav {
-                padding: 26px 18px;
-            }
-
-            .footer-links {
-                gap: 16px;
-            }
-
-            .footer-link {
-                font-size: 12px;
-            }
+            .hero-container { padding: 30px 18px; gap: 20px; }
+            .headline-title { font-size: 26px; letter-spacing: -0.9px; }
+            .hero-image { max-width: 340px; }
+            .headline-subtext { font-size: 13.5px; line-height: 1.65; margin-bottom: 18px; }
+            .cta-button { padding: 12px 24px; font-size: 13px; }
+            .footer-nav { padding: 26px 18px; }
+            .footer-links { gap: 16px; }
+            .footer-link { font-size: 12px; }
+            
+            .tech-icon { width: 36px; height: 36px; }
+            .grid-pattern { background-size: 30px 30px; }
         }
 
         /* Preloader mobile adjustments */
         @media (max-width: 768px) {
             .loader-content { padding: 40px 30px; }
-            
-            .profile-avatar-wrapper { 
-                width: 90px; 
-                height: 90px; 
-                margin-bottom: 20px;
-            }
-            
-            .profile-avatar-wrapper::before {
-                inset: -24px;
-                filter: blur(12px);
-            }
-            
-            .profile-avatar-wrapper::after {
-                bottom: -10px;
-                width: 75%;
-                height: 6px;
-            }
-            
+            .profile-avatar-wrapper { width: 90px; height: 90px; margin-bottom: 20px; }
+            .profile-avatar-wrapper::before { inset: -24px; filter: blur(12px); }
+            .profile-avatar-wrapper::after { bottom: -10px; width: 75%; height: 6px; }
             .profile-ring { inset: -3px; }
             .profile-ring::after { inset: -6px; filter: blur(3px); }
             .profile-name { font-size: 19px; }
-            
             .metrics-row { gap: 12px; }
             .metric-value { font-size: 15px; }
         }
@@ -905,13 +1144,16 @@
         /* Reduced motion preference */
         @media (prefers-reduced-motion: reduce) {
             .hero-image,
+            .circuit-path,
+            .grid-pattern,
+            .tech-icon,
             .glow-orb,
-            .particle,
             .orb-main,
             .orb-secondary,
             .profile-ring::before,
             .profile-ring::after,
-            .profile-avatar-wrapper::before {
+            .profile-avatar-wrapper::before,
+            .data-packet {
                 animation: none !important;
             }
 
@@ -933,31 +1175,20 @@
 </head>
 <body>
 
-    <!-- ==================== MODERN SCI-FI PRELOADER ==================== -->
+    <!-- ==================== PRELOADER ==================== -->
     <div class="preloader-container" id="preloader">
-
-        <!-- Ambient Background -->
         <div class="ambient-layer">
             <div class="gradient-orb orb-main"></div>
             <div class="gradient-orb orb-secondary"></div>
             <div class="noise-overlay"></div>
         </div>
-
-        <!-- Loader Content -->
         <div class="loader-content">
-
-            <!-- Profile Image & Name Section -->
             <div class="profile-section">
-
-                <!-- Avatar with Image Support -->
                 <div class="profile-avatar-wrapper">
                     <div class="profile-ring"></div>
                     <div class="profile-avatar">
-                        <!-- CHANGED TO profile.webp -->
                         <img src="assets/profile.webp" alt="Nitish Kumar" class="profile-img-preloader"
                              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        
-                        <!-- Fallback Icon (shows if image not found) -->
                         <div class="profile-fallback-icon" style="display: none;">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
@@ -966,13 +1197,9 @@
                         </div>
                     </div>
                 </div>
-
                 <h2 class="profile-name">Nitish Kumar</h2>
                 <p class="profile-status">Initializing System</p>
-
             </div>
-
-            <!-- Progress Section -->
             <div class="progress-container">
                 <div class="progress-info">
                     <span class="progress-label" id="labelText">Loading</span>
@@ -982,8 +1209,6 @@
                     <div class="progress-fill" id="fillBar"></div>
                 </div>
             </div>
-
-            <!-- Metrics -->
             <div class="metrics-row">
                 <div class="metric-item">
                     <div class="metric-value" id="met1">--</div>
@@ -1001,64 +1226,118 @@
                     <div class="metric-dot" id="dot3"></div>
                 </div>
             </div>
-
         </div>
     </div>
 
 
-    <!-- ==================== MAIN CONTENT - NO CARD AROUND IMAGE ==================== -->
+    <!-- ==================== MAIN CONTENT - WITH ALL 3 FEATURES ==================== -->
     <main class="main-content" id="mainContent">
         
-        <!-- Dark Gradient Background Only -->
+        <!-- Background -->
         <div class="hero-background">
-            <!-- Ambient Glow Effects -->
+            
+            <!-- FEATURE 1: Architect's Blueprint Layer -->
+            <div class="blueprint-layer">
+                
+                <!-- Grid Pattern -->
+                <div class="grid-pattern"></div>
+                
+                <!-- Circuit Lines SVG -->
+                <svg class="circuit-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+                    <!-- Main circuit path from headline area to image -->
+                    <path class="circuit-path circuit-path-1" d="M 960 150 L 960 280 Q 960 320 920 320 L 750 320"/>
+                    
+                    <!-- Secondary path to React icon -->
+                    <path class="circuit-path circuit-path-2" d="M 1100 220 L 1350 220 Q 1400 220 1420 260"/>
+                    
+                    <!-- Tertiary path to AI brain -->
+                    <path class="circuit-path circuit-path-3" d="M 820 220 L 550 220 Q 500 220 480 270"/>
+                    
+                    <!-- Connection to cloud -->
+                    <path class="circuit-path circuit-path-2" d="M 1050 520 L 1400 520 Q 1450 520 1470 560"/>
+                    
+                    <!-- Inner circuit mesh -->
+                    <path class="circuit-path circuit-path-3" d="M 850 420 L 700 420 Q 650 420 630 470"/>
+                </svg>
+                
+                <!-- Floating Tech Icons -->
+                <!-- React Logo -->
+                <div class="tech-icon tech-icon-react">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="2" fill="currentColor"/>
+                        <ellipse cx="12" cy="12" rx="10" ry="4" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <ellipse cx="12" cy="12" rx="10" ry="4" stroke="currentColor" stroke-width="1.5" fill="none" transform="rotate(60 12 12)"/>
+                        <ellipse cx="12" cy="12" rx="10" ry="4" stroke="currentColor" stroke-width="1.5" fill="none" transform="rotate(120 12 12)"/>
+                    </svg>
+                </div>
+                
+                <!-- AI Brain Icon -->
+                <div class="tech-icon tech-icon-ai">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" fill="currentColor" opacity="0.3"/>
+                        <path d="M12 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" fill="currentColor"/>
+                        <circle cx="12" cy="8" r="1.5" fill="currentColor"/>
+                        <circle cx="12" cy="16" r="1.5" fill="currentColor"/>
+                        <path d="M9 12h6M12 9v6" stroke="currentColor" stroke-width="1.5"/>
+                    </svg>
+                </div>
+                
+                <!-- Cloud Server Icon -->
+                <div class="tech-icon tech-icon-cloud">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z" fill="currentColor"/>
+                        <rect x="8" y="14" width="8" height="6" rx="1" fill="currentColor" opacity="0.5"/>
+                        <line x1="10" y1="17" x2="14" y2="17" stroke="#000" stroke-width="1"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <!-- Ambient Glows -->
             <div class="hero-ambient-glow">
                 <div class="glow-orb glow-orb-1"></div>
                 <div class="glow-orb glow-orb-2"></div>
                 <div class="glow-orb glow-orb-3"></div>
             </div>
-            
-            <!-- Floating Particles -->
-            <div class="particles-container">
-                <div class="particle"></div>
-                <div class="particle"></div>
-                <div class="particle"></div>
-                <div class="particle"></div>
-                <div class="particle"></div>
-                <div class="particle"></div>
-                <div class="particle"></div>
-                <div class="particle"></div>
-            </div>
         </div>
 
-        <!-- HERO CONTAINER - Same Vertical Layout on ALL Devices -->
+        <!-- Hero Container - Staggered Stack Layout -->
         <div class="hero-container">
             
-            <!-- 1️⃣ H1 SECTION - Top, Centered, Smaller Size -->
+            <!-- PART 3: Frontend (Headline) - Drops in LAST with bounce -->
             <section class="hero-title-section">
-                <h1 class="headline-title">From Concept to Code: Building Scalable Digital Products</h1>
+                <h1 class="headline-title">Full-stack systems thinking<br>for real-world products</h1>
             </section>
 
-            <!-- 2️⃣ IMAGE SECTION - NO CARD! Raw image blends with background -->
+            <!-- PART 2: Image - Center piece -->
             <section class="hero-image-section">
-                <!-- CHANGED TO hero.webp + NO WRAPPER DIV! -->
                 <img src="assets/hero.webp" alt="Hero Visual" class="hero-image"
                      onerror="this.style.display='none';">
             </section>
 
-            <!-- 3️⃣ H2 / SUBTEXT SECTION - Small, Left-Aligned -->
+            <!-- PART 1: Backend (Sub-headline) - Slides up FIRST with blur + typing -->
             <section class="hero-subtext-section">
-                <p class="headline-subtext">
-                    I specialize in transforming ideas into production-ready systems, handling everything from backend architecture to AI-driven automation.
+                <p class="headline-subtext" id="subtext">
+                    I build software end-to-end — backend architecture, APIs, frontend interfaces, 
+                    infrastructure, and deployment. Still early in the journey, but deeply focused 
+                    on learning fast, building deliberately, and shipping meaningful products.
                 </p>
 
-                <!-- CTA Button -->
-                <a href="#portfolio" class="cta-button">View My Work →</a>
+                <!-- CTA Button - Triggers Agentic Flow on hover -->
+                <a href="#portfolio" class="cta-button" id="ctaButton">View My Work →</a>
+                
+                <!-- FEATURE 3: Data Packets Container (appears on button hover) -->
+                <div class="data-packets-container" id="dataPackets">
+                    <div class="data-packet packet-1"></div>
+                    <div class="data-packet packet-2"></div>
+                    <div class="data-packet packet-3"></div>
+                    <div class="data-packet packet-4"></div>
+                    <div class="data-packet packet-5"></div>
+                </div>
             </section>
 
         </div>
 
-        <!-- 4️⃣ FOOTER - Fills Whole Screen Width -->
+        <!-- Footer -->
         <footer class="footer-nav">
             <nav class="footer-links">
                 <a href="#homepage" class="footer-link">Homepage</a>
@@ -1076,6 +1355,7 @@
     <!-- ==================== JAVASCRIPT ==================== -->
     <script>
 
+        // Preloader Logic
         const config = {
             labels: ['Loading', 'Preparing', 'Processing', 'Finalizing', 'Complete'],
             metricValues: [
@@ -1149,6 +1429,13 @@
             setTimeout(() => {
                 document.getElementById('preloader').classList.add('hidden');
                 document.getElementById('mainContent').classList.add('visible');
+                
+                // Start typing effect after main content visible
+                setTimeout(() => {
+                    const subtext = document.getElementById('subtext');
+                    subtext.classList.add('typed');
+                }, 4000); // After typing animation completes
+                
             }, 700);
         }
 
@@ -1163,6 +1450,22 @@
         }
 
         window.addEventListener('load', start);
+
+        // FEATURE 3: Agentic Flow Interaction
+        document.addEventListener('DOMContentLoaded', () => {
+            const ctaButton = document.getElementById('ctaButton');
+            const dataPackets = document.getElementById('dataPackets');
+            
+            if (ctaButton && dataPackets) {
+                ctaButton.addEventListener('mouseenter', () => {
+                    dataPackets.classList.add('active');
+                });
+                
+                ctaButton.addEventListener('mouseleave', () => {
+                    dataPackets.classList.remove('active');
+                });
+            }
+        });
 
     </script>
 
