@@ -331,18 +331,19 @@
         }
 
 
-        /* ========== MAIN CONTENT ========== */
+        /* ========== MAIN CONTENT - CINEMATIC HERO ========== */
         .main-content {
             display: none;
             flex: 1;
-            display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             padding: 80px 30px 120px;
             position: relative;
             opacity: 0;
-            transition: opacity 1s ease;
+            min-height: 100vh;
+            perspective: 1000px;
+            transition: opacity 0.8s ease;
         }
 
         .main-content.visible {
@@ -350,7 +351,7 @@
             opacity: 1;
         }
 
-        /* Background Effects */
+        /* Background Environment */
         .main-bg {
             position: fixed;
             inset: 0;
@@ -358,28 +359,112 @@
                 radial-gradient(ellipse at 30% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
                 radial-gradient(ellipse at 70% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
                 var(--bg-primary);
-            z-index: -1;
+            z-index: -2;
         }
 
-        /* Square Placeholder Image */
-        .hero-image-container {
+        /* Floating Particles Container */
+        .particles-container {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            box-shadow: 0 0 6px rgba(99, 102, 241, 0.6);
+            animation: particleFloat linear infinite;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) translateX(0) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-10vh) translateX(100px) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* Mouse-Follow Glow Effect */
+        .mouse-glow {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            filter: blur(60px);
+            transform: translate(-50%, -50%);
+        }
+
+        .main-content.visible ~ .mouse-glow,
+        .mouse-glow.active {
+            opacity: 1;
+        }
+
+        /* Portrait Image - Ken Burns Effect */
+        .hero-image-wrapper {
+            position: relative;
             width: 320px;
             height: 320px;
             margin-bottom: 60px;
-            position: relative;
-            animation: imageReveal 1.2s cubic-bezier(0.4, 0, 0.2, 1) both;
+            overflow: hidden;
+            border-radius: 12px;
+            opacity: 0;
+            transform: translateY(30px);
+            
+            /* Initial state before animation */
         }
 
-        @keyframes imageReveal {
+        .hero-image-wrapper.animate-in {
+            animation: imageEntrance 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes imageEntrance {
             from {
                 opacity: 0;
-                transform: scale(0.9) rotateX(10deg);
+                transform: translateY(30px) scale(0.95);
                 filter: blur(10px);
             }
             to {
                 opacity: 1;
-                transform: scale(1) rotateX(0deg);
+                transform: translateY(0) scale(1);
                 filter: blur(0);
+            }
+        }
+
+        .hero-image-inner {
+            width: 120%; /* Extra size for zoom effect */
+            height: 120%;
+            position: absolute;
+            left: -10%;
+            top: -10%;
+            animation: kenBurnsZoom 12s ease-in-out infinite alternate;
+        }
+
+        @keyframes kenBurnsZoom {
+            from {
+                transform: scale(1) translate(0, 0);
+            }
+            to {
+                transform: scale(1.08) translate(-1%, -1%);
             }
         }
 
@@ -389,189 +474,213 @@
             object-fit: cover;
             object-position: center;
             display: block;
-            border-radius: 8px;
+            border-radius: 12px;
             box-shadow: 
-                0 25px 80px -20px rgba(99, 102, 241, 0.3),
-                0 0 0 1px rgba(255, 255, 255, 0.08);
+                0 25px 80px -20px rgba(99, 102, 241, 0.35),
+                0 0 0 1px rgba(255, 255, 255, 0.08),
+                0 0 60px rgba(99, 102, 241, 0.15);
         }
 
-        /* Sci-Fi Animated Headline */
+        /* Subtle Float Animation on Image Wrapper */
+        .hero-image-wrapper.animate-in {
+            animation: 
+                imageEntrance 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards,
+                gentleFloat 6s ease-in-out 1.5s infinite;
+        }
+
+        @keyframes gentleFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        /* Headline Typography - Letter Stagger & Glow Pulse */
         .hero-text-container {
-            max-width: 800px;
+            max-width: 850px;
             text-align: center;
+            position: relative;
         }
 
         .headline-title {
             font-family: 'Space Grotesk', sans-serif;
-            font-size: 56px;
+            font-size: 58px;
             font-weight: 700;
-            line-height: 1.15;
-            letter-spacing: -2px;
+            line-height: 1.12;
+            letter-spacing: -2.5px;
             color: #ffffff;
-            margin-bottom: 28px;
+            margin-bottom: 32px;
             position: relative;
             display: inline-block;
             
-            /* Glitch Animation */
-            animation: 
-                glitchText 3s infinite,
-                titleFadeIn 1s cubic-bezier(0.4, 0, 0.2, 1) both,
-                neonPulse 2s ease-in-out infinite alternate;
-            
-            text-shadow: 
-                0 0 10px rgba(99, 102, 241, 0.5),
-                0 0 20px rgba(99, 102, 241, 0.3),
-                0 0 40px rgba(99, 102, 241, 0.2);
+            /* Glow Pulse Animation */
+            animation: neonGlowPulse 3s ease-in-out infinite 1.2s;
         }
 
-        @keyframes glitchText {
-            0%, 90%, 100% {
-                transform: translate(0);
+        @keyframes neonGlowPulse {
+            0%, 100% {
                 text-shadow: 
                     0 0 10px rgba(99, 102, 241, 0.5),
                     0 0 20px rgba(99, 102, 241, 0.3),
-                    0 0 40px rgba(99, 102, 241, 0.2);
+                    0 0 40px rgba(99, 102, 241, 0.15),
+                    0 0 80px rgba(99, 102, 241, 0.08);
             }
-            91% {
-                transform: translate(-2px, 1px);
-                text-shadow: 
-                    2px 0 #ff00ff,
-                    -2px 0 #00ffff;
-            }
-            93% {
-                transform: translate(2px, -1px);
-                text-shadow: 
-                    -2px 0 #ff00ff,
-                    2px 0 #00ffff;
-            }
-            95% {
-                transform: translate(-1px, 2px);
-                text-shadow: 
-                    1px 0 #ff00ff,
-                    -1px 0 #00ffff;
-            }
-            97% {
-                transform: translate(1px, -2px);
-                text-shadow: 
-                    -1px 0 #ff00ff,
-                    1px 0 #00ffff;
-            }
-        }
-
-        @keyframes titleFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px) scale(0.95);
-                letter-spacing: 10px;
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-                letter-spacing: -2px;
-            }
-        }
-
-        @keyframes neonPulse {
-            from {
-                text-shadow: 
-                    0 0 10px rgba(99, 102, 241, 0.5),
-                    0 0 20px rgba(99, 102, 241, 0.3),
-                    0 0 40px rgba(99, 102, 241, 0.2);
-            }
-            to {
+            50% {
                 text-shadow: 
                     0 0 15px rgba(99, 102, 241, 0.8),
                     0 0 30px rgba(99, 102, 241, 0.5),
                     0 0 60px rgba(99, 102, 241, 0.3),
-                    0 0 100px rgba(99, 102, 241, 0.2);
+                    0 0 100px rgba(99, 102, 241, 0.18),
+                    0 0 150px rgba(99, 102, 241, 0.08);
             }
         }
 
-        /* Subtext with Typing Effect */
+        /* Letter Stagger Animation */
+        .letter {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(40px) rotateX(-90deg);
+            animation: letterReveal 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes letterReveal {
+            to {
+                opacity: 1;
+                transform: translateY(0) rotateX(0deg);
+            }
+        }
+
+        .word {
+            display: inline-block;
+            margin-right: 0.3em;
+        }
+
+        .word:last-child {
+            margin-right: 0;
+        }
+
+        /* Gradient Shimmer Effect on Headline */
+        .headline-title::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.15),
+                transparent
+            );
+            animation: shimmerSweep 4s ease-in-out 2s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes shimmerSweep {
+            0% { left: -100%; }
+            50%, 100% { left: 100%; }
+        }
+
+        /* Subtext - Blur-to-Clear Reveal */
         .headline-subtext {
             font-size: 18px;
-            line-height: 1.75;
-            color: rgba(255, 255, 255, 0.75);
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.72);
             font-weight: 300;
-            margin: 0 auto;
             max-width: 650px;
-            position: relative;
-            
-            animation: subtextFadeIn 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.5s both;
-            
-            border-right: 2px solid var(--accent-light);
-            animation: 
-                subtextFadeIn 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.5s both,
-                blinkCursor 0.8s step-end infinite;
+            margin: 0 auto;
+            opacity: 0;
+            filter: blur(8px);
+            transform: translateY(15px);
         }
 
-        @keyframes subtextFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
+        .headline-subtext.animate-in {
+            animation: blurToClear 1s cubic-bezier(0.4, 0, 0.2, 1) 0.8s forwards;
+        }
+
+        @keyframes blurToClear {
+            to {
+                opacity: 1;
+                filter: blur(0);
+                transform: translateY(0);
             }
+        }
+
+        /* Line Stagger for Subtext */
+        .subtext-line {
+            display: block;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        .subtext-line.animate-in {
+            animation: lineFadeUp 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes lineFadeUp {
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
 
-        @keyframes blinkCursor {
-            from, to { border-color: transparent; }
-            50% { border-color: var(--accent-light); }
-        }
-
-        /* Footer Navigation - NOT FIXED */
+        /* Footer Navigation - Magnetic Hover */
         .footer-nav {
             width: 100%;
-            padding: 35px 40px;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.4), transparent);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 38px 40px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.5) 60%, transparent 100%);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
             margin-top: auto;
+            position: relative;
+            z-index: 10;
         }
 
         .footer-links {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 40px;
+            gap: 45px;
             flex-wrap: wrap;
         }
 
         .footer-link {
-            font-size: 14px;
-            font-weight: 500;
-            color: rgba(255, 255, 255, 0.65);
-            text-decoration: none;
-            letter-spacing: 0.5px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            text-transform: uppercase;
             font-size: 11px;
-            letter-spacing: 2px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.55);
+            text-decoration: none;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            padding: 10px 18px;
+            display: inline-block;
+            
+            /* Magnetic effect preparation */
+            will-change: transform;
         }
 
         .footer-link::before {
             content: '[';
-            margin-right: 6px;
+            margin-right: 8px;
             color: var(--accent-light);
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: all 0.3s ease;
+            font-weight: 400;
         }
 
         .footer-link::after {
             content: ']';
-            margin-left: 6px;
+            margin-left: 8px;
             color: var(--accent-light);
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: all 0.3s ease;
+            font-weight: 400;
         }
 
         .footer-link:hover {
             color: #ffffff;
-            text-shadow: 0 0 10px rgba(99, 102, 241, 0.6);
+            text-shadow: 0 0 20px rgba(99, 102, 241, 0.7);
         }
 
         .footer-link:hover::before,
@@ -579,86 +688,95 @@
             opacity: 1;
         }
 
-        /* Responsive */
+        /* Glass Tilt Container */
+        .tilt-container {
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .loader-content { padding: 40px 30px; }
-            .profile-avatar-wrapper { width: 90px; height: 90px; margin-bottom: 20px; }
-            .profile-name { font-size: 19px; }
+            .loader-content { 
+                padding: 40px 30px; 
+            }
+            .profile-avatar-wrapper { 
+                width: 90px; 
+                height: 90px; 
+                margin-bottom: 20px; 
+            }
+            .profile-name { 
+                font-size: 19px; 
+            }
             
             .main-content {
                 padding: 60px 20px 100px;
             }
             
-            .hero-image-container {
+            .hero-image-wrapper {
                 width: 260px;
                 height: 260px;
-                margin-bottom: 40px;
+                margin-bottom: 45px;
             }
             
             .headline-title {
                 font-size: 36px;
-                letter-spacing: -1px;
+                letter-spacing: -1.2px;
+                margin-bottom: 24px;
             }
             
             .headline-subtext {
                 font-size: 15px;
-                line-height: 1.65;
+                line-height: 1.7;
             }
             
             .footer-nav {
-                padding: 28px 20px;
+                padding: 30px 20px;
             }
             
             .footer-links {
-                gap: 20px;
+                gap: 18px;
             }
             
             .footer-link {
                 font-size: 10px;
+                padding: 8px 14px;
             }
             
-            .metrics-row { gap: 12px; }
-            .metric-value { font-size: 15px; }
+            .metrics-row { 
+                gap: 12px; 
+            }
+            .metric-value { 
+                font-size: 15px; 
+            }
+
+            .mouse-glow {
+                width: 250px;
+                height: 250px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- ==================== MODERN SCI-FI PRELOADER ==================== -->
+    <!-- ==================== PRELOADER (UNCHANGED) ==================== -->
     <div class="preloader-container" id="preloader">
 
-        <!-- Ambient Background -->
         <div class="ambient-layer">
             <div class="gradient-orb orb-main"></div>
             <div class="gradient-orb orb-secondary"></div>
             <div class="noise-overlay"></div>
         </div>
 
-        <!-- Loader Content -->
         <div class="loader-content">
 
-            <!-- Profile Image & Name Section -->
             <div class="profile-section">
 
-                <!-- Avatar with Image Support -->
                 <div class="profile-avatar-wrapper">
                     <div class="profile-ring"></div>
                     <div class="profile-avatar">
-                        <!-- 
-                            ============================================
-                            PLACE YOUR PROFILE IMAGE HERE
-                            Path: assets/profile.jpg
-                            
-                            This image shows DURING the preloader!
-                            
-                            Make sure your image is at:
-                            assets/profile.jpg
-                            ============================================
-                        -->
                         <img src="assets/profile.jpg" alt="Nitish Kumar" class="profile-img-preloader"
                              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                         
-                        <!-- Fallback Icon (shows if image not found) -->
                         <div class="profile-fallback-icon" style="display: none;">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
@@ -668,15 +786,12 @@
                     </div>
                 </div>
 
-                <!-- Name Displayed During Loading -->
                 <h2 class="profile-name">Nitish Kumar</h2>
                 
-                <!-- Status Text -->
                 <p class="profile-status">Initializing System</p>
 
             </div>
 
-            <!-- Progress Section -->
             <div class="progress-container">
                 <div class="progress-info">
                     <span class="progress-label" id="labelText">Loading</span>
@@ -687,7 +802,6 @@
                 </div>
             </div>
 
-            <!-- Metrics -->
             <div class="metrics-row">
                 <div class="metric-item">
                     <div class="metric-value" id="met1">--</div>
@@ -710,40 +824,56 @@
     </div>
 
 
-    <!-- ==================== MAIN CONTENT ==================== -->
-    <main class="main-content" id="mainContent">
-        
-        <!-- Background -->
-        <div class="main-bg"></div>
+    <!-- ==================== CINEMATIC HERO CONTENT ==================== -->
+    
+    <!-- Background Layer -->
+    <div class="main-bg"></div>
 
-        <!-- Square Placeholder Image -->
-        <div class="hero-image-container">
-            <img src="assets/profile.jpg" alt="Profile" class="hero-square-image"
-                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22320%22 height=%22320%22%3E%3Crect fill=%22%231a1a2e%22 width=%22320%22 height=%22320%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%236366f1%22 font-family=%22monospace%22 font-size=%2216%22%3EIMAGE%3C/text%3E%3C/svg%3E';">
+    <!-- Floating Particles -->
+    <div class="particles-container" id="particlesContainer"></div>
+
+    <!-- Mouse-Follow Glow -->
+    <div class="mouse-glow" id="mouseGlow"></div>
+
+    <!-- Main Hero Section -->
+    <main class="main-content tilt-container" id="mainContent">
+
+        <!-- Portrait Image with Ken Burns Effect -->
+        <div class="hero-image-wrapper" id="heroImage">
+            <div class="hero-image-inner">
+                <img src="assets/profile.jpg" alt="Profile" class="hero-square-image"
+                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22320%22 height=%22320%22%3E%3Crect fill=%22%23111827%22 width=%22320%22 height=%22320%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%236366f1%22 font-family=%22monospace%22 font-size=%2214%22 letter-spacing=%222%22%3EIMAGE%3C/text%3E%3C/svg%3E';">
+            </div>
         </div>
 
-        <!-- Sci-Fi Animated Text Content -->
+        <!-- Animated Text Content -->
         <div class="hero-text-container">
-            <h1 class="headline-title">Full-stack systems thinking<br>for real-world products</h1>
-            
-            <p class="headline-subtext">
+
+            <!-- Headline with Letter Stagger -->
+            <h1 class="headline-title" id="headlineTitle">
+                <!-- Letters will be injected by JavaScript -->
+            </h1>
+
+            <!-- Subtext with Blur-to-Clear -->
+            <p class="headline-subtext" id="subtext">
                 I build software end-to-end — backend architecture, APIs, frontend interfaces, 
                 infrastructure, and deployment. Still early in the journey, but deeply focused 
                 on learning fast, building deliberately, and shipping meaningful products.
             </p>
+
         </div>
 
     </main>
 
-    <!-- Footer Navigation - Now in normal flow, NOT fixed -->
+    <!-- Footer Navigation -->
     <footer class="footer-nav">
-        <nav class="footer-links">
-            <a href="#homepage" class="footer-link">Homepage</a>
-            <a href="#about" class="footer-link">About me</a>
-            <a href="#skills" class="footer-link">Skills section</a>
-            <a href="#portfolio" class="footer-link">Portfolio</a>
-            <a href="#contact" class="footer-link">Contact</a>
-            <a href="#social" class="footer-link">Social media links</a>
+        <nav class="footer-links" id="footerLinks">
+            <a href="#homepage" class="footer-link magnetic-link">Homepage</a>
+            <a href="#about" class="footer-link magnetic-link">About me</a>
+            <a href="#skills" class="footer-link magnetic-link">Skills section</a>
+            <a href="#portfolio" class="footer-link magnetic-link">Portfolio</a>
+            <a href="#contact" class="footer-link magnetic-link">Contact</a>
+            <a href="#social" class="footer-link magnetic-link">Social media links</a>
         </nav>
     </footer>
 
@@ -751,7 +881,10 @@
     <!-- ==================== JAVASCRIPT ==================== -->
     <script>
 
-        // Configuration
+        // ==========================================
+        // PRELOADER LOGIC (UNCHANGED)
+        // ==========================================
+        
         const config = {
             labels: ['Loading', 'Preparing', 'Processing', 'Finalizing', 'Complete'],
             metricValues: [
@@ -789,7 +922,6 @@
             document.getElementById('fillBar').style.width = `${val}%`;
             document.getElementById('numberValue').textContent = Math.floor(val);
             
-            // Label
             const labels = config.labels;
             const lbl = document.getElementById('labelText');
             if (val < 20) lbl.textContent = labels[0];
@@ -798,7 +930,6 @@
             else if (val < 88) lbl.textContent = labels[3];
             else lbl.textContent = labels[4];
 
-            // Metrics
             const points = config.dotPoints;
             const vals = config.metricValues;
             
@@ -827,20 +958,224 @@
             setTimeout(() => {
                 document.getElementById('preloader').classList.add('hidden');
                 document.getElementById('mainContent').classList.add('visible');
+                
+                // Trigger Cinematic Animations
+                initCinematicAnimations();
+                
             }, 700);
         }
 
-        function restart() {
-            progress = 0;
-            for (let i = 1; i <= 3; i++) {
-                document.getElementById(`dot${i}`).classList.remove('active');
-            }
-            document.getElementById('preloader').classList.remove('hidden');
-            document.getElementById('mainContent').classList.remove('visible');
-            setTimeout(start, 200);
+        window.addEventListener('load', start);
+
+
+        // ==========================================
+        // CINEMATIC ANIMATION SYSTEM
+        // ==========================================
+
+        function initCinematicAnimations() {
+
+            // 1. Create Floating Particles (0.0s)
+            createParticles();
+
+            // 2. Activate Mouse Glow
+            setTimeout(() => {
+                document.getElementById('mouseGlow').classList.add('active');
+            }, 200);
+
+            // 3. Animate Image Entrance (0.2s)
+            setTimeout(() => {
+                document.getElementById('heroImage').classList.add('animate-in');
+            }, 200);
+
+            // 4. Animate Headline with Letter Stagger (0.5s)
+            setTimeout(() => {
+                animateHeadlineLetters();
+            }, 500);
+
+            // 5. Animate Subtext with Blur-to-Clear (0.8s)
+            setTimeout(() => {
+                animateSubtext();
+            }, 800);
+
+            // 6. Initialize Interactive Effects
+            initMouseFollowGlow();
+            initGlassTiltEffect();
+            initMagneticLinks();
         }
 
-        window.addEventListener('load', start);
+
+        // ==========================================
+        // 1. FLOATING PARTICLES SYSTEM
+        // ==========================================
+
+        function createParticles() {
+            const container = document.getElementById('particlesContainer');
+            const particleCount = 35;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // Random properties
+                const size = Math.random() * 2 + 1;
+                const posX = Math.random() * 100;
+                const duration = Math.random() * 15 + 10;
+                const delay = Math.random() * 10;
+                const opacity = Math.random() * 0.5 + 0.2;
+
+                particle.style.cssText = `
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${posX}vw;
+                    animation-duration: ${duration}s;
+                    animation-delay: ${delay}s;
+                    opacity: ${opacity};
+                `;
+
+                container.appendChild(particle);
+            }
+        }
+
+
+        // ==========================================
+        // 2. HEADLINE LETTER STAGGER ANIMATION
+        // ==========================================
+
+        function animateHeadlineLetters() {
+            const headline = document.getElementById('headlineTitle');
+            const originalText = "Full-stack systems thinking<br>for real-world products";
+            
+            // Process text into words and letters
+            const lines = originalText.split('<br>');
+            let htmlContent = '';
+            let globalLetterIndex = 0;
+
+            lines.forEach((line, lineIndex) => {
+                const words = line.trim().split(' ');
+                
+                words.forEach((word, wordIndex) => {
+                    htmlContent += '<span class="word">';
+                    
+                    [...word].forEach((char, charIndex) => {
+                        const delay = (globalLetterIndex * 0.03) + 0.5; // Stagger delay
+                        htmlContent += `<span class="letter" style="animation-delay: ${delay}s">${char}</span>`;
+                        globalLetterIndex++;
+                    });
+                    
+                    htmlContent += '</span>';
+                    
+                    // Add space between words (except last)
+                    if (wordIndex < words.length - 1) {
+                        htmlContent += '<span class="letter" style="animation-delay: ${(globalLetterIndex * 0.03) + 0.5}s">&nbsp;</span>';
+                        globalLetterIndex++;
+                    }
+                });
+
+                // Add line break (except last line)
+                if (lineIndex < lines.length - 1) {
+                    htmlContent += '<br>';
+                }
+            });
+
+            headline.innerHTML = htmlContent;
+        }
+
+
+        // ==========================================
+        // 3. SUBTEXT BLUR-TO-CLEAR REVEAL
+        // ==========================================
+
+        function animateSubtext() {
+            const subtext = document.getElementById('subtext');
+            
+            // Split into sentences/lines for stagger effect
+            const text = subtext.innerText;
+            const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
+            
+            let htmlContent = '';
+            sentences.forEach((sentence, index) => {
+                const delay = index * 0.15;
+                htmlContent += `<span class="subtext-line" style="animation-delay: ${delay}s">${sentence}</span>`;
+            });
+
+            subtext.innerHTML = htmlContent;
+            subtext.classList.add('animate-in');
+
+            // Animate each line
+            setTimeout(() => {
+                const lines = subtext.querySelectorAll('.subtext-line');
+                lines.forEach(line => line.classList.add('animate-in'));
+            }, 100);
+        }
+
+
+        // ==========================================
+        // 4. MOUSE-FOLLOW GLOW EFFECT
+        // ==========================================
+
+        function initMouseFollowGlow() {
+            const glow = document.getElementById('mouseGlow');
+            
+            document.addEventListener('mousemove', (e) => {
+                requestAnimationFrame(() => {
+                    glow.style.left = e.clientX + 'px';
+                    glow.style.top = e.clientY + 'px';
+                });
+            });
+        }
+
+
+        // ==========================================
+        // 5. GLASS TILT EFFECT (3D Perspective)
+        // ==========================================
+
+        function initGlassTiltEffect() {
+            const container = document.querySelector('.tilt-container');
+            
+            document.addEventListener('mousemove', (e) => {
+                const rect = container.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                
+                const mouseX = e.clientX - centerX;
+                const mouseY = e.clientY - centerY;
+                
+                // Calculate rotation (max ±5 degrees)
+                const rotateX = (mouseY / (rect.height / 2)) * -5;
+                const rotateY = (mouseX / (rect.width / 2)) * 5;
+                
+                container.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+
+            // Reset on mouse leave
+            document.addEventListener('mouseleave', () => {
+                container.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+            });
+        }
+
+
+        // ==========================================
+        // 6. MAGNETIC HOVER EFFECT ON LINKS
+        // ==========================================
+
+        function initMagneticLinks() {
+            const links = document.querySelectorAll('.magnetic-link');
+
+            links.forEach(link => {
+                link.addEventListener('mousemove', (e) => {
+                    const rect = link.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
+                    
+                    // Move toward cursor (magnetic pull)
+                    link.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+                });
+
+                link.addEventListener('mouseleave', () => {
+                    link.style.transform = 'translate(0, 0)';
+                });
+            });
+        }
 
     </script>
 
