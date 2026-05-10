@@ -31,6 +31,12 @@
             --circuit-glow: rgba(139, 92, 246, 0.6);
             --data-packet: #00ff88;
             --soft-white: rgba(255, 255, 255, 0.95);
+            
+            /* Mesh gradient colors */
+            --mesh-purple: rgba(139, 92, 246, 0.25);
+            --mesh-blue: rgba(59, 130, 246, 0.2);
+            --mesh-teal: rgba(20, 184, 166, 0.15);
+            --mesh-indigo: rgba(99, 102, 241, 0.2);
         }
 
         body {
@@ -371,7 +377,7 @@
             box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
         }
 
-        /* ========== MAIN CONTENT - WITH ALL 3 FEATURES ========== */
+        /* ========== MAIN CONTENT ========== */
         .main-content {
             display: none;
             min-height: 100vh;
@@ -386,20 +392,83 @@
             opacity: 1;
         }
 
-        /* Background */
+        /* ============================================
+           PREMIUM BACKGROUND - MESH GRADIENT
+           Animated multi-color gradient
+           ============================================ */
         .hero-background {
             position: fixed;
             inset: 0;
             z-index: -2;
             overflow: hidden;
-            background: linear-gradient(135deg, #0a0a0c 0%, #111114 40%, #0f0a1e 70%, #0a0a0c 100%);
+            background: #000000;
+        }
+
+        .mesh-gradient {
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse at 20% 30%, var(--mesh-purple) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, var(--mesh-blue) 0%, transparent 50%),
+                radial-gradient(ellipse at 60% 70%, var(--mesh-teal) 0%, transparent 50%),
+                radial-gradient(ellipse at 30% 80%, var(--mesh-indigo) 0%, transparent 50%);
+            filter: blur(80px);
+            animation: meshShift 15s ease-in-out infinite alternate;
+        }
+
+        .mesh-gradient::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse at 70% 60%, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 40% 40%, rgba(34, 211, 238, 0.12) 0%, transparent 50%);
+            filter: blur(60px);
+            animation: meshShiftSecondary 18s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes meshShift {
+            0% {
+                transform: scale(1) rotate(0deg);
+                opacity: 0.8;
+            }
+            50% {
+                transform: scale(1.1) rotate(2deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.05) rotate(-1deg);
+                opacity: 0.9;
+            }
+        }
+
+        @keyframes meshShiftSecondary {
+            0% {
+                transform: scale(1.05) translateX(0);
+            }
+            50% {
+                transform: scale(1.15) translateX(30px);
+            }
+            100% {
+                transform: scale(1.02) translateX(-20px);
+            }
+        }
+
+        /* Ambient noise overlay */
+        .ambient-noise {
+            position: absolute;
+            inset: 0;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            pointer-events: none;
+            mix-blend-mode: overlay;
         }
 
         /* ============================================
-           FEATURE 1: ARCHITECT'S BLUEPRINT REVEAL
-           Circuit lines + Grid + Tech Icons
+           FLOATING TECH CHIPS
+           Parallax-enabled capsules
            ============================================ */
-        .blueprint-layer {
+        .tech-chips-layer {
             position: absolute;
             inset: 0;
             z-index: 1;
@@ -407,335 +476,497 @@
             overflow: hidden;
         }
 
-        /* Circuit SVG Lines */
-        .circuit-svg {
+        .tech-chip {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-        }
-
-        .circuit-path {
-            fill: none;
-            stroke: var(--circuit-color);
-            stroke-width: 1.5;
-            stroke-linecap: round;
-            stroke-dasharray: 1000;
-            stroke-dashoffset: 1000;
-            filter: drop-shadow(0 0 8px var(--circuit-glow));
-            animation: drawCircuit 3s ease-out forwards;
-            animation-delay: 1s;
-        }
-
-        .circuit-path-2 {
-            animation-delay: 1.5s;
-        }
-
-        .circuit-path-3 {
-            animation-delay: 2s;
-        }
-
-        @keyframes drawCircuit {
-            to {
-                stroke-dashoffset: 0;
-            }
-        }
-
-        /* Grid Pattern */
-        .grid-pattern {
-            position: absolute;
-            inset: 0;
-            background-image: 
-                linear-gradient(var(--circuit-color) 1px, transparent 1px),
-                linear-gradient(90deg, var(--circuit-color) 1px, transparent 1px);
-            background-size: 60px 60px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 0.3px;
             opacity: 0;
-            animation: gridReveal 2s ease-out forwards;
+            transform: translateY(20px) scale(0.9);
+            transition: transform 0.3s ease-out, opacity 0.5s ease;
+            will-change: transform;
+        }
+
+        .tech-chip svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+
+        .tech-chip.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* Individual chip positions */
+        .chip-react {
+            top: 15%;
+            left: 8%;
+            animation-delay: 0.2s;
+        }
+
+        .chip-nodejs {
+            top: 22%;
+            right: 12%;
+            animation-delay: 0.4s;
+        }
+
+        .chip-ai {
+            bottom: 35%;
+            left: 5%;
+            animation-delay: 0.6s;
+        }
+
+        .chip-typescript {
+            bottom: 25%;
+            right: 8%;
             animation-delay: 0.8s;
         }
 
-        @keyframes gridReveal {
-            0% { opacity: 0; }
-            100% { opacity: 0.15; }
+        /* Chip hover glow */
+        .tech-chip:hover {
+            background: rgba(99, 102, 241, 0.15);
+            border-color: rgba(99, 102, 241, 0.3);
+            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.2);
+            transform: translateY(-2px) scale(1.05) !important;
         }
 
-        /* Floating Tech Icons */
-        .tech-icon {
-            position: absolute;
-            width: 48px;
-            height: 48px;
+        /* ============================================
+           TRUST BADGE
+           Pill-shaped credibility indicator
+           ============================================ */
+        .trust-badge {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.65);
+            letter-spacing: 0.3px;
+            margin-bottom: 28px;
             opacity: 0;
-            transform: scale(0);
-            animation: iconAppear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-            filter: drop-shadow(0 0 20px var(--circuit-glow));
+            transform: translateY(-20px);
+            animation: trustBadgeSlide 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 1s;
         }
 
-        .tech-icon svg {
-            width: 100%;
-            height: 100%;
-            fill: var(--accent-light);
-        }
-
-        .tech-icon-react {
-            top: 18%;
-            right: 12%;
-            animation-delay: 2.2s;
-        }
-
-        .tech-icon-ai {
-            top: 45%;
-            left: 8%;
-            animation-delay: 2.5s;
-        }
-
-        .tech-icon-cloud {
-            bottom: 32%;
-            right: 8%;
-            animation-delay: 2.8s;
-        }
-
-        @keyframes iconAppear {
+        @keyframes trustBadgeSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.9);
+            }
             to {
                 opacity: 1;
-                transform: scale(1);
+                transform: translateY(0) scale(1);
             }
         }
 
-        /* Icon pulse after appearing */
-        .tech-icon::after {
-            content: '';
-            position: absolute;
-            inset: -8px;
-            border-radius: 50%;
-            background: radial-gradient(circle, var(--circuit-glow), transparent 70%);
-            opacity: 0;
-            animation: iconPulse 2s ease-in-out infinite;
-            animation-delay: 3.2s;
+        .trust-badge-icon {
+            width: 18px;
+            height: 18px;
+            color: var(--success);
+            animation: pulseGlow 2s ease-in-out infinite;
         }
 
-        @keyframes iconPulse {
-            0%, 100% { opacity: 0; transform: scale(0.8); }
-            50% { opacity: 0.6; transform: scale(1.2); }
+        @keyframes pulseGlow {
+            0%, 100% {
+                filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.5));
+                transform: scale(1);
+            }
+            50% {
+                filter: drop-shadow(0 0 12px rgba(16, 185, 129, 0.8));
+                transform: scale(1.1);
+            }
         }
 
-        /* Ambient glow effects */
-        .hero-ambient-glow {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
+        .trust-badge-number {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        /* ============================================
+           CODE SNIPPET PREVIEW
+           Dark-themed window for desktop
+           ============================================ */
+        .code-preview {
+            display: none;
+            position: relative;
+            background: rgba(17, 17, 20, 0.85);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
             overflow: hidden;
-            z-index: 0;
-        }
-
-        .glow-orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(120px);
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+                0 0 80px rgba(99, 102, 241, 0.1);
+            max-width: 420px;
+            width: 100%;
             opacity: 0;
-            animation: gentleGlowPulse 12s ease-in-out infinite;
+            transform: translateX(40px) scale(0.95);
+            animation: codeSnippetReveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 1.5s;
         }
 
-        .glow-orb-1 {
-            width: 700px;
-            height: 700px;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.15), transparent 70%);
-            top: -250px;
-            left: -200px;
-            animation-delay: 0s;
+        @media (min-width: 1024px) {
+            .code-preview {
+                display: block;
+            }
         }
 
-        .glow-orb-2 {
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.12), transparent 70%);
-            bottom: -200px;
-            right: -150px;
-            animation-delay: 4s;
+        @keyframes codeSnippetReveal {
+            from {
+                opacity: 0;
+                transform: translateX(40px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
         }
 
-        .glow-orb-3 {
-            width: 450px;
-            height: 450px;
-            background: radial-gradient(circle, rgba(251, 146, 60, 0.08), transparent 70%);
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            animation-delay: 8s;
+        .code-window-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
 
-        @keyframes gentleGlowPulse {
-            0%, 100% { opacity: 0; transform: scale(0.95); }
-            50% { opacity: 0.55; transform: scale(1.08); }
+        .code-window-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
         }
 
-        /* HERO CONTAINER */
+        .code-window-dot.red { background: #ff5f57; }
+        .code-window-dot.yellow { background: #ffbd2e; }
+        .code-window-dot.green { background: #28ca42; }
+
+        .code-window-title {
+            flex: 1;
+            text-align: center;
+            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.35);
+            letter-spacing: 0.5px;
+        }
+
+        .code-content {
+            padding: 20px;
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            overflow-x: auto;
+        }
+
+        .code-line {
+            display: block;
+            opacity: 0;
+            animation: codeLineFadeIn 0.4s ease forwards;
+        }
+
+        .code-line:nth-child(1) { animation-delay: 1.8s; }
+        .code-line:nth-child(2) { animation-delay: 2s; }
+        .code-line:nth-child(3) { animation-delay: 2.2s; }
+        .code-line:nth-child(4) { animation-delay: 2.4s; }
+        .code-line:nth-child(5) { animation-delay: 2.6s; }
+        .code-line:nth-child(6) { animation-delay: 2.8s; }
+
+        @keyframes codeLineFadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .code-comment { color: rgba(255, 255, 255, 0.35); }
+        .code-keyword { color: #c792ea; }
+        .code-function { color: #82aaff; }
+        .code-string { color: #c3e88d; }
+        .code-variable { color: #f78c6c; }
+        .code-operator { color: #89ddff; }
+        .code-bracket { color: rgba(255, 255, 255, 0.5); }
+
+        /* Cursor blink in code */
+        .code-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: var(--accent-light);
+            margin-left: 2px;
+            animation: cursorBlink 1s step-end infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes cursorBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* HERO CONTAINER - Updated Layout */
         .hero-container {
             flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
             padding: 40px 30px;
             position: relative;
             z-index: 10;
             max-width: 1400px;
             margin: 0 auto;
             width: 100%;
-            gap: 28px;
+            align-items: center;
         }
 
-        /* ============================================
-           FEATURE 2: STAGGERED STACK ENTRANCE
-           Backend → AI Logic → Frontend
-           ============================================ */
+        @media (min-width: 1024px) {
+            .hero-container {
+                grid-template-columns: 1fr 1fr;
+                padding: 60px 50px;
+                gap: 60px;
+            }
+        }
 
-        /* Part 1: Backend (Sub-headline) - Slides up with blur */
-        .hero-subtext-section {
-            width: 100%;
+        /* Left Column - Content */
+        .hero-content-left {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 24px;
+        }
+
+        /* Trust Badge */
+        .hero-trust-badge {
+            order: 1;
+        }
+
+        /* Title Section with Typing Effect */
+        .hero-title-section {
             text-align: left;
-            order: 3; /* Appears first visually but positioned below */
+            order: 2;
             opacity: 0;
-            animation: backendSlideUp 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation: springEntrance 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
             animation-delay: 1.2s;
         }
 
-        @keyframes backendSlideUp {
+        @keyframes springEntrance {
             0% {
                 opacity: 0;
-                transform: translateY(60px);
-                filter: blur(12px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-                filter: blur(0);
-            }
-        }
-
-        /* Terminal typing effect for subtext */
-        .headline-subtext {
-            font-size: 16px;
-            line-height: 1.7;
-            color: rgba(255, 255, 255, 0.82);
-            font-weight: 300;
-            margin: 0 0 24px 0;
-            max-width: 650px;
-            text-shadow: 0 1px 15px rgba(0, 0, 0, 0.3);
-            font-family: 'Fira Code', monospace; /* Terminal font */
-            overflow: hidden;
-            border-right: 2px solid var(--accent-light);
-            white-space: nowrap;
-            animation: 
-                typing 2s steps(120, end) forwards,
-                blink 0.75s step-end infinite;
-            animation-delay: 1.8s, 3.8s;
-            width: 0;
-            max-width: 650px;
-        }
-
-        @keyframes typing {
-            from { width: 0; }
-            to { width: 650px; }
-        }
-
-        @keyframes blink {
-            50% { border-color: transparent; }
-        }
-
-        /* After typing completes, show full text normally */
-        .headline-subtext.typed {
-            border-right: none;
-            white-space: normal;
-            width: auto;
-            animation: none;
-        }
-
-        /* Part 2: Image - Center piece */
-        .hero-image-section {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            order: 2;
-            opacity: 0;
-            animation: imageReveal 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-            animation-delay: 2.5s;
-        }
-
-        @keyframes imageReveal {
-            0% {
-                opacity: 0;
-                transform: scale(0.9) rotate(-2deg);
-                filter: blur(10px);
-            }
-            60% {
-                transform: scale(1.02) rotate(0.5deg);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1) rotate(0);
-                filter: blur(0);
-            }
-        }
-
-        .hero-image {
-            width: 100%;
-            max-width: 480px;
-            height: auto;
-            display: block;
-            animation: imageFloat 8s ease-in-out infinite;
-            animation-delay: 3.5s;
-        }
-
-        @keyframes imageFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        /* Part 3: Frontend (Main Headline) - Springy bounce drop */
-        .hero-title-section {
-            text-align: center;
-            width: 100%;
-            order: 1; /* On top */
-            opacity: 0;
-            animation: frontendBounceDrop 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-            animation-delay: 3s;
-        }
-
-        @keyframes frontendBounceDrop {
-            0% {
-                opacity: 0;
-                transform: translateY(-80px) scale(0.8);
-                filter: blur(8px);
+                transform: translateY(40px) scale(0.9);
             }
             60% {
                 opacity: 1;
-                transform: translateY(10px) scale(1.02);
-                filter: blur(0);
+                transform: translateY(-8px) scale(1.02);
             }
             80% {
-                transform: translateY(-5px) scale(0.98);
+                transform: translateY(4px) scale(0.98);
             }
             100% {
                 opacity: 1;
                 transform: translateY(0) scale(1);
-                filter: blur(0);
             }
         }
 
         .headline-title {
             font-family: 'Space Grotesk', sans-serif;
-            font-size: 42px;
+            font-size: clamp(32px, 5vw, 52px);
             font-weight: 700;
             line-height: 1.15;
-            letter-spacing: -1.4px;
+            letter-spacing: -1.5px;
             color: var(--soft-white);
             margin: 0;
-            text-shadow: 0 2px 30px rgba(0, 0, 0, 0.4), 0 0 60px var(--accent-glow);
+            text-shadow: 0 2px 30px rgba(0, 0, 0, 0.3);
         }
 
-        /* Footer - THIN & FIXED AT BOTTOM - SOCIAL ICONS ONLY */
+        .headline-static {
+            display: block;
+        }
+
+        .headline-typing-wrapper {
+            display: inline-block;
+            position: relative;
+            background: linear-gradient(135deg, var(--accent-light), #a78bfa, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .headline-typing {
+            display: inline-block;
+        }
+
+        .typing-cursor {
+            display: inline-block;
+            width: 3px;
+            height: 0.9em;
+            background: var(--accent-light);
+            margin-left: 2px;
+            animation: typingCursorBlink 0.8s step-end infinite;
+            vertical-align: text-bottom;
+        }
+
+        @keyframes typingCursorBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Subtext Section */
+        .hero-subtext-section {
+            order: 3;
+            opacity: 0;
+            animation: slideUpFade 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation-delay: 1.6s;
+        }
+
+        @keyframes slideUpFade {
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .headline-subtext {
+            font-size: clamp(14px, 1.8vw, 17px);
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.65);
+            font-weight: 400;
+            margin: 0;
+            max-width: 520px;
+        }
+
+        /* CTA Button - Magnetic Effect */
+        .cta-button-wrapper {
+            order: 4;
+            position: relative;
+            opacity: 0;
+            animation: ctaSpringIn 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+            animation-delay: 1.9s;
+        }
+
+        @keyframes ctaSpringIn {
+            0% {
+                opacity: 0;
+                transform: translateY(25px) scale(0.9);
+            }
+            70% {
+                opacity: 1;
+                transform: translateY(-5px) scale(1.03);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 16px 36px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--soft-white);
+            text-decoration: none;
+            letter-spacing: 0.3px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(139, 92, 246, 0.25) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 
+                0 10px 40px rgba(0, 0, 0, 0.3), 
+                0 0 50px rgba(99, 102, 241, 0.15), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: pointer;
+            position: relative;
+            overflow: visible;
+            will-change: transform;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+            border-radius: inherit;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px) scale(1.02);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.45) 0%, rgba(139, 92, 246, 0.4) 100%);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 
+                0 15px 50px rgba(0, 0, 0, 0.4), 
+                0 0 80px rgba(99, 102, 241, 0.3), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .cta-button:hover::before { 
+            left: 100%; 
+        }
+
+        .cta-button-icon {
+            width: 18px;
+            height: 18px;
+            transition: transform 0.3s ease;
+        }
+
+        .cta-button:hover .cta-button-icon {
+            transform: translateX(4px);
+        }
+
+        /* Right Column - Code Preview */
+        .hero-content-right {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            order: 2;
+        }
+
+        @media (min-width: 1024px) {
+            .hero-content-right {
+                order: 3;
+            }
+        }
+
+        /* Footer */
         .footer-nav {
             position: fixed;
             bottom: 0;
@@ -743,13 +974,13 @@
             right: 0;
             z-index: 10;
             width: 100%;
-            padding: 14px 30px; /* THIN FOOTER */
+            padding: 14px 30px;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.85) 100%);
             border-top: 1px solid rgba(255, 255, 255, 0.06);
             animation: footerFadeIn 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-            animation-delay: 4.2s;
+            animation-delay: 2.5s;
             opacity: 0;
         }
 
@@ -766,7 +997,6 @@
             margin: 0 auto;
         }
 
-        /* Social Media Icons Container - CENTERED */
         .social-icons {
             display: flex;
             align-items: center;
@@ -808,7 +1038,6 @@
             filter: drop-shadow(0 0 6px currentColor);
         }
 
-        /* Individual Social Icon Hover Colors */
         .social-icon.github:hover {
             background: rgba(255, 255, 255, 0.08);
             border-color: rgba(255, 255, 255, 0.25);
@@ -851,55 +1080,32 @@
         }
 
         /* Responsive Design */
-        @media (min-width: 769px) {
-            .hero-container {
-                padding: 50px 60px;
-                gap: 32px;
-            }
-
-            .headline-title { font-size: 42px; }
-            .hero-image { max-width: 480px; }
-            .headline-subtext { font-size: 16px; max-width: 650px; }
-            
-            .footer-nav { 
-                padding: 16px 50px;
-            }
-            .social-icons { 
-                gap: 13px; 
-            }
-            .social-icon { 
-                width: 38px; 
-                height: 38px; 
-                border-radius: 10px;
-            }
-            .social-icon svg { 
-                width: 19px; 
-                height: 19px; 
-            }
-            
-            .tech-icon { width: 56px; height: 56px; }
-        }
-
         @media (max-width: 768px) {
             .hero-container {
-                padding: 35px 24px;
-                gap: 24px;
+                padding: 30px 20px;
+                gap: 28px;
             }
 
-            .headline-title { font-size: 32px; letter-spacing: -1.1px; }
-            .hero-image { max-width: 420px; }
-            .headline-subtext { 
-                font-size: 14.5px; 
-                line-height: 1.68; 
-                margin-bottom: 20px; 
-                max-width: 100%;
-                animation: typingMobile 2s steps(80, end) forwards;
+            .trust-badge {
+                padding: 8px 16px;
+                font-size: 12px;
+                margin-bottom: 20px;
             }
-            
-            @keyframes typingMobile {
-                from { width: 0; }
-                to { width: 100%; }
+
+            .tech-chip {
+                padding: 8px 14px;
+                font-size: 11px;
             }
+
+            .tech-chip svg {
+                width: 14px;
+                height: 14px;
+            }
+
+            .chip-react { top: 10%; left: 3%; }
+            .chip-nodejs { top: 18%; right: 3%; }
+            .chip-ai { bottom: 42%; left: 2%; }
+            .chip-typescript { bottom: 32%; right: 3%; }
 
             .footer-nav { 
                 padding: 12px 20px;
@@ -916,19 +1122,24 @@
                 width: 17px; 
                 height: 17px; 
             }
-            
-            .tech-icon { width: 40px; height: 40px; }
-            .grid-pattern { background-size: 40px 40px; }
-            
-            .glow-orb { filter: blur(90px); opacity: 0.35 !important; }
         }
 
         @media (max-width: 480px) {
-            .hero-container { padding: 30px 18px; gap: 20px; }
-            .headline-title { font-size: 26px; letter-spacing: -0.9px; }
-            .hero-image { max-width: 340px; }
-            .headline-subtext { font-size: 13.5px; line-height: 1.65; margin-bottom: 18px; }
-            
+            .hero-container { 
+                padding: 25px 16px; 
+                gap: 22px; 
+            }
+
+            .trust-badge {
+                padding: 7px 14px;
+                font-size: 11px;
+            }
+
+            .cta-button {
+                padding: 14px 28px;
+                font-size: 14px;
+            }
+
             .footer-nav { 
                 padding: 10px 16px;
             }
@@ -944,9 +1155,6 @@
                 width: 16px; 
                 height: 16px; 
             }
-            
-            .tech-icon { width: 36px; height: 36px; }
-            .grid-pattern { background-size: 30px 30px; }
         }
 
         /* Preloader mobile adjustments */
@@ -964,32 +1172,36 @@
 
         /* Reduced motion preference */
         @media (prefers-reduced-motion: reduce) {
-            .hero-image,
-            .circuit-path,
-            .grid-pattern,
-            .tech-icon,
-            .glow-orb,
+            .mesh-gradient,
+            .mesh-gradient::after,
+            .trust-badge-icon,
+            .code-cursor,
+            .typing-cursor,
             .orb-main,
             .orb-secondary,
             .profile-ring::before,
             .profile-ring::after,
-            .profile-avatar-wrapper::before,
-            .data-packet {
+            .tech-chip,
+            .hero-title-section,
+            .hero-subtext-section,
+            .cta-button-wrapper,
+            .code-preview,
+            .code-line {
                 animation: none !important;
             }
 
+            .tech-chip.visible {
+                opacity: 1;
+                transform: none;
+            }
+
             .hero-title-section,
-            .hero-image-section,
             .hero-subtext-section,
-            .headline-title,
-            .headline-subtext,
-            .cta-button,
+            .cta-button-wrapper,
+            .code-preview,
             .footer-nav {
-                animation-duration: 0.01ms !important;
-                animation-delay: 0ms !important;
                 opacity: 1 !important;
                 transform: none !important;
-                filter: none !important;
             }
         }
     </style>
@@ -1051,106 +1263,135 @@
     </div>
 
 
-    <!-- ==================== MAIN CONTENT - WITH ALL 3 FEATURES ==================== -->
+    <!-- ==================== MAIN CONTENT - PREMIUM HERO ==================== -->
     <main class="main-content" id="mainContent">
         
-        <!-- Background -->
+        <!-- Premium Background with Mesh Gradient -->
         <div class="hero-background">
+            <!-- Animated Mesh Gradient -->
+            <div class="mesh-gradient"></div>
             
-            <!-- FEATURE 1: Architect's Blueprint Layer -->
-            <div class="blueprint-layer">
-                
-                <!-- Grid Pattern -->
-                <div class="grid-pattern"></div>
-                
-                <!-- Circuit Lines SVG -->
-                <svg class="circuit-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
-                    <!-- Main circuit path from headline area to image -->
-                    <path class="circuit-path circuit-path-1" d="M 960 150 L 960 280 Q 960 320 920 320 L 750 320"/>
-                    
-                    <!-- Secondary path to React icon -->
-                    <path class="circuit-path circuit-path-2" d="M 1100 220 L 1350 220 Q 1400 220 1420 260"/>
-                    
-                    <!-- Tertiary path to AI brain -->
-                    <path class="circuit-path circuit-path-3" d="M 820 220 L 550 220 Q 500 220 480 270"/>
-                    
-                    <!-- Connection to cloud -->
-                    <path class="circuit-path circuit-path-2" d="M 1050 520 L 1400 520 Q 1450 520 1470 560"/>
-                    
-                    <!-- Inner circuit mesh -->
-                    <path class="circuit-path circuit-path-3" d="M 850 420 L 700 420 Q 650 420 630 470"/>
-                </svg>
-                
-                <!-- Floating Tech Icons -->
-                <!-- React Logo -->
-                <div class="tech-icon tech-icon-react">
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <circle cx="12" cy="12" r="2" fill="currentColor"/>
-                        <ellipse cx="12" cy="12" rx="10" ry="4" stroke="currentColor" stroke-width="1.5" fill="none"/>
-                        <ellipse cx="12" cy="12" rx="10" ry="4" stroke="currentColor" stroke-width="1.5" fill="none" transform="rotate(60 12 12)"/>
-                        <ellipse cx="12" cy="12" rx="10" ry="4" stroke="currentColor" stroke-width="1.5" fill="none" transform="rotate(120 12 12)"/>
-                    </svg>
-                </div>
-                
-                <!-- AI Brain Icon -->
-                <div class="tech-icon tech-icon-ai">
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" fill="currentColor" opacity="0.3"/>
-                        <path d="M12 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" fill="currentColor"/>
-                        <circle cx="12" cy="8" r="1.5" fill="currentColor"/>
-                        <circle cx="12" cy="16" r="1.5" fill="currentColor"/>
-                        <path d="M9 12h6M12 9v6" stroke="currentColor" stroke-width="1.5"/>
-                    </svg>
-                </div>
-                
-                <!-- Cloud Server Icon -->
-                <div class="tech-icon tech-icon-cloud">
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z" fill="currentColor"/>
-                        <rect x="8" y="14" width="8" height="6" rx="1" fill="currentColor" opacity="0.5"/>
-                        <line x1="10" y1="17" x2="14" y2="17" stroke="#000" stroke-width="1"/>
-                    </svg>
-                </div>
-            </div>
+            <!-- Ambient Noise Overlay -->
+            <div class="ambient-noise"></div>
             
-            <!-- Ambient Glows -->
-            <div class="hero-ambient-glow">
-                <div class="glow-orb glow-orb-1"></div>
-                <div class="glow-orb glow-orb-2"></div>
-                <div class="glow-orb glow-orb-3"></div>
+            <!-- Floating Tech Chips Layer -->
+            <div class="tech-chips-layer" id="techChipsLayer">
+                
+                <!-- React Chip -->
+                <div class="tech-chip chip-react" data-depth="0.15">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="2" fill="#61DAFB"/>
+                        <ellipse cx="12" cy="12" rx="10" ry="4" stroke="#61DAFB" stroke-width="1.5" fill="none"/>
+                        <ellipse cx="12" cy="12" rx="10" ry="4" stroke="#61DAFB" stroke-width="1.5" fill="none" transform="rotate(60 12 12)"/>
+                        <ellipse cx="12" cy="12" rx="10" ry="4" stroke="#61DAFB" stroke-width="1.5" fill="none" transform="rotate(120 12 12)"/>
+                    </svg>
+                    React
+                </div>
+
+                <!-- Node.js Chip -->
+                <div class="tech-chip chip-nodejs" data-depth="0.2">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M12 2L3 7v10l9 5 9-5V7l-9-5z" stroke="#339933" stroke-width="1.5" fill="none"/>
+                        <circle cx="12" cy="12" r="3" fill="#339933"/>
+                    </svg>
+                    Node.js
+                </div>
+
+                <!-- AI Chip -->
+                <div class="tech-chip chip-ai" data-depth="0.25">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="#A78BFA" stroke-width="1.5" fill="none"/>
+                        <path d="M2 17l10 5 10-5" stroke="#A78BFA" stroke-width="1.5" fill="none"/>
+                        <path d="M2 12l10 5 10-5" stroke="#A78BFA" stroke-width="1.5" fill="none"/>
+                    </svg>
+                    AI/ML
+                </div>
+
+                <!-- TypeScript Chip -->
+                <div class="tech-chip chip-typescript" data-depth="0.18">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M3 3h18v18H3V3zm14.5 8.5V9h-5v6h5v-2.5h-3V13h3v-2.5h-3z" fill="#3178C6"/>
+                        <text x="7" y="16" font-size="8" fill="#3178C6" font-weight="bold">TS</text>
+                    </svg>
+                    TypeScript
+                </div>
+
             </div>
         </div>
 
-        <!-- Hero Container - Staggered Stack Layout -->
+        <!-- Hero Container - Two Column Layout -->
         <div class="hero-container">
             
-            <!-- PART 3: Frontend (Headline) - Drops in LAST with bounce -->
-            <section class="hero-title-section">
-                <h1 class="headline-title">Full-stack systems thinking<br>for real-world products</h1>
-            </section>
+            <!-- LEFT COLUMN: Content -->
+            <div class="hero-content-left">
+                
+                <!-- Trust Badge -->
+                <div class="hero-trust-badge">
+                    <div class="trust-badge">
+                        <svg class="trust-badge-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                        </svg>
+                        <span>Trusted by <span class="trust-badge-number">100+</span> Businesses</span>
+                    </div>
+                </div>
 
-            <!-- PART 2: Image - Center piece -->
-            <section class="hero-image-section">
-                <img src="assets/hero.webp" alt="Hero Visual" class="hero-image"
-                     onerror="this.style.display='none';">
-            </section>
+                <!-- Title with Typing Effect -->
+                <section class="hero-title-section">
+                    <h1 class="headline-title">
+                        <span class="headline-static">Building your next</span><br>
+                        <span class="headline-typing-wrapper">
+                            <span class="headline-typing" id="typingText">Product</span>
+                            <span class="typing-cursor"></span>
+                        </span>
+                    </h1>
+                </section>
 
-            <!-- PART 1: Backend (Sub-headline) - Slides up FIRST with blur + typing -->
-            <section class="hero-subtext-section">
-                <p class="headline-subtext" id="subtext">
-                    I build software end-to-end — backend architecture, APIs, frontend interfaces, 
-                    infrastructure, and deployment. Still early in the journey, but deeply focused 
-                    on learning fast, building deliberately, and shipping meaningful products.
-                </p>
-            </section>
+                <!-- Subtext Description -->
+                <section class="hero-subtext-section">
+                    <p class="headline-subtext">
+                        I build software end-to-end — backend architecture, APIs, frontend interfaces, 
+                        infrastructure, and deployment. Focused on shipping meaningful products that scale.
+                    </p>
+                </section>
+
+                <!-- CTA Button with Magnetic Effect -->
+                <div class="cta-button-wrapper" id="ctaWrapper">
+                    <a href="#portfolio" class="cta-button" id="ctaButton">
+                        Get Started
+                        <svg class="cta-button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </a>
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN: Code Snippet Preview (Desktop) -->
+            <div class="hero-content-right">
+                <div class="code-preview">
+                    <div class="code-window-header">
+                        <div class="code-window-dot red"></div>
+                        <div class="code-window-dot yellow"></div>
+                        <div class="code-window-dot green"></div>
+                        <span class="code-window-title">developer.js</span>
+                    </div>
+                    <div class="code-content">
+                        <span class="code-line"><span class="code-comment">// Full-stack architecture</span></span>
+                        <span class="code-line"><span class="code-keyword">const</span> <span class="code-variable">developer</span> <span class="code-operator">=</span> <span class="code-bracket">{</span></span>
+                        <span class="code-line">&nbsp;&nbsp;<span class="code-function">build</span><span class="code-bracket">(</span><span class="code-string">'products'</span><span class="code-bracket">)</span> <span class="code-operator">=></span> <span class="code-bracket">{</span></span>
+                        <span class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-variable">frontend</span>: <span class="code-string">'React'</span>,</span>
+                        <span class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-variable">backend</span>: <span class="code-string">'Node.js'</span>,</span>
+                        <span class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-variable">quality</span>: <span class="code-string">'premium'</span><span class="code-code-bracket">}</span><span class="code-cursor"></span></span>
+                    </div>
+                </div>
+            </div>
 
         </div>
 
-        <!-- Footer - Thin Fixed at Bottom - SOCIAL ICONS ONLY -->
+        <!-- Footer - Social Icons Only -->
         <footer class="footer-nav">
             <div class="footer-content">
-                
-                <!-- Social Media Icons Only -->
                 <div class="social-icons">
                     <!-- GitHub -->
                     <a href="https://github.com/" target="_blank" rel="noopener noreferrer" class="social-icon github" aria-label="GitHub">
@@ -1278,13 +1519,122 @@
                 document.getElementById('preloader').classList.add('hidden');
                 document.getElementById('mainContent').classList.add('visible');
                 
-                // Start typing effect after main content visible
-                setTimeout(() => {
-                    const subtext = document.getElementById('subtext');
-                    subtext.classList.add('typed');
-                }, 4000); // After typing animation completes
+                // Initialize premium features after main content is visible
+                initializePremiumFeatures();
                 
             }, 700);
+        }
+
+        // ============================================
+        // PREMIUM FEATURES INITIALIZATION
+        // ============================================
+        
+        function initializePremiumFeatures() {
+            initTypingEffect();
+            initTechChipsParallax();
+            initMagneticCTA();
+            showTechChipsWithDelay();
+        }
+
+        // TYPING EFFECT - Cycle through words
+        function initTypingEffect() {
+            const words = ['Product', 'Startup', 'Future', 'Platform', 'Vision'];
+            let wordIndex = 0;
+            let charIndex = 0;
+            let isDeleting = false;
+            const typingElement = document.getElementById('typingText');
+            
+            function type() {
+                const currentWord = words[wordIndex];
+                
+                if (isDeleting) {
+                    typingElement.textContent = currentWord.substring(0, charIndex - 1);
+                    charIndex--;
+                } else {
+                    typingElement.textContent = currentWord.substring(0, charIndex + 1);
+                    charIndex++;
+                }
+
+                let typeSpeed = isDeleting ? 50 : 120;
+
+                if (!isDeleting && charIndex === currentWord.length) {
+                    typeSpeed = 2000; // Pause at end
+                    isDeleting = true;
+                } else if (isDeleting && charIndex === 0) {
+                    isDeleting = false;
+                    wordIndex = (wordIndex + 1) % words.length;
+                    typeSpeed = 400; // Pause before new word
+                }
+
+                setTimeout(type, typeSpeed);
+            }
+
+            setTimeout(type, 2200); // Start after entrance animation
+        }
+
+        // PARALLAX EFFECT - Mouse movement affects tech chips
+        function initTechChipsParallax() {
+            const chips = document.querySelectorAll('.tech-chip');
+            let mouseX = 0;
+            let mouseY = 0;
+            let currentX = 0;
+            let currentY = 0;
+
+            document.addEventListener('mousemove', (e) => {
+                mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+                mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+            });
+
+            function animateParallax() {
+                currentX += (mouseX - currentX) * 0.05;
+                currentY += (mouseY - currentY) * 0.05;
+
+                chips.forEach(chip => {
+                    const depth = parseFloat(chip.dataset.depth) || 0.2;
+                    const moveX = currentX * depth * 30;
+                    const moveY = currentY * depth * 30;
+                    
+                    chip.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                });
+
+                requestAnimationFrame(animateParallax);
+            }
+
+            animateParallax();
+        }
+
+        // MAGNETIC CTA BUTTON
+        function initMagneticCTA() {
+            const ctaButton = document.getElementById('ctaButton');
+            const ctaWrapper = document.getElementById('ctaWrapper');
+
+            ctaWrapper.addEventListener('mousemove', (e) => {
+                const rect = ctaWrapper.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                
+                const deltaX = (e.clientX - centerX) * 0.25;
+                const deltaY = (e.clientY - centerY) * 0.25;
+
+                ctaButton.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+            });
+
+            ctaWrapper.addEventListener('mouseleave', () => {
+                ctaButton.style.transform = 'translate(0, 0)';
+            });
+        }
+
+        // SHOW TECH CHIPS WITH STAGGERED DELAY
+        function showTechChipsWithDelay() {
+            const chips = document.querySelectorAll('.tech-chip');
+            
+            setTimeout(() => {
+                chips.forEach((chip, index) => {
+                    setTimeout(() => {
+                        chip.classList.add('visible');
+                    }, index * 150);
+                });
+            }, 1500);
         }
 
         function restart() {
