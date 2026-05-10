@@ -33,8 +33,7 @@
             background: var(--bg-primary);
             min-height: 100vh;
             display: flex;
-            justify-content: center;
-            align-items: center;
+            flex-direction: column;
             overflow-x: hidden;
             color: var(--text-primary);
         }
@@ -335,17 +334,24 @@
         /* ========== MAIN CONTENT ========== */
         .main-content {
             display: none;
-            min-height: 100vh;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 80px 30px 120px;
+            position: relative;
             opacity: 0;
             transition: opacity 1s ease;
         }
 
         .main-content.visible {
-            display: block;
+            display: flex;
             opacity: 1;
         }
 
-        .content-bg {
+        /* Background Effects */
+        .main-bg {
             position: fixed;
             inset: 0;
             background: 
@@ -355,293 +361,222 @@
             z-index: -1;
         }
 
-        .page-wrapper {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 100px 30px 80px;
-        }
-
-        /* Hero */
-        .hero {
-            text-align: center;
-            padding: 60px 0 80px;
-        }
-
-        .avatar-container {
-            width: 130px;
-            height: 130px;
-            margin: 0 auto 40px;
+        /* Square Placeholder Image */
+        .hero-image-container {
+            width: 320px;
+            height: 320px;
+            margin-bottom: 60px;
             position: relative;
+            animation: imageReveal 1.2s cubic-bezier(0.4, 0, 0.2, 1) both;
         }
 
-        .avatar-ring {
-            position: absolute;
-            inset: 0;
-            border-radius: 50%;
-            border: 1px solid var(--border);
-            transition: all 0.5s ease;
+        @keyframes imageReveal {
+            from {
+                opacity: 0;
+                transform: scale(0.9) rotateX(10deg);
+                filter: blur(10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) rotateX(0deg);
+                filter: blur(0);
+            }
         }
 
-        .avatar-ring::before {
-            content: '';
-            position: absolute;
-            inset: -1px;
-            border-radius: 50%;
-            background: conic-gradient(from 180deg, transparent, var(--accent), transparent);
-            opacity: 0.3;
-            animation: ringRotate 8s linear infinite;
-        }
-
-        @keyframes ringRotate {
-            to { transform: rotate(360deg); }
-        }
-
-        .avatar-image {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            overflow: hidden;
-            position: relative;
-            background: linear-gradient(145deg, var(--bg-elevated), var(--bg-secondary));
-            box-shadow: 
-                0 25px 60px -15px rgba(0, 0, 0, 0.5),
-                inset 0 1px 0 rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .profile-img {
+        .hero-square-image {
             width: 100%;
             height: 100%;
             object-fit: cover;
             object-position: center;
             display: block;
+            border-radius: 8px;
+            box-shadow: 
+                0 25px 80px -20px rgba(99, 102, 241, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.08);
         }
 
-        .avatar-fallback {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent-light);
-            opacity: 0.8;
-        }
-
-        .avatar-fallback svg {
-            width: 58px;
-            height: 58px;
-        }
-
-        .name-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 48px;
-            font-weight: 700;
-            letter-spacing: -1.5px;
-            margin-bottom: 14px;
-            color: var(--text-primary);
-            animation: fadeUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) both;
-        }
-
-        .role-subtitle {
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--accent-light);
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            margin-bottom: 32px;
-            animation: fadeUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.1s both;
-        }
-
-        .intro-text {
-            font-size: 18px;
-            line-height: 1.8;
-            color: var(--text-secondary);
-            max-width: 550px;
-            margin: 0 auto 45px;
-            font-weight: 300;
-            animation: fadeUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s both;
-        }
-
-        .intro-text strong {
-            color: var(--text-primary);
-            font-weight: 500;
-        }
-
-        /* Buttons */
-        .actions {
-            display: flex;
-            justify-content: center;
-            gap: 14px;
-            flex-wrap: wrap;
-            animation: fadeUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.3s both;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 14px 28px;
-            font-size: 13px;
-            font-weight: 600;
-            font-family: 'Space Grotesk', sans-serif;
-            letter-spacing: 0.5px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            text-decoration: none;
-        }
-
-        .btn-primary {
-            background: var(--accent);
-            color: white;
-            border: none;
-            box-shadow: 0 8px 24px -6px var(--accent-glow);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 32px -6px var(--accent-glow);
-            background: var(--accent-light);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--text-secondary);
-            border: 1px solid var(--border);
-        }
-
-        .btn-secondary:hover {
-            background: var(--glass);
-            border-color: rgba(255, 255, 255, 0.12);
-            color: var(--text-primary);
-        }
-
-        .btn svg {
-            width: 16px;
-            height: 16px;
-        }
-
-        /* Skills Section */
-        .skills-section {
-            padding: 60px 0;
-        }
-
-        .section-header {
+        /* Sci-Fi Animated Headline */
+        .hero-text-container {
+            max-width: 800px;
             text-align: center;
-            margin-bottom: 50px;
         }
 
-        .section-label {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--text-muted);
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-        }
-
-        .section-title {
+        .headline-title {
             font-family: 'Space Grotesk', sans-serif;
-            font-size: 28px;
-            font-weight: 600;
-            color: var(--text-primary);
-            letter-spacing: -0.5px;
-        }
-
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 16px;
-        }
-
-        .skill-card {
-            background: var(--glass);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 28px 26px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 56px;
+            font-weight: 700;
+            line-height: 1.15;
+            letter-spacing: -2px;
+            color: #ffffff;
+            margin-bottom: 28px;
             position: relative;
-            overflow: hidden;
+            display: inline-block;
+            
+            /* Glitch Animation */
+            animation: 
+                glitchText 3s infinite,
+                titleFadeIn 1s cubic-bezier(0.4, 0, 0.2, 1) both,
+                neonPulse 2s ease-in-out infinite alternate;
+            
+            text-shadow: 
+                0 0 10px rgba(99, 102, 241, 0.5),
+                0 0 20px rgba(99, 102, 241, 0.3),
+                0 0 40px rgba(99, 102, 241, 0.2);
         }
 
-        .skill-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.3), transparent);
-            opacity: 0;
-            transition: opacity 0.4s ease;
+        @keyframes glitchText {
+            0%, 90%, 100% {
+                transform: translate(0);
+                text-shadow: 
+                    0 0 10px rgba(99, 102, 241, 0.5),
+                    0 0 20px rgba(99, 102, 241, 0.3),
+                    0 0 40px rgba(99, 102, 241, 0.2);
+            }
+            91% {
+                transform: translate(-2px, 1px);
+                text-shadow: 
+                    2px 0 #ff00ff,
+                    -2px 0 #00ffff;
+            }
+            93% {
+                transform: translate(2px, -1px);
+                text-shadow: 
+                    -2px 0 #ff00ff,
+                    2px 0 #00ffff;
+            }
+            95% {
+                transform: translate(-1px, 2px);
+                text-shadow: 
+                    1px 0 #ff00ff,
+                    -1px 0 #00ffff;
+            }
+            97% {
+                transform: translate(1px, -2px);
+                text-shadow: 
+                    -1px 0 #ff00ff,
+                    1px 0 #00ffff;
+            }
         }
 
-        .skill-card:hover {
-            background: rgba(255, 255, 255, 0.04);
-            border-color: rgba(255, 255, 255, 0.1);
-            transform: translateY(-4px);
+        @keyframes titleFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+                letter-spacing: 10px;
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                letter-spacing: -2px;
+            }
         }
 
-        .skill-card:hover::before {
-            opacity: 1;
+        @keyframes neonPulse {
+            from {
+                text-shadow: 
+                    0 0 10px rgba(99, 102, 241, 0.5),
+                    0 0 20px rgba(99, 102, 241, 0.3),
+                    0 0 40px rgba(99, 102, 241, 0.2);
+            }
+            to {
+                text-shadow: 
+                    0 0 15px rgba(99, 102, 241, 0.8),
+                    0 0 30px rgba(99, 102, 241, 0.5),
+                    0 0 60px rgba(99, 102, 241, 0.3),
+                    0 0 100px rgba(99, 102, 241, 0.2);
+            }
         }
 
-        .skill-icon-wrap {
-            width: 44px;
-            height: 44px;
-            background: rgba(99, 102, 241, 0.1);
-            border-radius: 12px;
+        /* Subtext with Typing Effect */
+        .headline-subtext {
+            font-size: 18px;
+            line-height: 1.75;
+            color: rgba(255, 255, 255, 0.75);
+            font-weight: 300;
+            margin: 0 auto;
+            max-width: 650px;
+            position: relative;
+            
+            animation: subtextFadeIn 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.5s both;
+            
+            border-right: 2px solid var(--accent-light);
+            animation: 
+                subtextFadeIn 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.5s both,
+                blinkCursor 0.8s step-end infinite;
+        }
+
+        @keyframes subtextFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes blinkCursor {
+            from, to { border-color: transparent; }
+            50% { border-color: var(--accent-light); }
+        }
+
+        /* Footer Navigation - NOT FIXED */
+        .footer-nav {
+            width: 100%;
+            padding: 35px 40px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.4), transparent);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: auto;
+        }
+
+        .footer-links {
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 18px;
+            gap: 40px;
+            flex-wrap: wrap;
         }
 
-        .skill-icon-wrap svg {
-            width: 22px;
-            height: 22px;
-            color: var(--accent-light);
-        }
-
-        .skill-name {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 8px;
-        }
-
-        .skill-desc {
+        .footer-link {
             font-size: 14px;
-            color: var(--text-muted);
-            line-height: 1.7;
-            font-weight: 300;
-        }
-
-        .skill-tag {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 10px;
-            font-weight: 600;
-            color: var(--success);
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.65);
+            text-decoration: none;
             letter-spacing: 0.5px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
             text-transform: uppercase;
-            padding: 4px 10px;
-            background: rgba(16, 185, 129, 0.1);
-            border-radius: 20px;
+            font-size: 11px;
+            letter-spacing: 2px;
         }
 
-        /* Animations */
-        @keyframes fadeUp {
-            from { 
-                opacity: 0; 
-                transform: translateY(24px); 
-            }
-            to { 
-                opacity: 1; 
-                transform: translateY(0); 
-            }
+        .footer-link::before {
+            content: '[';
+            margin-right: 6px;
+            color: var(--accent-light);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-link::after {
+            content: ']';
+            margin-left: 6px;
+            color: var(--accent-light);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(99, 102, 241, 0.6);
+        }
+
+        .footer-link:hover::before,
+        .footer-link:hover::after {
+            opacity: 1;
         }
 
         /* Responsive */
@@ -650,15 +585,37 @@
             .profile-avatar-wrapper { width: 90px; height: 90px; margin-bottom: 20px; }
             .profile-name { font-size: 19px; }
             
-            .page-wrapper { padding: 60px 20px; }
-            .hero { padding: 40px 0 60px; }
-            .avatar-container { width: 110px; height: 110px; }
-            .name-title { font-size: 36px; }
-            .role-subtitle { font-size: 12px; letter-spacing: 2px; }
-            .intro-text { font-size: 16px; }
+            .main-content {
+                padding: 60px 20px 100px;
+            }
             
-            .actions { flex-direction: column; align-items: stretch; }
-            .btn { justify-content: center; }
+            .hero-image-container {
+                width: 260px;
+                height: 260px;
+                margin-bottom: 40px;
+            }
+            
+            .headline-title {
+                font-size: 36px;
+                letter-spacing: -1px;
+            }
+            
+            .headline-subtext {
+                font-size: 15px;
+                line-height: 1.65;
+            }
+            
+            .footer-nav {
+                padding: 28px 20px;
+            }
+            
+            .footer-links {
+                gap: 20px;
+            }
+            
+            .footer-link {
+                font-size: 10px;
+            }
             
             .metrics-row { gap: 12px; }
             .metric-value { font-size: 15px; }
@@ -756,156 +713,39 @@
     <!-- ==================== MAIN CONTENT ==================== -->
     <main class="main-content" id="mainContent">
         
-        <div class="content-bg"></div>
+        <!-- Background -->
+        <div class="main-bg"></div>
 
-        <div class="page-wrapper">
+        <!-- Square Placeholder Image -->
+        <div class="hero-image-container">
+            <img src="assets/profile.jpg" alt="Profile" class="hero-square-image"
+                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22320%22 height=%22320%22%3E%3Crect fill=%22%231a1a2e%22 width=%22320%22 height=%22320%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%236366f1%22 font-family=%22monospace%22 font-size=%2216%22%3EIMAGE%3C/text%3E%3C/svg%3E';">
+        </div>
 
-            <!-- Hero / Introduction -->
-            <section class="hero">
-
-                <!-- Avatar with Profile Image Support -->
-                <div class="avatar-container">
-                    <div class="avatar-ring"></div>
-                    <div class="avatar-image">
-                        <img src="assets/profile.jpg" alt="Nitish Kumar" class="profile-img"
-                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        
-                        <!-- Fallback Icon (shows if image not found) -->
-                        <div class="avatar-fallback" style="display: none;">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
-                                <circle cx="12" cy="7" r="4"/>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Name -->
-                <h1 class="name-title">Nitish Kumar</h1>
-
-                <!-- Role -->
-                <p class="role-subtitle">Full Stack Developer</p>
-
-                <!-- Introduction -->
-                <p class="intro-text">
-                    I build products that live at the intersection of <strong>design and engineering</strong>. 
-                    Focused on creating seamless digital experiences that are both powerful and intuitive.
-                </p>
-
-                <!-- Actions -->
-                <div class="actions">
-                    <a href="#" class="btn btn-primary">
-                        View Work
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M7 17L17 7"/>
-                            <path d="M7 7h10v10"/>
-                        </svg>
-                    </a>
-                    <a href="#" class="btn btn-secondary">
-                        Resume
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                            <polyline points="7 10 12 15 17 10"/>
-                            <line x1="12" x2="12" y1="15" y2="3"/>
-                        </svg>
-                    </a>
-                </div>
-
-            </section>
-
-            <!-- Skills -->
-            <section class="skills-section">
-
-                <div class="section-header">
-                    <p class="section-label">Expertise</p>
-                    <h2 class="section-title">What I Do</h2>
-                </div>
-
-                <div class="skills-grid">
-
-                    <article class="skill-card">
-                        <span class="skill-tag">Primary</span>
-                        <div class="skill-icon-wrap">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="16 18 22 12 16 6"/>
-                                <polyline points="8 6 2 12 8 18"/>
-                            </svg>
-                        </div>
-                        <h3 class="skill-name">Development</h3>
-                        <p class="skill-desc">Building robust applications with clean architecture and modern best practices.</p>
-                    </article>
-
-                    <article class="skill-card">
-                        <span class="skill-tag">Strong</span>
-                        <div class="skill-icon-wrap">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                                <circle cx="9" cy="9" r="2"/>
-                                <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
-                            </svg>
-                        </div>
-                        <h3 class="skill-name">Design</h3>
-                        <p class="skill-desc">Crafting interfaces that balance aesthetics with functional excellence.</p>
-                    </article>
-
-                    <article class="skill-card">
-                        <span class="skill-tag">Primary</span>
-                        <div class="skill-icon-wrap">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 20V10"/>
-                                <path d="M18 20V4"/>
-                                <path d="M6 20v-4"/>
-                            </svg>
-                        </div>
-                        <h3 class="skill-name">Performance</h3>
-                        <p class="skill-desc">Optimizing for speed and efficiency to deliver exceptional user experiences.</p>
-                    </article>
-
-                    <article class="skill-card">
-                        <span class="skill-tag">Strong</span>
-                        <div class="skill-icon-wrap">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                                <circle cx="9" cy="7" r="4"/>
-                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                            </svg>
-                        </div>
-                        <h3 class="skill-name">Collaboration</h3>
-                        <p class="skill-desc">Working effectively with teams to ship products that exceed expectations.</p>
-                    </article>
-
-                    <article class="skill-card">
-                        <span class="skill-tag">Core</span>
-                        <div class="skill-icon-wrap">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                            </svg>
-                        </div>
-                        <h3 class="skill-name">Architecture</h3>
-                        <p class="skill-desc">Designing scalable systems that grow seamlessly with product needs.</p>
-                    </article>
-
-                    <article class="skill-card">
-                        <span class="skill-tag">Strong</span>
-                        <div class="skill-icon-wrap">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="10"/>
-                                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-                                <path d="M12 17h.01"/>
-                            </svg>
-                        </div>
-                        <h3 class="skill-name">Problem Solving</h3>
-                        <p class="skill-desc">Tackling complex challenges with analytical thinking and creative solutions.</p>
-                    </article>
-
-                </div>
-
-            </section>
-
+        <!-- Sci-Fi Animated Text Content -->
+        <div class="hero-text-container">
+            <h1 class="headline-title">Full-stack systems thinking<br>for real-world products</h1>
+            
+            <p class="headline-subtext">
+                I build software end-to-end — backend architecture, APIs, frontend interfaces, 
+                infrastructure, and deployment. Still early in the journey, but deeply focused 
+                on learning fast, building deliberately, and shipping meaningful products.
+            </p>
         </div>
 
     </main>
+
+    <!-- Footer Navigation - Now in normal flow, NOT fixed -->
+    <footer class="footer-nav">
+        <nav class="footer-links">
+            <a href="#homepage" class="footer-link">Homepage</a>
+            <a href="#about" class="footer-link">About me</a>
+            <a href="#skills" class="footer-link">Skills section</a>
+            <a href="#portfolio" class="footer-link">Portfolio</a>
+            <a href="#contact" class="footer-link">Contact</a>
+            <a href="#social" class="footer-link">Social media links</a>
+        </nav>
+    </footer>
 
 
     <!-- ==================== JAVASCRIPT ==================== -->
