@@ -735,7 +735,7 @@
             text-shadow: 0 2px 30px rgba(0, 0, 0, 0.4), 0 0 60px var(--accent-glow);
         }
 
-        /* Footer - FIXED AT BOTTOM */
+        /* Footer - THIN & FIXED AT BOTTOM - SOCIAL ICONS ONLY */
         .footer-nav {
             position: fixed;
             bottom: 0;
@@ -743,11 +743,11 @@
             right: 0;
             z-index: 10;
             width: 100%;
-            padding: 28px 30px;
+            padding: 14px 30px; /* THIN FOOTER */
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.6) 100%);
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.85) 100%);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
             animation: footerFadeIn 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
             animation-delay: 4.2s;
             opacity: 0;
@@ -760,70 +760,30 @@
 
         .footer-content {
             display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 18px;
+            justify-content: center;
             max-width: 1400px;
             margin: 0 auto;
         }
 
-        .footer-links {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 36px;
-            flex-wrap: wrap;
-        }
-
-        .footer-link {
-            font-size: 14px;
-            font-weight: 500;
-            color: rgba(255, 255, 255, 0.72);
-            text-decoration: none;
-            letter-spacing: 0.4px;
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            position: relative;
-            padding: 6px 0;
-        }
-
-        .footer-link::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(90deg, var(--accent), var(--accent-light));
-            transition: width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            border-radius: 1px;
-        }
-
-        .footer-link:hover {
-            color: #ffffff;
-            transform: translateY(-2px);
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-        }
-
-        .footer-link:hover::after { width: 100%; }
-
-        /* Social Media Icons Container */
+        /* Social Media Icons Container - CENTERED */
         .social-icons {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 16px;
+            gap: 12px;
         }
 
         .social-icon {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.65);
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.55);
             text-decoration: none;
             transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             position: relative;
@@ -831,56 +791,63 @@
         }
 
         .social-icon svg {
-            width: 19px;
-            height: 19px;
+            width: 18px;
+            height: 18px;
             transition: all 0.4s ease;
         }
 
         .social-icon:hover {
-            transform: translateY(-3px) scale(1.08);
+            transform: translateY(-2px) scale(1.05);
             color: #ffffff;
-            border-color: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), 0 0 20px var(--accent-glow);
-            background: rgba(99, 102, 241, 0.15);
+            border-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 0 15px var(--accent-glow);
+            background: rgba(99, 102, 241, 0.12);
         }
 
         .social-icon:hover svg {
-            filter: drop-shadow(0 0 8px currentColor);
+            filter: drop-shadow(0 0 6px currentColor);
         }
 
         /* Individual Social Icon Hover Colors */
         .social-icon.github:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 255, 255, 0.1);
         }
 
         .social-icon.twitter:hover {
-            background: rgba(29, 161, 242, 0.15);
-            border-color: rgba(29, 161, 242, 0.4);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), 0 0 20px rgba(29, 161, 242, 0.3);
+            background: rgba(29, 161, 242, 0.12);
+            border-color: rgba(29, 161, 242, 0.35);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(29, 161, 242, 0.25);
             color: #1da1f2;
         }
 
         .social-icon.facebook:hover {
-            background: rgba(66, 103, 178, 0.15);
-            border-color: rgba(66, 103, 178, 0.4);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), 0 0 20px rgba(66, 103, 178, 0.3);
+            background: rgba(66, 103, 178, 0.12);
+            border-color: rgba(66, 103, 178, 0.35);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(66, 103, 178, 0.25);
             color: #4267b2;
         }
 
         .social-icon.instagram:hover {
-            background: rgba(225, 48, 108, 0.15);
-            border-color: rgba(225, 48, 108, 0.4);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), 0 0 20px rgba(225, 48, 108, 0.3);
+            background: rgba(225, 48, 108, 0.12);
+            border-color: rgba(225, 48, 108, 0.35);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(225, 48, 108, 0.25);
             color: #e1306c;
         }
 
         .social-icon.linkedin:hover {
-            background: rgba(0, 119, 181, 0.15);
-            border-color: rgba(0, 119, 181, 0.4);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 119, 181, 0.3);
+            background: rgba(0, 119, 181, 0.12);
+            border-color: rgba(0, 119, 181, 0.35);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 119, 181, 0.25);
             color: #0077b5;
+        }
+
+        .social-icon.whatsapp:hover {
+            background: rgba(37, 211, 102, 0.12);
+            border-color: rgba(37, 211, 102, 0.35);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(37, 211, 102, 0.25);
+            color: #25d366;
         }
 
         /* Responsive Design */
@@ -893,17 +860,21 @@
             .headline-title { font-size: 42px; }
             .hero-image { max-width: 480px; }
             .headline-subtext { font-size: 16px; max-width: 650px; }
-            .footer-nav { padding: 32px 60px; }
-            .footer-links { gap: 42px; }
-            .footer-link { font-size: 14.5px; }
-            .social-icons { gap: 18px; }
+            
+            .footer-nav { 
+                padding: 16px 50px;
+            }
+            .social-icons { 
+                gap: 13px; 
+            }
             .social-icon { 
-                width: 40px; 
-                height: 40px; 
+                width: 38px; 
+                height: 38px; 
+                border-radius: 10px;
             }
             .social-icon svg { 
-                width: 20px; 
-                height: 20px; 
+                width: 19px; 
+                height: 19px; 
             }
             
             .tech-icon { width: 56px; height: 56px; }
@@ -930,10 +901,12 @@
                 to { width: 100%; }
             }
 
-            .footer-nav { padding: 26px 24px; }
-            .footer-links { gap: 24px; }
-            .footer-link { font-size: 13px; }
-            .social-icons { gap: 12px; }
+            .footer-nav { 
+                padding: 12px 20px;
+            }
+            .social-icons { 
+                gap: 10px; 
+            }
             .social-icon { 
                 width: 34px; 
                 height: 34px; 
@@ -955,11 +928,13 @@
             .headline-title { font-size: 26px; letter-spacing: -0.9px; }
             .hero-image { max-width: 340px; }
             .headline-subtext { font-size: 13.5px; line-height: 1.65; margin-bottom: 18px; }
-            .footer-nav { padding: 22px 18px; }
-            .footer-content { gap: 14px; }
-            .footer-links { gap: 18px; }
-            .footer-link { font-size: 12px; }
-            .social-icons { gap: 10px; }
+            
+            .footer-nav { 
+                padding: 10px 16px;
+            }
+            .social-icons { 
+                gap: 8px; 
+            }
             .social-icon { 
                 width: 32px; 
                 height: 32px; 
@@ -1171,19 +1146,11 @@
 
         </div>
 
-        <!-- Footer - Fixed at Bottom with Navigation Links and Social Media Icons -->
+        <!-- Footer - Thin Fixed at Bottom - SOCIAL ICONS ONLY -->
         <footer class="footer-nav">
             <div class="footer-content">
-                <!-- Navigation Links -->
-                <nav class="footer-links">
-                    <a href="#homepage" class="footer-link">Homepage</a>
-                    <a href="#about" class="footer-link">About me</a>
-                    <a href="#skills" class="footer-link">Skills section</a>
-                    <a href="#portfolio" class="footer-link">Portfolio</a>
-                    <a href="#contact" class="footer-link">Contact</a>
-                </nav>
-
-                <!-- Social Media Icons -->
+                
+                <!-- Social Media Icons Only -->
                 <div class="social-icons">
                     <!-- GitHub -->
                     <a href="https://github.com/" target="_blank" rel="noopener noreferrer" class="social-icon github" aria-label="GitHub">
@@ -1217,6 +1184,13 @@
                     <a href="https://linkedin.com/" target="_blank" rel="noopener noreferrer" class="social-icon linkedin" aria-label="LinkedIn">
                         <svg viewBox="0 0 24 24" fill="currentColor">
                             <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                        </svg>
+                    </a>
+
+                    <!-- WhatsApp -->
+                    <a href="https://wa.me/" target="_blank" rel="noopener noreferrer" class="social-icon whatsapp" aria-label="WhatsApp">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
                         </svg>
                     </a>
                 </div>
