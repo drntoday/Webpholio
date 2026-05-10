@@ -406,7 +406,7 @@
             box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
         }
 
-        /* ========== MAIN CONTENT - IMMERSIVE HERO (NO CARDS) ========== */
+        /* ========== MAIN CONTENT - SIDE BY SIDE LAYOUT (NO CARDS) ========== */
         .main-content {
             display: none;
             min-height: 100vh;
@@ -421,69 +421,19 @@
             opacity: 1;
         }
 
-        /* Full-screen Background Image */
+        /* Background - Dark gradient only (NO IMAGE!) */
         .hero-background {
             position: fixed;
             inset: 0;
             z-index: -2;
             overflow: hidden;
-        }
-
-        .hero-bg-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center center;
-            display: block;
-            /* Ken Burns zoom effect */
-            animation: kenBurnsZoom 30s ease-in-out infinite alternate;
-            transform-origin: center center;
-        }
-
-        @keyframes kenBurnsZoom {
-            0% {
-                transform: scale(1);
-            }
-            100% {
-                transform: scale(1.08);
-            }
-        }
-
-        .hero-fallback-bg {
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #1e1b4b 100%);
-        }
-
-        /* Subtle overlay for readability - very light glassy feel */
-        .hero-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(
-                135deg,
-                rgba(0, 0, 0, 0.45) 0%,
-                rgba(0, 0, 0, 0.25) 40%,
-                rgba(0, 0, 0, 0.30) 60%,
-                rgba(0, 0, 0, 0.50) 100%
-            );
-            z-index: 1;
-        }
-
-        /* Very subtle glass layer - barely noticeable */
-        .hero-glass-layer {
-            position: absolute;
-            inset: 0;
-            backdrop-filter: blur(1px);
-            -webkit-backdrop-filter: blur(1px);
-            z-index: 2;
-            pointer-events: none;
+            background: linear-gradient(135deg, #0a0a0c 0%, #111114 40%, #0f0a1e 70%, #0a0a0c 100%);
         }
 
         /* Ambient glow effects */
         .hero-ambient-glow {
             position: absolute;
             inset: 0;
-            z-index: 3;
             pointer-events: none;
             overflow: hidden;
         }
@@ -539,7 +489,6 @@
         .particles-container {
             position: absolute;
             inset: 0;
-            z-index: 4;
             pointer-events: none;
             overflow: hidden;
         }
@@ -563,39 +512,58 @@
         .particle:nth-child(8) { left: 55%; top: 85%; animation-delay: 11s; animation-duration: 24s; }
 
         @keyframes floatParticle {
-            0% {
-                transform: translateY(0) translateX(0);
-                opacity: 0;
-            }
-            10% {
-                opacity: 0.5;
-            }
-            90% {
-                opacity: 0.5;
-            }
-            100% {
-                transform: translateY(-100vh) translateX(30px);
-                opacity: 0;
-            }
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(-100vh) translateX(30px); opacity: 0; }
         }
 
-        /* HERO CONTENT - Floating text without cards */
-        .hero-content {
+        /* SPLIT LAYOUT CONTAINER */
+        .hero-split-container {
             flex: 1;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 60px;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 80px;
+            position: relative;
+            z-index: 10;
+            min-height: calc(100vh - 140px);
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* LEFT SIDE - TEXT CONTENT (NO CARD!) */
+        .hero-text-section {
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: flex-start;
-            padding: 80px 90px;
-            position: relative;
-            z-index: 10;
+            padding-right: 20px;
+            animation: slideInLeft 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+            animation-delay: 0.3s;
+        }
+
+        @keyframes slideInLeft {
+            from { 
+                opacity: 0; 
+                transform: translateX(-50px);
+                filter: blur(8px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateX(0);
+                filter: blur(0);
+            }
         }
 
         /* Icon above title */
         .hero-icon {
             width: 48px;
             height: 48px;
-            margin-bottom: 32px;
+            margin-bottom: 28px;
             color: var(--soft-white);
             opacity: 0.9;
             animation: iconFadeIn 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
@@ -604,70 +572,47 @@
         }
 
         @keyframes iconFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px) scale(0.9);
-            }
-            to {
-                opacity: 0.9;
-                transform: translateY(0) scale(1);
-            }
+            from { opacity: 0; transform: translateY(-20px) scale(0.9); }
+            to { opacity: 0.9; transform: translateY(0) scale(1); }
         }
 
-        /* Main headline - no container, just floating text */
+        /* Main headline - NO container, just floating text */
         .headline-title {
             font-family: 'Space Grotesk', sans-serif;
-            font-size: 68px;
+            font-size: 56px;
             font-weight: 700;
-            line-height: 1.08;
-            letter-spacing: -2.2px;
+            line-height: 1.1;
+            letter-spacing: -1.8px;
             color: var(--soft-white);
-            margin-bottom: 28px;
-            max-width: 800px;
-            text-shadow: 
-                0 2px 40px rgba(0, 0, 0, 0.5),
-                0 0 80px rgba(0, 0, 0, 0.3);
+            margin-bottom: 26px;
+            max-width: 600px;
+            text-shadow: 0 2px 30px rgba(0, 0, 0, 0.4);
             animation: titleReveal 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
             animation-delay: 0.8s;
             opacity: 0;
         }
 
         @keyframes titleReveal {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-                filter: blur(6px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-                filter: blur(0);
-            }
+            from { opacity: 0; transform: translateY(25px); filter: blur(6px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
         }
 
         /* Subtext description */
         .headline-subtext {
-            font-size: 19px;
+            font-size: 17.5px;
             line-height: 1.75;
-            color: rgba(255, 255, 255, 0.88);
+            color: rgba(255, 255, 255, 0.85);
             font-weight: 300;
-            margin: 0 0 42px 0;
-            max-width: 650px;
-            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+            margin: 0 0 38px 0;
+            max-width: 550px;
             animation: subtextReveal 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
             animation-delay: 1.1s;
             opacity: 0;
         }
 
         @keyframes subtextReveal {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* CTA Button - Glass style */
@@ -675,9 +620,9 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 16px 36px;
+            padding: 15px 34px;
             font-family: 'Space Grotesk', sans-serif;
-            font-size: 16px;
+            font-size: 15.5px;
             font-weight: 600;
             color: var(--soft-white);
             text-decoration: none;
@@ -711,56 +656,100 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(255, 255, 255, 0.2),
-                transparent
-            );
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
             transition: left 0.6s ease;
         }
 
         .cta-button:hover {
             transform: translateY(-3px);
-            background: linear-gradient(
-                135deg,
-                rgba(99, 102, 241, 0.35) 0%,
-                rgba(139, 92, 246, 0.3) 100%
-            );
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.35) 0%, rgba(139, 92, 246, 0.3) 100%);
             border-color: rgba(255, 255, 255, 0.35);
-            box-shadow:
-                0 12px 40px rgba(0, 0, 0, 0.4),
-                0 0 60px rgba(99, 102, 241, 0.25),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 60px rgba(99, 102, 241, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }
 
-        .cta-button:hover::before {
-            left: 100%;
-        }
+        .cta-button:hover::before { left: 100%; }
 
         @keyframes buttonReveal {
-            from {
-                opacity: 0;
-                transform: translateY(20px) scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+            from { opacity: 0; transform: translateY(18px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* RIGHT SIDE - SMALLER IMAGE */
+        .hero-image-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-left: 20px;
+            animation: slideInRight 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(50px); filter: blur(8px); }
+            to { opacity: 1; transform: translateX(0); filter: blur(0); }
+        }
+
+        /* Image Container - Smaller size, fits easily in screen */
+        .hero-image-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 420px; /* ← SMALLER SIZE - fits perfectly */
+            aspect-ratio: 3/4;
+            border-radius: 20px;
+            overflow: hidden;
+            /* Subtle floating animation */
+            animation: imageFloat 8s ease-in-out infinite;
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.5),
+                0 0 50px rgba(99, 102, 241, 0.12),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+
+        @keyframes imageFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(0.5deg); }
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            display: block;
+            /* Very subtle zoom effect */
+            animation: imageZoom 25s ease-in-out infinite alternate;
+        }
+
+        @keyframes imageZoom {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+
+        /* Decorative glow behind image */
+        .hero-image-wrapper::before {
+            content: '';
+            position: absolute;
+            inset: -25px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, rgba(139, 92, 246, 0.12) 40%, transparent 70%);
+            border-radius: inherit;
+            filter: blur(35px);
+            z-index: -1;
+            animation: imageGlowPulse 6s ease-in-out infinite;
+        }
+
+        @keyframes imageGlowPulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.04); }
         }
 
         /* Footer Navigation */
         .footer-nav {
             position: relative;
             z-index: 10;
-            padding: 38px 90px;
+            padding: 36px 80px;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            background: linear-gradient(
-                to top,
-                rgba(0, 0, 0, 0.6) 0%,
-                rgba(0, 0, 0, 0.3) 100%
-            );
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.25) 100%);
             border-top: 1px solid rgba(255, 255, 255, 0.08);
             animation: footerFadeIn 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
             animation-delay: 1.7s;
@@ -768,14 +757,8 @@
         }
 
         @keyframes footerFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .footer-links {
@@ -815,51 +798,85 @@
             text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
         }
 
-        .footer-link:hover::after {
-            width: 100%;
-        }
+        .footer-link:hover::after { width: 100%; }
 
         /* ==========================================
-           MOBILE RESPONSIVE DESIGN (< 768px)
+           MOBILE RESPONSIVE (< 968px)
            ========================================== */
-        @media (max-width: 768px) {
-            /* Mobile hero content - centered and spacious */
-            .hero-content {
-                padding: 70px 30px 50px;
-                justify-content: center;
+        @media (max-width: 968px) {
+            /* Stack vertically on mobile */
+            .hero-split-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto;
+                gap: 45px;
+                padding: 50px 30px;
+                min-height: auto;
+            }
+
+            /* TEXT ON TOP - Centered */
+            .hero-text-section {
+                order: 1;
+                padding-right: 0;
                 align-items: center;
                 text-align: center;
+                animation-name: fadeUpMobile;
+            }
+
+            @keyframes fadeUpMobile {
+                from { opacity: 0; transform: translateY(40px); filter: blur(8px); }
+                to { opacity: 1; transform: translateY(0); filter: blur(0); }
             }
 
             .hero-icon {
-                width: 40px;
-                height: 40px;
-                margin-bottom: 26px;
+                width: 42px;
+                height: 42px;
+                margin-bottom: 24px;
             }
 
             .headline-title {
-                font-size: 40px;
-                letter-spacing: -1.5px;
-                margin-bottom: 24px;
+                font-size: 38px;
+                letter-spacing: -1.4px;
+                margin-bottom: 22px;
                 max-width: 100%;
+                text-align: center;
             }
 
             .headline-subtext {
-                font-size: 16.5px;
+                font-size: 16px;
                 line-height: 1.72;
-                margin-bottom: 36px;
+                margin-bottom: 32px;
                 max-width: 100%;
+                text-align: center;
             }
 
             .cta-button {
-                padding: 14px 32px;
-                font-size: 15px;
-                border-radius: 10px;
+                padding: 14px 30px;
+                font-size: 14.5px;
+            }
+
+            /* IMAGE BELOW - Smaller, centered */
+            .hero-image-section {
+                order: 2;
+                padding-left: 0;
+                justify-content: center;
+                animation-name: fadeUpMobile;
+                animation-delay: 0.6s;
+            }
+
+            .hero-image-wrapper {
+                max-width: 340px; /* Even smaller on mobile */
+                aspect-ratio: 3/4;
+                border-radius: 18px;
+            }
+
+            .hero-image-wrapper::before {
+                inset: -20px;
+                filter: blur(28px);
             }
 
             /* Footer adjustments */
             .footer-nav {
-                padding: 32px 30px;
+                padding: 30px 30px;
             }
 
             .footer-links {
@@ -870,7 +887,7 @@
                 font-size: 13px;
             }
 
-            /* Reduce ambient effects on mobile */
+            /* Reduce ambient effects */
             .glow-orb {
                 filter: blur(90px);
                 opacity: 0.35 !important;
@@ -879,44 +896,45 @@
             .particle {
                 display: none;
             }
-
-            /* Slower Ken Burns on mobile */
-            .hero-bg-image {
-                animation-duration: 35s;
-            }
         }
 
-        /* Small mobile phones (< 480px) */
+        /* Small phones (< 480px) */
         @media (max-width: 480px) {
-            .hero-content {
-                padding: 60px 24px 40px;
+            .hero-split-container {
+                padding: 40px 22px 35px;
+                gap: 35px;
             }
 
             .hero-icon {
-                width: 36px;
-                height: 36px;
-                margin-bottom: 22px;
-            }
-
-            .headline-title {
-                font-size: 34px;
-                letter-spacing: -1.2px;
+                width: 38px;
+                height: 38px;
                 margin-bottom: 20px;
             }
 
+            .headline-title {
+                font-size: 32px;
+                letter-spacing: -1.1px;
+                margin-bottom: 18px;
+            }
+
             .headline-subtext {
-                font-size: 15px;
+                font-size: 14.5px;
                 line-height: 1.68;
-                margin-bottom: 32px;
+                margin-bottom: 28px;
             }
 
             .cta-button {
-                padding: 13px 28px;
-                font-size: 14px;
+                padding: 13px 26px;
+                font-size: 13.5px;
+            }
+
+            .hero-image-wrapper {
+                max-width: 280px; /* Compact for small screens */
+                border-radius: 16px;
             }
 
             .footer-nav {
-                padding: 28px 24px;
+                padding: 26px 22px;
             }
 
             .footer-links {
@@ -930,9 +948,7 @@
 
         /* Preloader mobile adjustments */
         @media (max-width: 768px) {
-            .loader-content { 
-                padding: 40px 30px; 
-            }
+            .loader-content { padding: 40px 30px; }
             
             .profile-avatar-wrapper { 
                 width: 90px; 
@@ -951,31 +967,18 @@
                 height: 6px;
             }
             
-            .profile-ring {
-                inset: -3px;
-            }
+            .profile-ring { inset: -3px; }
+            .profile-ring::after { inset: -6px; filter: blur(3px); }
+            .profile-name { font-size: 19px; }
             
-            .profile-ring::after {
-                inset: -6px;
-                filter: blur(3px);
-            }
-            
-            .profile-name { 
-                font-size: 19px; 
-            }
-            
-            .metrics-row { 
-                gap: 12px; 
-            }
-            
-            .metric-value { 
-                font-size: 15px; 
-            }
+            .metrics-row { gap: 12px; }
+            .metric-value { font-size: 15px; }
         }
 
-        /* Reduced motion preference for accessibility */
+        /* Reduced motion preference */
         @media (prefers-reduced-motion: reduce) {
-            .hero-bg-image,
+            .hero-image,
+            .hero-image-wrapper,
             .glow-orb,
             .particle,
             .orb-main,
@@ -986,6 +989,8 @@
                 animation: none !important;
             }
 
+            .hero-text-section,
+            .hero-image-section,
             .hero-icon,
             .headline-title,
             .headline-subtext,
@@ -1022,7 +1027,7 @@
                 <div class="profile-avatar-wrapper">
                     <div class="profile-ring"></div>
                     <div class="profile-avatar">
-                        <img src="assets/profile.webp" alt="Nitish Kumar" class="profile-img-preloader"
+                        <img src="assets/profile.png" alt="Nitish Kumar" class="profile-img-preloader"
                              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                         
                         <!-- Fallback Icon (shows if image not found) -->
@@ -1074,23 +1079,11 @@
     </div>
 
 
-    <!-- ==================== MAIN CONTENT - IMMERSIVE HERO (NO CARDS) ==================== -->
+    <!-- ==================== MAIN CONTENT - SIDE BY SIDE (NO CARDS) ==================== -->
     <main class="main-content" id="mainContent">
         
-        <!-- Full-screen Background Image Layer -->
+        <!-- Dark Gradient Background Only (NO IMAGE BACKGROUND!) -->
         <div class="hero-background">
-            <!-- YOUR HERO IMAGE - Full screen background -->
-            <img src="assets/hero.webp" alt="Hero Background" class="hero-bg-image"
-                 onerror="this.style.display='none'; document.querySelector('.hero-fallback-bg').style.display='flex';">
-            
-            <div class="hero-fallback-bg" style="display: none;"></div>
-            
-            <!-- Very subtle dark overlay for readability -->
-            <div class="hero-overlay"></div>
-            
-            <!-- Minimal glass layer (barely noticeable) -->
-            <div class="hero-glass-layer"></div>
-            
             <!-- Ambient Glow Effects -->
             <div class="hero-ambient-glow">
                 <div class="glow-orb glow-orb-1"></div>
@@ -1111,28 +1104,44 @@
             </div>
         </div>
 
-        <!-- Hero Content - Text floating directly on image (NO CARDS!) -->
-        <div class="hero-content">
+        <!-- SPLIT LAYOUT: Text (Left) + Image (Right) -->
+        <div class="hero-split-container">
             
-            <!-- Optional Icon (like airplane in your example) -->
-            <svg class="hero-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-                <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
-                <line x1="12" y1="22.08" x2="12" y2="12"/>
-            </svg>
+            <!-- LEFT SECTION: Text Content (NO CARD!) -->
+            <div class="hero-text-section">
+                
+                <!-- Icon -->
+                <svg class="hero-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                    <line x1="12" y1="22.08" x2="12" y2="12"/>
+                </svg>
 
-            <!-- Main Headline - Large, bold, no container -->
-            <h1 class="headline-title">Full-stack systems thinking<br>for real-world products</h1>
-            
-            <!-- Description Text -->
-            <p class="headline-subtext">
-                I build software end-to-end — backend architecture, APIs, frontend interfaces, 
-                infrastructure, and deployment. Still early in the journey, but deeply focused 
-                on learning fast, building deliberately, and shipping meaningful products.
-            </p>
+                <!-- Headline - Floating text, no container -->
+                <h1 class="headline-title">Full-stack systems thinking<br>for real-world products</h1>
+                
+                <!-- Subtext -->
+                <p class="headline-subtext">
+                    I build software end-to-end — backend architecture, APIs, frontend interfaces, 
+                    infrastructure, and deployment. Still early in the journey, but deeply focused 
+                    on learning fast, building deliberately, and shipping meaningful products.
+                </p>
 
-            <!-- Call-to-Action Button (Glass style) -->
-            <a href="#portfolio" class="cta-button">View My Work →</a>
+                <!-- CTA Button -->
+                <a href="#portfolio" class="cta-button">View My Work →</a>
+
+            </div>
+
+            <!-- RIGHT SECTION: Smaller Hero Image -->
+            <div class="hero-image-section">
+                
+                <div class="hero-image-wrapper">
+                    <!-- YOUR HERO IMAGE - Contained, smaller size -->
+                    <img src="assets/hero.png" alt="Hero Visual" class="hero-image"
+                         onerror="this.parentElement.style.background='linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #1e1b4b 100%)';">
+                </div>
+
+            </div>
 
         </div>
 
