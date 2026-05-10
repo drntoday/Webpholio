@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #000000;
+            --bg-secondary: #0a0a0c;
+            --bg-elevated: #111114;
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.5);
+            --text-muted: rgba(255, 255, 255, 0.3);
+            --accent: #6366f1;
+            --accent-light: #818cf8;
+            --accent-glow: rgba(99, 102, 241, 0.4);
+            --success: #10b981;
+            --border: rgba(255, 255, 255, 0.06);
+            
+            /* Tech colors */
+            --circuit-color: rgba(99, 102, 241, 0.4);
+            --circuit-glow: rgba(139, 92, 246, 0.6);
+            --data-packet: #00ff88;
+            --soft-white: rgba(255, 255, 255, 0.95);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            color: var(--text-primary);
+        }
+
+        /* ========== PRELOADER ========== */
+        .preloader-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 1.5s;
+        }
+
+        .preloader-container.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .ambient-layer {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+        }
+
+        .gradient-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.4;
+        }
+
+        .orb-main {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.15), transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: orbFloat 8s ease-in-out infinite;
+        }
+
+        .orb-secondary {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.1), transparent 70%);
+            bottom: -100px;
+            right: -80px;
+            animation: orbFloat 8s ease-in-out infinite 4s;
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.15); }
+        }
+
+        .noise-overlay {
+            position: absolute;
+            inset: 0;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+
+        .loader-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            max-width: 440px;
+            padding: 55px 40px;
+        }
+
+        .profile-section {
+            margin-bottom: 45px;
+        }
+
+        .profile-avatar-wrapper {
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 24px;
+            position: relative;
+        }
+
+        .profile-avatar-wrapper::before {
+            content: '';
+            position: absolute;
+            inset: -30px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, rgba(139, 92, 246, 0.08) 35%, transparent 70%);
+            filter: blur(15px);
+            animation: ambientPulse 5s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        .profile-avatar-wrapper::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.4);
+            filter: blur(10px);
+            z-index: -2;
+        }
+
+        @keyframes ambientPulse {
+            0%, 100% { opacity: 0.7; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.08); }
+        }
+
+        .profile-ring {
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(139, 92, 246, 0.08) 100%);
+            padding: 2px;
+            transition: all 0.5s ease;
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.15), inset 0 0 15px rgba(99, 102, 241, 0.05);
+        }
+
+        .profile-ring::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: conic-gradient(from 180deg, transparent 0%, var(--accent) 25%, transparent 50%, var(--accent-light) 75%, transparent 100%);
+            opacity: 0.6;
+            animation: profileRingSpin 6s linear infinite;
+            mask: radial-gradient(farthest-side, transparent calc(100% - 2px), black calc(100% - 1px));
+            -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), black calc(100% - 1px));
+        }
+
+        .profile-ring::after {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, transparent, rgba(99, 102, 241, 0.08), transparent, rgba(139, 92, 246, 0.06), transparent);
+            animation: profileRingSpin 10s linear infinite reverse;
+            opacity: 0.7;
+            filter: blur(4px);
+        }
+
+        @keyframes profileRingSpin {
+            to { transform: rotate(360deg); }
+        }
+
+        .profile-avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            position: relative;
+            background: #0a0a0c;
+            box-shadow: 0 0 40px rgba(99, 102, 241, 0.25), 0 20px 50px -15px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(99, 102, 241, 0.15), 0 0 0 3px rgba(99, 102, 241, 0.05), inset 0 2px 12px rgba(0, 0, 0, 0.4), inset 0 -2px 8px rgba(99, 102, 241, 0.08);
+        }
+
+        .profile-img-preloader {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-fallback-icon {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-light);
+            opacity: 0.7;
+        }
+
+        .profile-fallback-icon svg {
+            width: 46px;
+            height: 46px;
+        }
+
+        .profile-name {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+            opacity: 0;
+            animation: fadeInName 0.8s ease 0.5s forwards;
+        }
+
+        @keyframes fadeInName {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .profile-status {
+            font-size: 12px;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 500;
+            opacity: 0;
+            animation: fadeInStatus 0.8s ease 0.7s forwards;
+        }
+
+        @keyframes fadeInStatus {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .status-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 35px;
+        }
+
+        .progress-container {
+            margin-bottom: 32px;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 14px;
+        }
+
+        .progress-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .progress-number {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 2px;
+            background: var(--border);
+            border-radius: 1px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+            border-radius: 1px;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            background: var(--accent-light);
+            border-radius: 50%;
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+
+        .metrics-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            padding-top: 28px;
+            border-top: 1px solid var(--border);
+        }
+
+        .metric-item {
+            text-align: center;
+        }
+
+        .metric-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .metric-label {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        .metric-dot {
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            margin-top: 8px;
+            transition: all 0.4s ease;
+        }
+
+        .metric-dot.active {
+            background: var(--success);
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+        }
+
+        /* ========== MAIN CONTENT - WITH ALL 3 FEATURES ========== */
+        .main-content {
+            display: none;
+            min-height: 100vh;
+            position: relative;
+            opacity: 0;
+            transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .main-content.visible {
+            display: flex;
+            flex-direction: column;
+            opacity: 1;
+        }
+
+        /* Background */
+        .hero-background {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0a0a0c 0%, #111114 40%, #0f0a1e 70%, #0a0a0c 100%);
+        }
+
+        /* ============================================
+           FEATURE 1: ARCHITECT'S BLUEPRINT REVEAL
+           Circuit lines + Grid + Tech Icons
+           ============================================ */
+        .blueprint-layer {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        /* Circuit SVG Lines */
+        .circuit-svg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .circuit-path {
+            fill: none;
+            stroke: var(--circuit-color);
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            filter: drop-shadow(0 0 8px var(--circuit-glow));
+            animation: drawCircuit 3s ease-out forwards;
+            animation-delay: 1s;
+        }
+
+        .circuit-path-2 {
+            animation-delay: 1.5s;
+        }
+
+        .circuit-path-3 {
+            animation-delay: 2s;
+        }
+
+        @keyframes drawCircuit {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        /* Grid Pattern */
+        .grid-pattern {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(var(--circuit-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--circuit-color) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0;
+            animation: gridReveal 2s ease-out forwards;
+            animation-delay: 0.8s;
+        }
+
+        @keyframes gridReveal {
+            0% { opacity: 0; }
+            100% { opacity: 0.15; }
+        }
+
+        /* Floating Tech Icons */
+        .tech-icon {
+            position: absolute;
+            width: 48px;
+            height: 48px;
+            opacity: 0;
+            transform: scale(0);
+            animation: iconAppear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            filter: drop-shadow(0 0 20px var(--circuit-glow));
+        }
+
+        .tech-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: var(--accent-light);
+        }
+
+        .tech-icon-react {
+            top: 18%;
+            right: 12%;
+            animation-delay: 2.2s;
+        }
+
+        .tech-icon-ai {
+            top: 45%;
+            left: 8%;
+            animation-delay: 2.5s;
+        }
+
+        .tech-icon-cloud {
+            bottom: 32%;
+            right: 8%;
+            animation-delay: 2.8s;
+        }
+
+        @keyframes iconAppear {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Icon pulse after appearing */
+        .tech-icon::after {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--circuit-glow), transparent 70%);
+            opacity: 0;
+            animation: iconPulse 2s ease-in-out infinite;
+            animation-delay: 3.2s;
+        }
+
+        @keyframes iconPulse {
+            0%, 100% { opacity: 0; transform: scale(0.8); }
+            50% { opacity: 0.6; transform: scale(1.2); }
+        }
+
+        /* Ambient glow effects */
+        .hero-ambient-glow {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0;
+            animation: gentleGlowPulse 12s ease-in-out infinite;
+        }
+
+        .glow-orb-1 {
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.15), transparent 70%);
+            top: -250px;
+            left: -200px;
+            animation-delay: 0s;
+        }
+
+        .glow-orb-2 {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.12), transparent 70%);
+            bottom: -200px;
+            right: -150px;
+            animation-delay: 4s;
+        }
+
+        .glow-orb-3 {
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(251, 146, 60, 0.08), transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: 8s;
+        }
+
+        @keyframes gentleGlowPulse {
+            0%, 100% { opacity: 0; transform: scale(0.95); }
+            50% { opacity: 0.55; transform: scale(1.08); }
+        }
+
+        /* HERO CONTAINER */
+        .hero-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 30px;
+            position: relative;
+            z-index: 10;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            gap: 28px;
+        }
+
+        /* ============================================
+           FEATURE 2: STAGGERED STACK ENTRANCE
+           Backend → AI Logic → Frontend
+           ============================================ */
+
+        /* Part 1: Backend (Sub-headline) - Slides up with blur */
+        .hero-subtext-section {
+            width: 100%;
+            text-align: left;
+            order: 3; /* Appears first visually but positioned below */
+            opacity: 0;
+            animation: backendSlideUp 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation-delay: 1.2s;
+        }
+
+        @keyframes backendSlideUp {
+            0% {
+                opacity: 0;
+                transform: translateY(60px);
+                filter: blur(12px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+                filter: blur(0);
+            }
+        }
+
+        /* Terminal typing effect for subtext */
+        .headline-subtext {
+            font-size: 16px;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.82);
+            font-weight: 300;
+            margin: 0 0 24px 0;
+            max-width: 650px;
+            text-shadow: 0 1px 15px rgba(0, 0, 0, 0.3);
+            font-family: 'Fira Code', monospace; /* Terminal font */
+            overflow: hidden;
+            border-right: 2px solid var(--accent-light);
+            white-space: nowrap;
+            animation: 
+                typing 2s steps(120, end) forwards,
+                blink 0.75s step-end infinite;
+            animation-delay: 1.8s, 3.8s;
+            width: 0;
+            max-width: 650px;
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 650px; }
+        }
+
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
+
+        /* After typing completes, show full text normally */
+        .headline-subtext.typed {
+            border-right: none;
+            white-space: normal;
+            width: auto;
+            animation: none;
+        }
+
+        /* Part 2: Image - Center piece */
+        .hero-image-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            order: 2;
+            opacity: 0;
+            animation: imageReveal 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation-delay: 2.5s;
+        }
+
+        @keyframes imageReveal {
+            0% {
+                opacity: 0;
+                transform: scale(0.9) rotate(-2deg);
+                filter: blur(10px);
+            }
+            60% {
+                transform: scale(1.02) rotate(0.5deg);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0);
+                filter: blur(0);
+            }
+        }
+
+        .hero-image {
+            width: 100%;
+            max-width: 480px;
+            height: auto;
+            display: block;
+            animation: imageFloat 8s ease-in-out infinite;
+            animation-delay: 3.5s;
+        }
+
+        @keyframes imageFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Part 3: Frontend (Main Headline) - Springy bounce drop */
+        .hero-title-section {
+            text-align: center;
+            width: 100%;
+            order: 1; /* On top */
+            opacity: 0;
+            animation: frontendBounceDrop 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+            animation-delay: 3s;
+        }
+
+        @keyframes frontendBounceDrop {
+            0% {
+                opacity: 0;
+                transform: translateY(-80px) scale(0.8);
+                filter: blur(8px);
+            }
+            60% {
+                opacity: 1;
+                transform: translateY(10px) scale(1.02);
+                filter: blur(0);
+            }
+            80% {
+                transform: translateY(-5px) scale(0.98);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+        }
+
+        .headline-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 42px;
+            font-weight: 700;
+            line-height: 1.15;
+            letter-spacing: -1.4px;
+            color: var(--soft-white);
+            margin: 0;
+            text-shadow: 0 2px 30px rgba(0, 0, 0, 0.4), 0 0 60px var(--accent-glow);
+        }
+
+        /* Footer - THIN & FIXED AT BOTTOM - SOCIAL ICONS ONLY */
+        .footer-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            width: 100%;
+            padding: 14px 30px; /* THIN FOOTER */
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.85) 100%);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            animation: footerFadeIn 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+            animation-delay: 4.2s;
+            opacity: 0;
+        }
+
+        @keyframes footerFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .footer-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Social Media Icons Container - CENTERED */
+        .social-icons {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .social-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.55);
+            text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .social-icon svg {
+            width: 18px;
+            height: 18px;
+            transition: all 0.4s ease;
+        }
+
+        .social-icon:hover {
+            transform: translateY(-2px) scale(1.05);
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 0 15px var(--accent-glow);
+            background: rgba(99, 102, 241, 0.12);
+        }
+
+        .social-icon:hover svg {
+            filter: drop-shadow(0 0 6px currentColor);
+        }
+
+        /* Individual Social Icon Hover Colors */
+        .social-icon.github:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+
+        .social-icon.twitter:hover {
+            background: rgba(29, 161, 242, 0.12);
+            border-color: rgba(29, 161, 242, 0.35);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(29, 161, 242, 0.25);
+            color: #1da1f2;
+        }
+
+        .social-icon.facebook:hover {
+            background: rgba(66, 103, 178, 0.12);
+            border-color: rgba(66, 103, 178, 0.35);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(66, 103, 178, 0.25);
+            color: #4267b2;
+        }
+
+        .social-icon.instagram:hover {
+            background: rgba(225, 48, 108, 0.12);
+            border-color: rgba(225, 48, 108, 0.35);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(225, 48, 108, 0.25);
+            color: #e1306c;
+        }
+
+        .social-icon.linkedin:hover {
+            background: rgba(0, 119, 181, 0.12);
+            border-color: rgba(0, 119, 181, 0.35);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 119, 181, 0.25);
+            color: #0077b5;
+        }
+
+        .social-icon.whatsapp:hover {
+            background: rgba(37, 211, 102, 0.12);
+            border-color: rgba(37, 211, 102, 0.35);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(37, 211, 102, 0.25);
+            color: #25d366;
+        }
+
+        /* Responsive Design */
+        @media (min-width: 769px) {
+            .hero-container {
+                padding: 50px 60px;
+                gap: 32px;
+            }
+
+            .headline-title { font-size: 42px; }
+            .hero-image { max-width: 480px; }
+            .headline-subtext { font-size: 16px; max-width: 650px; }
+            
+            .footer-nav { 
+                padding: 16px 50px;
+            }
+            .social-icons { 
+                gap: 13px; 
+            }
+            .social-icon { 
+                width: 38px; 
+                height: 38px; 
+                border-radius: 10px;
+            }
+            .social-icon svg { 
+                width: 19px; 
+                height: 19px; 
+            }
+            
+            .tech-icon { width: 56px; height: 56px; }
+        }
+
+        @media (max-width: 768px) {
+            .hero-container {
+                padding: 35px 24px;
+                gap: 24px;
+            }
+
+            .headline-title { font-size: 32px; letter-spacing: -1.1px; }
+            .hero-image { max-width: 420px; }
+            .headline-subtext { 
+                font-size: 14.5px; 
+                line-height: 1.68; 
+                margin-bottom: 20px; 
+                max-width: 100%;
+                animation: typingMobile 2s steps(80, end) forwards;
+            }
+            
+            @keyframes typingMobile {
+                from { width: 0; }
+                to { width: 100%; }
+            }
+
+            .footer-nav { 
+                padding: 12px 20px;
+            }
+            .social-icons { 
+                gap: 10px; 
+            }
+            .social-icon { 
+                width: 34px; 
+                height: 34px; 
+                border-radius: 8px;
+            }
+            .social-icon svg { 
+                width: 17px; 
+                height: 17px; 
+            }
+            
+            .tech-icon { width: 40px; height: 40px; }
+            .grid-pattern { background-size: 40px 40px; }
+            
+            .glow-orb { filter: blur(90px); opacity: 0.35 !important; }
+        }
+
+        @media (max-width: 480px) {
+            .hero-container { padding: 30px 18px; gap: 20px; }
+            .headline-title { font-size: 26px; letter-spacing: -0.9px; }
+            .hero-image { max-width: 340px; }
+            .headline-subtext { font-size: 13.5px; line-height: 1.65; margin-bottom: 18px; }
+            
+            .footer-nav { 
+                padding: 10px 16px;
+            }
+            .social-icons { 
+                gap: 8px; 
+            }
+            .social-icon { 
+                width: 32px; 
+                height: 32px; 
+                border-radius: 8px;
+            }
+            .social-icon svg { 
+                width: 16px; 
+                height: 16px; 
+            }
+            
+            .tech-icon { width: 36px; height: 36px; }
+            .grid-pattern { background-size: 30px 30px; }
+        }
+
+        /* Preloader mobile adjustments */
+        @media (max-width: 768px) {
+            .loader-content { padding: 40px 30px; }
+            .profile-avatar-wrapper { width: 90px; height: 90px; margin-bottom: 20px; }
+            .profile-avatar-wrapper::before { inset: -24px; filter: blur(12px); }
+            .profile-avatar-wrapper::after { bottom: -10px; width: 75%; height: 6px; }
+            .profile-ring { inset: -3px; }
+            .profile-ring::after { inset: -6px; filter: blur(3px); }
+            .profile-name { font-size: 19px; }
+            .metrics-row { gap: 12px; }
+            .metric-value { font-size: 15px; }
+        }
+
+        /* Reduced motion preference */
+        @media (prefers-reduced-motion: reduce) {
+            .hero-image,
+            .circuit-path,
+            .grid-pattern,
+            .tech-icon,
+            .glow-orb,
+            .orb-main,
+            .orb-secondary,
+            .profile-ring::before,
+            .profile-ring::after,
+            .profile-avatar-wrapper::before,
+            .data-packet {
+                animation: none !important;
+            }
+
+            .hero-title-section,
+            .hero-image-section,
+            .hero-subtext-section,
+            .headline-title,
+            .headline-subtext,
+            .cta-button,
+            .footer-nav {
+                animation-duration: 0.01ms !important;
+                animation-delay: 0ms !important;
+                opacity: 1 !important;
+                transform: none !important;
+                filter: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== PRELOADER ==================== -->
+    <div class="preloader-container" id="preloader">
+        <div class="ambient-layer">
+            <div class="gradient-orb orb-main"></div>
+            <div class="gradient-orb orb-secondary"></div>
+            <div class="noise-overlay"></div>
+        </div>
+        <div class="loader-content">
+            <div class="profile-section">
+                <div class="profile-avatar-wrapper">
+                    <div class="profile-ring"></div>
+                    <div class="profile-avatar">
+                        <img src="assets/profile.webp" alt="Nitish Kumar" class="profile-img-preloader"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="profile-fallback-icon" style="display: none;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                                <circle cx="12" cy="7" r="4"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <h2 class="profile-name">Nitish Kumar</h2>
+                <p class="profile-status">Initializing System</p>
+            </div>
+            <div class="progress-container">
+                <div class="progress-info">
+                    <span class="progress-label" id="labelText">Loading</span>
+                    <span class="progress-number" id="numberValue">0</span>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" id="fillBar"></div>
+                </div>
+            </div>
+            <div class="metrics-row">
+                <div class="metric-item">
+                    <div class="metric-value" id="met1">--</div>
+                    <div class="metric-label">Core</div>
+                    <div class="metric-dot" id="dot1"></div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-value" id="met2">--</div>
+                    <div class="metric-label">Data</div>
+                    <div class="metric-dot" id="dot2"></div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-value" id="met3">--</div>
+                    <div class="metric-label">System</div>
+                    <div class="metric-dot" id="dot3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==================== MAIN CONTENT - WITH ALL 3 FEATURES ==================== -->
+    <main class="main-content" id="mainContent">
+        
+        <!-- Background -->
+        <div class="hero-background">
+            
+            <!-- FEATURE 1: Architect's Blueprint Layer -->
+            <div class="blueprint-layer">
+                
+                <!-- Grid Pattern -->
+                <div class="grid-pattern"></div>
+                
+                <!-- Circuit Lines SVG -->
+                <svg class="circuit-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+                    <!-- Main circuit path from headline area to image -->
+                    <path class="circuit-path circuit-path-1" d="M 960 150 L 960 280 Q 960 320 920 320 L 750 320"/>
+                    
+                    <!-- Secondary path to React icon -->
+                    <path class="circuit-path circuit-path-2" d="M 1100 220 L 1350 220 Q 1400 220 1420 260"/>
+                    
+                    <!-- Tertiary path to AI brain -->
+                    <path class="circuit-path circuit-path-3" d="M 820 220 L 550 220 Q 500 220 480 270"/>
+                    
+                    <!-- Connection to cloud -->
+                    <path class="circuit-path circuit-path-2" d="M 1050 520 L 1400 520 Q 1450 520 1470 560"/>
+                    
+                    <!-- Inner circuit mesh -->
+                    <path class="circuit-path circuit-path-3" d="M 850 420 L 700 420 Q 650 420 630 470"/>
+                </svg>
+                
+                <!-- Floating Tech Icons -->
+                <!-- React Logo -->
+                <div class="tech-icon tech-icon-react">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="2" fill="currentColor"/>
+                        <ellipse cx="12" cy="12" rx="10" ry="4" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <ellipse cx="12" cy="12" rx="10" ry="4" stroke="currentColor" stroke-width="1.5" fill="none" transform="rotate(60 12 12)"/>
+                        <ellipse cx="12" cy="12" rx="10" ry="4" stroke="currentColor" stroke-width="1.5" fill="none" transform="rotate(120 12 12)"/>
+                    </svg>
+                </div>
+                
+                <!-- AI Brain Icon -->
+                <div class="tech-icon tech-icon-ai">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" fill="currentColor" opacity="0.3"/>
+                        <path d="M12 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" fill="currentColor"/>
+                        <circle cx="12" cy="8" r="1.5" fill="currentColor"/>
+                        <circle cx="12" cy="16" r="1.5" fill="currentColor"/>
+                        <path d="M9 12h6M12 9v6" stroke="currentColor" stroke-width="1.5"/>
+                    </svg>
+                </div>
+                
+                <!-- Cloud Server Icon -->
+                <div class="tech-icon tech-icon-cloud">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z" fill="currentColor"/>
+                        <rect x="8" y="14" width="8" height="6" rx="1" fill="currentColor" opacity="0.5"/>
+                        <line x1="10" y1="17" x2="14" y2="17" stroke="#000" stroke-width="1"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <!-- Ambient Glows -->
+            <div class="hero-ambient-glow">
+                <div class="glow-orb glow-orb-1"></div>
+                <div class="glow-orb glow-orb-2"></div>
+                <div class="glow-orb glow-orb-3"></div>
+            </div>
+        </div>
+
+        <!-- Hero Container - Staggered Stack Layout -->
+        <div class="hero-container">
+            
+            <!-- PART 3: Frontend (Headline) - Drops in LAST with bounce -->
+            <section class="hero-title-section">
+                <h1 class="headline-title">Full-stack systems thinking<br>for real-world products</h1>
+            </section>
+
+            <!-- PART 2: Image - Center piece -->
+            <section class="hero-image-section">
+                <img src="assets/hero.webp" alt="Hero Visual" class="hero-image"
+                     onerror="this.style.display='none';">
+            </section>
+
+            <!-- PART 1: Backend (Sub-headline) - Slides up FIRST with blur + typing -->
+            <section class="hero-subtext-section">
+                <p class="headline-subtext" id="subtext">
+                    I build software end-to-end — backend architecture, APIs, frontend interfaces, 
+                    infrastructure, and deployment. Still early in the journey, but deeply focused 
+                    on learning fast, building deliberately, and shipping meaningful products.
+                </p>
+            </section>
+
+        </div>
+
+        <!-- Footer - Thin Fixed at Bottom - SOCIAL ICONS ONLY -->
+        <footer class="footer-nav">
+            <div class="footer-content">
+                
+                <!-- Social Media Icons Only -->
+                <div class="social-icons">
+                    <!-- GitHub -->
+                    <a href="https://github.com/" target="_blank" rel="noopener noreferrer" class="social-icon github" aria-label="GitHub">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                    </a>
+
+                    <!-- X (Twitter) -->
+                    <a href="https://twitter.com/" target="_blank" rel="noopener noreferrer" class="social-icon twitter" aria-label="X (Twitter)">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                        </svg>
+                    </a>
+
+                    <!-- Facebook -->
+                    <a href="https://facebook.com/" target="_blank" rel="noopener noreferrer" class="social-icon facebook" aria-label="Facebook">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                        </svg>
+                    </a>
+
+                    <!-- Instagram -->
+                    <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" class="social-icon instagram" aria-label="Instagram">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+                        </svg>
+                    </a>
+
+                    <!-- LinkedIn -->
+                    <a href="https://linkedin.com/" target="_blank" rel="noopener noreferrer" class="social-icon linkedin" aria-label="LinkedIn">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                        </svg>
+                    </a>
+
+                    <!-- WhatsApp -->
+                    <a href="https://wa.me/" target="_blank" rel="noopener noreferrer" class="social-icon whatsapp" aria-label="WhatsApp">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </footer>
+
+    </main>
+
+
+    <!-- ==================== JAVASCRIPT ==================== -->
+    <script>
+
+        // Preloader Logic
+        const config = {
+            labels: ['Loading', 'Preparing', 'Processing', 'Finalizing', 'Complete'],
+            metricValues: [
+                ['--', 'OK', 'RDY'],
+                ['--', 'SYNC', 'DONE'],
+                ['--', 'ACT', 'ON']
+            ],
+            dotPoints: [20, 45, 75],
+            duration: 4200
+        };
+
+        let progress = 0;
+        let interval = null;
+
+        function start() {
+            const startTime = Date.now();
+            
+            interval = setInterval(() => {
+                const elapsed = Date.now() - startTime;
+                const target = Math.min((elapsed / config.duration) * 100, 100);
+                
+                progress += (target - progress) * 0.07;
+                
+                if (progress >= 99.5) {
+                    progress = 100;
+                    finish();
+                }
+                
+                render(progress);
+                
+            }, 24);
+        }
+
+        function render(val) {
+            document.getElementById('fillBar').style.width = `${val}%`;
+            document.getElementById('numberValue').textContent = Math.floor(val);
+            
+            const labels = config.labels;
+            const lbl = document.getElementById('labelText');
+            if (val < 20) lbl.textContent = labels[0];
+            else if (val < 42) lbl.textContent = labels[1];
+            else if (val < 68) lbl.textContent = labels[2];
+            else if (val < 88) lbl.textContent = labels[3];
+            else lbl.textContent = labels[4];
+
+            const points = config.dotPoints;
+            const vals = config.metricValues;
+            
+            for (let i = 1; i <= 3; i++) {
+                const metEl = document.getElementById(`met${i}`);
+                const dotEl = document.getElementById(`dot${i}`);
+                const point = points[i - 1];
+                const valueArr = vals[i - 1];
+                
+                if (val >= point + 20) {
+                    metEl.textContent = valueArr[2];
+                    dotEl.classList.add('active');
+                } else if (val >= point) {
+                    metEl.textContent = valueArr[1];
+                } else {
+                    metEl.textContent = valueArr[0];
+                    dotEl.classList.remove('active');
+                }
+            }
+        }
+
+        function finish() {
+            clearInterval(interval);
+            render(100);
+            
+            setTimeout(() => {
+                document.getElementById('preloader').classList.add('hidden');
+                document.getElementById('mainContent').classList.add('visible');
+                
+                // Start typing effect after main content visible
+                setTimeout(() => {
+                    const subtext = document.getElementById('subtext');
+                    subtext.classList.add('typed');
+                }, 4000); // After typing animation completes
+                
+            }, 700);
+        }
+
+        function restart() {
+            progress = 0;
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById(`dot${i}`).classList.remove('active');
+            }
+            document.getElementById('preloader').classList.remove('hidden');
+            document.getElementById('mainContent').classList.remove('visible');
+            setTimeout(start, 200);
+        }
+
+        window.addEventListener('load', start);
+
+    </script>
+
+</body>
+</html>
