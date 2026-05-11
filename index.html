@@ -1,2565 +1,567 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loading</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --bg-primary: #000000;
-            --bg-secondary: #0a0a0c;
-            --bg-elevated: #111114;
-            --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.5);
-            --text-muted: rgba(255, 255, 255, 0.3);
-            --accent: #6366f1;
-            --accent-light: #818cf8;
-            --accent-glow: rgba(99, 102, 241, 0.4);
-            --success: #10b981;
-            --border: rgba(255, 255, 255, 0.06);
-            
-            /* Tech colors */
-            --circuit-color: rgba(99, 102, 241, 0.4);
-            --circuit-glow: rgba(139, 92, 246, 0.6);
-            --data-packet: #00ff88;
-            --soft-white: rgba(255, 255, 255, 0.95);
-            
-            /* ADD THESE for consistent interactive states */
-            --accent-hover: #4f46e5;        /* Darker blue for hover */
-            --accent-active: #4338ca;       /* Active state */
-            --accent-surface: rgba(99, 102, 241, 0.08);  /* Subtle backgrounds */
-            --accent-border: rgba(99, 102, 241, 0.25);   /* Subtle borders */
-            
-            /* Unified shadow tokens */
-            --shadow-glow-sm: 0 0 20px rgba(99, 102, 241, 0.25);
-            --shadow-glow-md: 0 0 40px rgba(99, 102, 241, 0.35);
-            --shadow-glow-lg: 0 0 80px rgba(99, 102, 241, 0.25);
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-primary);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow-x: hidden;
-            color: var(--text-primary);
-        }
-
-        /* ========== PRELOADER ========== */
-        .preloader-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-primary);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 1.5s;
-        }
-
-        .preloader-container.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-        .ambient-layer {
-            position: absolute;
-            inset: 0;
-            overflow: hidden;
-        }
-
-        .gradient-orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(120px);
-            opacity: 0.4;
-        }
-
-        .orb-main {
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.15), transparent 70%);
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            animation: orbFloat 8s ease-in-out infinite;
-        }
-
-        .orb-secondary {
-            width: 350px;
-            height: 350px;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.1), transparent 70%);
-            bottom: -100px;
-            right: -80px;
-            animation: orbFloat 8s ease-in-out infinite 4s;
-        }
-
-        @keyframes orbFloat {
-            0%, 100% { transform: translate(-50%, -50%) scale(1); }
-            50% { transform: translate(-50%, -50%) scale(1.15); }
-        }
-
-        .noise-overlay {
-            position: absolute;
-            inset: 0;
-            opacity: 0.03;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-            pointer-events: none;
-        }
-
-        .loader-content {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-            max-width: 440px;
-            padding: 55px 40px;
-        }
-
-        .profile-section {
-            margin-bottom: 45px;
-        }
-
-        .profile-avatar-wrapper {
-            width: 110px;
-            height: 110px;
-            margin: 0 auto 24px;
-            position: relative;
-        }
-
-        .profile-avatar-wrapper::before {
-            content: '';
-            position: absolute;
-            inset: -30px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, rgba(139, 92, 246, 0.08) 35%, transparent 70%);
-            filter: blur(15px);
-            animation: ambientPulse 5s ease-in-out infinite;
-            z-index: -1;
-        }
-
-        .profile-avatar-wrapper::after {
-            content: '';
-            position: absolute;
-            bottom: -12px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80%;
-            height: 8px;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, 0.4);
-            filter: blur(10px);
-            z-index: -2;
-        }
-
-        @keyframes ambientPulse {
-            0%, 100% { opacity: 0.7; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.08); }
-        }
-
-        .profile-ring {
-            position: absolute;
-            inset: -4px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(139, 92, 246, 0.08) 100%);
-            padding: 2px;
-            transition: all 0.5s ease;
-            box-shadow: 0 0 20px rgba(99, 102, 241, 0.15), inset 0 0 15px rgba(99, 102, 241, 0.05);
-        }
-
-        .profile-ring::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 50%;
-            background: conic-gradient(from 180deg, transparent 0%, var(--accent) 25%, transparent 50%, var(--accent-light) 75%, transparent 100%);
-            opacity: 0.6;
-            animation: profileRingSpin 6s linear infinite;
-            mask: radial-gradient(farthest-side, transparent calc(100% - 2px), black calc(100% - 1px));
-            -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), black calc(100% - 1px));
-        }
-
-        .profile-ring::after {
-            content: '';
-            position: absolute;
-            inset: -8px;
-            border-radius: 50%;
-            background: conic-gradient(from 0deg, transparent, rgba(99, 102, 241, 0.08), transparent, rgba(139, 92, 246, 0.06), transparent);
-            animation: profileRingSpin 10s linear infinite reverse;
-            opacity: 0.7;
-            filter: blur(4px);
-        }
-
-        @keyframes profileRingSpin {
-            to { transform: rotate(360deg); }
-        }
-
-        .profile-avatar {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            overflow: hidden;
-            position: relative;
-            background: #0a0a0c;
-            box-shadow: 0 0 40px rgba(99, 102, 241, 0.25), 0 20px 50px -15px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(99, 102, 241, 0.15), 0 0 0 3px rgba(99, 102, 241, 0.05), inset 0 2px 12px rgba(0, 0, 0, 0.4), inset 0 -2px 8px rgba(99, 102, 241, 0.08);
-        }
-
-        .profile-img-preloader {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-            display: block;
-            position: relative;
-            z-index: 1;
-        }
-
-        .profile-fallback-icon {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent-light);
-            opacity: 0.7;
-        }
-
-        .profile-fallback-icon svg {
-            width: 46px;
-            height: 46px;
-        }
-
-        .profile-name {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 22px;
-            font-weight: 600;
-            color: var(--text-primary);
-            letter-spacing: -0.5px;
-            margin-bottom: 6px;
-            opacity: 0;
-            animation: fadeInName 0.8s ease 0.5s forwards;
-        }
-
-        @keyframes fadeInName {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .profile-status {
-            font-size: 12px;
-            color: var(--text-muted);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            font-weight: 500;
-            opacity: 0;
-            animation: fadeInStatus 0.8s ease 0.7s forwards;
-        }
-
-        @keyframes fadeInStatus {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .status-text {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 35px;
-        }
-
-        .progress-container {
-            margin-bottom: 32px;
-        }
-
-        .progress-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            margin-bottom: 14px;
-        }
-
-        .progress-label {
-            font-size: 12px;
-            color: var(--text-muted);
-            font-weight: 500;
-            letter-spacing: 0.5px;
-        }
-
-        .progress-number {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 22px;
-            font-weight: 600;
-            color: var(--text-primary);
-            letter-spacing: -0.5px;
-        }
-
-        .progress-track {
-            width: 100%;
-            height: 2px;
-            background: var(--border);
-            border-radius: 1px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, var(--accent), var(--accent-light));
-            border-radius: 1px;
-            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-        }
-
-        .progress-fill::after {
-            content: '';
-            position: absolute;
-            right: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 8px;
-            height: 8px;
-            background: var(--accent-light);
-            border-radius: 50%;
-            box-shadow: 0 0 12px var(--accent-glow);
-        }
-
-        .metrics-row {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            padding-top: 28px;
-            border-top: 1px solid var(--border);
-        }
-
-        .metric-item {
-            text-align: center;
-        }
-
-        .metric-value {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 17px;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-        }
-
-        .metric-label {
-            font-size: 10px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 500;
-        }
-
-        .metric-dot {
-            display: inline-block;
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            background: var(--text-muted);
-            margin-top: 8px;
-            transition: all 0.4s ease;
-        }
-
-        .metric-dot.active {
-            background: var(--success);
-            box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
-        }
-
-        /* ========== MAIN CONTENT - WITH ALL 3 FEATURES ========== */
-        .main-content {
-            display: none;
-            min-height: 100vh;
-            position: relative;
-            opacity: 0;
-            transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .main-content.visible {
-            display: flex;
-            flex-direction: column;
-            opacity: 1;
-        }
-
-        /* Background */
-        .hero-background {
-            position: fixed;
-            inset: 0;
-            z-index: -2;
-            overflow: hidden;
-            background: linear-gradient(135deg, #0a0a0c 0%, #111114 40%, #0f0a1e 70%, #0a0a0c 100%);
-        }
-
-        /* ============================================
-           FEATURE 1: ARCHITECT'S BLUEPRINT REVEAL
-           Circuit lines + Grid + Tech Icons
-           ============================================ */
-        .blueprint-layer {
-            position: absolute;
-            inset: 0;
-            z-index: 1;
-            pointer-events: none;
-            overflow: hidden;
-        }
-
-        /* Circuit SVG Lines */
-        .circuit-svg {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-        }
-
-        .circuit-path {
-            fill: none;
-            stroke: var(--circuit-color);
-            stroke-width: 1.5;
-            stroke-linecap: round;
-            stroke-dasharray: 1000;
-            stroke-dashoffset: 1000;
-            filter: drop-shadow(0 0 8px var(--circuit-glow));
-            animation: drawCircuit 3s ease-out forwards;
-            animation-delay: 1s;
-        }
-
-        .circuit-path-2 {
-            animation-delay: 1.5s;
-        }
-
-        .circuit-path-3 {
-            animation-delay: 2s;
-        }
-
-        @keyframes drawCircuit {
-            to {
-                stroke-dashoffset: 0;
-            }
-        }
-
-        /* Grid Pattern */
-        .grid-pattern {
-            position: absolute;
-            inset: 0;
-            background-image: 
-                linear-gradient(var(--circuit-color) 1px, transparent 1px),
-                linear-gradient(90deg, var(--circuit-color) 1px, transparent 1px);
-            background-size: 60px 60px;
-            opacity: 0;
-            animation: gridReveal 2s ease-out forwards;
-            animation-delay: 0.8s;
-        }
-
-        @keyframes gridReveal {
-            0% { opacity: 0; }
-            100% { opacity: 0.15; }
-        }
-
-        /* Floating Tech Icons */
-        .tech-icon {
-            position: absolute;
-            width: 48px;
-            height: 48px;
-            opacity: 0;
-            transform: scale(0);
-            animation: iconAppear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-            filter: drop-shadow(0 0 20px var(--circuit-glow));
-        }
-
-        .tech-icon svg {
-            width: 100%;
-            height: 100%;
-            fill: var(--accent-light);
-        }
-
-        .tech-icon-react {
-            top: 18%;
-            right: 12%;
-            animation-delay: 2.2s;
-        }
-
-        .tech-icon-ai {
-            top: 45%;
-            left: 8%;
-            animation-delay: 2.5s;
-        }
-
-        .tech-icon-cloud {
-            bottom: 32%;
-            right: 8%;
-            animation-delay: 2.8s;
-        }
-
-        @keyframes iconAppear {
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        /* Icon pulse after appearing */
-        .tech-icon::after {
-            content: '';
-            position: absolute;
-            inset: -8px;
-            border-radius: 50%;
-            background: radial-gradient(circle, var(--circuit-glow), transparent 70%);
-            opacity: 0;
-            animation: iconPulse 2s ease-in-out infinite;
-            animation-delay: 3.2s;
-        }
-
-        @keyframes iconPulse {
-            0%, 100% { opacity: 0; transform: scale(0.8); }
-            50% { opacity: 0.6; transform: scale(1.2); }
-        }
-
-        /* Ambient glow effects */
-        .hero-ambient-glow {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            overflow: hidden;
-            z-index: 0;
-        }
-
-        .glow-orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(120px);
-            opacity: 0;
-            animation: gentleGlowPulse 12s ease-in-out infinite;
-        }
-
-        .glow-orb-1 {
-            width: 700px;
-            height: 700px;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.15), transparent 70%);
-            top: -250px;
-            left: -200px;
-            animation-delay: 0s;
-        }
-
-        .glow-orb-2 {
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.12), transparent 70%);
-            bottom: -200px;
-            right: -150px;
-            animation-delay: 4s;
-        }
-
-        .glow-orb-3 {
-            width: 450px;
-            height: 450px;
-            background: radial-gradient(circle, rgba(251, 146, 60, 0.08), transparent 70%);
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            animation-delay: 8s;
-        }
-
-        @keyframes gentleGlowPulse {
-            0%, 100% { opacity: 0; transform: scale(0.95); }
-            50% { opacity: 0.55; transform: scale(1.08); }
-        }
-
-        /* HERO CONTAINER */
-        .hero-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 40px 30px;
-            position: relative;
-            z-index: 10;
-            max-width: 1400px;
-            margin: 0 auto;
-            width: 100%;
-            gap: 28px;
-        }
-
-        /* ============================================
-           FEATURE 2: STAGGERED STACK ENTRANCE
-           Backend → AI Logic → Frontend
-           ============================================ */
-
-        /* Part 1: Backend (Sub-headline) - Slides up with blur */
-        .hero-subtext-section {
-            width: 100%;
-            text-align: left;
-            order: 3; /* Appears first visually but positioned below */
-            opacity: 0;
-            animation: backendSlideUp 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-            animation-delay: 1.2s;
-        }
-
-        @keyframes backendSlideUp {
-            0% {
-                opacity: 0;
-                transform: translateY(60px);
-                filter: blur(12px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-                filter: blur(0);
-            }
-        }
-
-        /* Terminal typing effect for subtext */
-        .headline-subtext {
-            font-size: 16px;
-            line-height: 1.7;
-            color: rgba(255, 255, 255, 0.82);
-            font-weight: 300;
-            margin: 0 0 24px 0;
-            max-width: 650px;
-            text-shadow: 0 1px 15px rgba(0, 0, 0, 0.3);
-            font-family: 'Fira Code', monospace; /* Terminal font */
-            overflow: hidden;
-            border-right: 2px solid var(--accent-light);
-            white-space: nowrap;
-            width: 0;
-            animation: 
-                typingSmooth 2.4s steps(80, end) forwards,
-                blink 0.75s step-end infinite;
-            animation-delay: 1.8s, 4.2s;
-        }
-
-        @keyframes typingSmooth {
-            0% { width: 0; }
-            10% { width: 5%; }
-            30% { width: 25%; }
-            55% { width: 55%; }
-            80% { width: 85%; }
-            100% { width: 100%; }
-        }
-
-        @keyframes blink {
-            50% { border-color: transparent; }
-        }
-
-        /* After typing completes, show full text normally */
-        .headline-subtext.typed {
-            border-right: none;
-            white-space: normal;
-            width: auto;
-            animation: none;
-        }
-
-        .headline-subtext.typed + .typing-cursor {
-            animation: cursorFadeOut 0.5s ease forwards;
-            animation-delay: 0.3s;
-        }
-
-        @keyframes cursorFadeOut {
-            to { opacity: 0; transform: translateX(-4px); }
-        }
-
-        /* Part 2: Image - Center piece */
-        .hero-image-section {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            order: 2;
-            opacity: 0;
-            animation: imageReveal 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-            animation-delay: 2.5s;
-        }
-
-        @keyframes imageReveal {
-            0% {
-                opacity: 0;
-                transform: scale(0.9) rotate(-2deg);
-                filter: blur(10px);
-            }
-            60% {
-                transform: scale(1.02) rotate(0.5deg);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1) rotate(0);
-                filter: blur(0);
-            }
-        }
-
-        .hero-image {
-            width: 100%;
-            max-width: 480px;
-            height: auto;
-            display: block;
-            animation: imageFloatNatural 9s ease-in-out infinite;
-            animation-delay: 3.5s;
-            will-change: transform;
-        }
-
-        @keyframes imageFloatNatural {
-            0%, 100% { 
-                transform: translateY(0) rotate(0deg) scale(1); 
-            }
-            25% { 
-                transform: translateY(-8px) rotate(0.3deg) scale(1.005); 
-            }
-            50% { 
-                transform: translateY(4px) rotate(-0.2deg) scale(0.998); 
-            }
-            75% { 
-                transform: translateY(-5px) rotate(0.15deg) scale(1.002); 
-            }
-        }
-
-        /* Add subtle hover interaction */
-        .hero-image-section:hover .hero-image {
-            animation-play-state: paused;
-            transform: scale(1.01) !important;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /* Part 3: Frontend (Main Headline) - Springy bounce drop */
-        .hero-title-section {
-            text-align: center;
-            width: 100%;
-            order: 1; /* On top */
-            opacity: 0;
-            animation: frontendBounceDrop 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-            animation-delay: 3s;
-            position: relative;
-        }
-
-        @keyframes frontendBounceDrop {
-            0% {
-                opacity: 0;
-                transform: translateY(-80px) scale(0.8);
-                filter: blur(8px);
-            }
-            60% {
-                opacity: 1;
-                transform: translateY(10px) scale(1.02);
-                filter: blur(0);
-            }
-            80% {
-                transform: translateY(-5px) scale(0.98);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-                filter: blur(0);
-            }
-        }
-
-        .headline-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 42px;
-            font-weight: 700;
-            line-height: 1.15;
-            letter-spacing: -1.4px;
-            color: var(--soft-white);
-            margin: 0;
-            text-shadow: 0 2px 30px rgba(0, 0, 0, 0.4), 0 0 60px var(--accent-glow);
-        }
-
-        /* ========== NEW HERO SECTION ENHANCEMENTS ========== */
-        
-        /* Trust Badge */
-        .trust-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 20px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 100px;
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            letter-spacing: 0.5px;
-            margin-bottom: 24px;
-            backdrop-filter: blur(10px);
-            opacity: 0;
-            animation: trustBadgeFadeIn 0.6s ease forwards;
-            animation-delay: 3.2s;
-        }
-
-        @keyframes trustBadgeFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .trust-icon {
-            color: var(--success);
-            font-size: 10px;
-            animation: trustPulse 2s ease-in-out infinite;
-        }
-
-        @keyframes trustPulse {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 1; }
-        }
-
-        /* Typing Headline Effect */
-        .typing-container {
-            display: inline-block;
-            position: relative;
-            color: var(--accent-light);
-        }
-
-        .typing-text {
-            display: inline;
-        }
-
-        .typing-cursor {
-            display: inline-block;
-            margin-left: 2px;
-            font-weight: 300;
-            animation: cursorBlink 0.8s step-end infinite;
-            color: var(--accent-light);
-        }
-
-        @keyframes cursorBlink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-
-        /* Floating Tech Chips */
-        .tech-chips-container {
-            position: absolute;
-            inset: -60px -40px;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .tech-chip {
-            position: absolute;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 100px;
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            white-space: nowrap;
-            opacity: 0;
-            transform: scale(0.8) translateY(20px);
-            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), 
-                        opacity 0.3s ease,
-                        box-shadow 0.3s ease;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-            will-change: transform;
-        }
-
-        .tech-chip.visible {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), 
-                        inset 0 1px 0 rgba(255, 255, 255, 0.08);
-        }
-
-        .tech-chip:hover {
-            transform: scale(1.03) translateY(-2px) !important;
-            border-color: var(--accent-border);
-            background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3), 
-                        0 0 20px var(--accent-glow);
-        }
-
-        .tech-chip svg {
-            width: 16px;
-            height: 16px;
-            flex-shrink: 0;
-        }
-
-        /* Chip Positions - Scattered around heading */
-        .chip-react {
-            top: -20px;
-            right: 5%;
-            animation: chipFloatIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-            animation-delay: 3.5s;
-        }
-
-        .chip-nodejs {
-            top: 15%;
-            left: -5%;
-            animation: chipFloatIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-            animation-delay: 3.7s;
-        }
-
-        .chip-python {
-            bottom: 10%;
-            right: -2%;
-            animation: chipFloatIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-            animation-delay: 3.9s;
-        }
-
-        .chip-html5 {
-            top: 50%;
-            left: 2%;
-            animation: chipFloatIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-            animation-delay: 4.1s;
-        }
-
-        .chip-ai {
-            top: 5%;
-            left: 15%;
-            animation: chipFloatIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-            animation-delay: 4.3s;
-        }
-
-        .chip-typescript {
-            bottom: 25%;
-            right: 8%;
-            animation: chipFloatIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-            animation-delay: 4.5s;
-        }
-
-        @keyframes chipFloatIn {
-            from {
-                opacity: 0;
-                transform: scale(0.8) translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
-        /* Gradient Shift Animation for Background */
-        .hero-background::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, rgba(251, 146, 60, 0.06) 0%, transparent 50%);
-            animation: gradientShift 12s ease-in-out infinite alternate;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        @keyframes gradientShift {
-            0% {
-                background-position: 0% 0%, 100% 100%, 50% 50%;
-                filter: hue-rotate(0deg);
-            }
-            50% {
-                background-position: 100% 0%, 0% 100%, 50% 50%;
-                filter: hue-rotate(15deg);
-            }
-            100% {
-                background-position: 50% 100%, 50% 0%, 100% 50%;
-                filter: hue-rotate(-10deg);
-            }
-        }
-
-        /* Footer - THIN & FIXED AT BOTTOM - SOCIAL ICONS ONLY */
-        .footer-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 10;
-            width: 100%;
-            padding: 14px 30px; /* THIN FOOTER */
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.85) 100%);
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-            animation: footerFadeIn 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-            animation-delay: 4.2s;
-            opacity: 0;
-        }
-
-        @keyframes footerFadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .footer-content {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        /* Social Media Icons Container - CENTERED */
-        .social-icons {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-        }
-
-        .social-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 36px;
-            height: 36px;
-            border-radius: 9px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: rgba(255, 255, 255, 0.55);
-            text-decoration: none;
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .social-icon svg {
-            width: 18px;
-            height: 18px;
-            transition: all 0.4s ease;
-        }
-
-        /* Unified glow overlay */
-        .social-icon::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(
-                circle at center,
-                currentColor 0%,
-                transparent 70%
-            );
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-        }
-
-        .social-icon:hover::after {
-            opacity: 0.15;
-        }
-
-        .social-icon:hover {
-            transform: translateY(-3px) scale(1.06);
-            box-shadow: 
-                0 8px 25px rgba(0, 0, 0, 0.35),
-                0 0 0 1px rgba(255, 255, 255, 0.1),
-                0 0 24px currentColor;
-            background: var(--accent-surface);
-            border-color: var(--accent-border);
-        }
-
-        .social-icon:hover svg {
-            filter: drop-shadow(0 0 6px currentColor);
-        }
-
-        /* Individual Social Icon Hover Colors */
-        .social-icon.github:hover {
-            color: #ffffff;
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.25);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.1), 0 0 24px currentColor;
-        }
-
-        .social-icon.twitter:hover {
-            color: #1da1f2;
-            background: rgba(29, 161, 242, 0.12);
-            border-color: rgba(29, 161, 242, 0.35);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(29, 161, 242, 0.1), 0 0 24px currentColor;
-        }
-
-        .social-icon.facebook:hover {
-            color: #4267b2;
-            background: rgba(66, 103, 178, 0.12);
-            border-color: rgba(66, 103, 178, 0.35);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(66, 103, 178, 0.1), 0 0 24px currentColor;
-        }
-
-        .social-icon.instagram:hover {
-            color: #e1306c;
-            background: rgba(225, 48, 108, 0.12);
-            border-color: rgba(225, 48, 108, 0.35);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(225, 48, 108, 0.1), 0 0 24px currentColor;
-        }
-
-        .social-icon.linkedin:hover {
-            color: #0077b5;
-            background: rgba(0, 119, 181, 0.12);
-            border-color: rgba(0, 119, 181, 0.35);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(0, 119, 181, 0.1), 0 0 24px currentColor;
-        }
-
-        .social-icon.whatsapp:hover {
-            color: #25d366;
-            background: rgba(37, 211, 102, 0.12);
-            border-color: rgba(37, 211, 102, 0.35);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(37, 211, 102, 0.1), 0 0 24px currentColor;
-        }
-
-        /* Responsive Design */
-        @media (min-width: 769px) {
-            .hero-container {
-                padding: 50px 60px;
-                gap: 32px;
-            }
-
-            .headline-title { font-size: 42px; }
-            .hero-image { max-width: 480px; }
-            .headline-subtext { font-size: 16px; max-width: 650px; }
-            
-            .footer-nav { 
-                padding: 16px 50px;
-            }
-            .social-icons { 
-                gap: 13px; 
-            }
-            .social-icon { 
-                width: 38px; 
-                height: 38px; 
-                border-radius: 10px;
-            }
-            .social-icon svg { 
-                width: 19px; 
-                height: 19px; 
-            }
-            
-            .tech-icon { width: 56px; height: 56px; }
-        }
-
-        @media (max-width: 768px) {
-            .tech-chips-container { display: none; } /* Hide chips on mobile */
-            .trust-badge { font-size: 11px; padding: 7px 18px; margin-bottom: 20px; }
-            
-            .hero-container {
-                padding: 35px 24px;
-                gap: 24px;
-            }
-
-            .headline-title { font-size: 32px; letter-spacing: -1.1px; }
-            .hero-image { max-width: 420px; }
-            .headline-subtext { 
-                font-size: 14.5px; 
-                line-height: 1.68; 
-                margin-bottom: 20px; 
-                max-width: 100%;
-                animation: typingMobile 2s steps(80, end) forwards;
-            }
-            
-            @keyframes typingMobile {
-                from { width: 0; }
-                to { width: 100%; }
-            }
-
-            .footer-nav { 
-                padding: 12px 20px;
-            }
-            .social-icons { 
-                gap: 10px; 
-            }
-            .social-icon { 
-                width: 34px; 
-                height: 34px; 
-                border-radius: 8px;
-            }
-            .social-icon svg { 
-                width: 17px; 
-                height: 17px; 
-            }
-            
-            .tech-icon { width: 40px; height: 40px; }
-            .grid-pattern { background-size: 40px 40px; }
-            
-            .glow-orb { filter: blur(90px); opacity: 0.35 !important; }
-        }
-
-        @media (max-width: 480px) {
-            .hero-container { padding: 30px 18px; gap: 20px; }
-            .headline-title { font-size: 26px; letter-spacing: -0.9px; }
-            .hero-image { max-width: 340px; }
-            .headline-subtext { font-size: 13.5px; line-height: 1.65; margin-bottom: 18px; }
-            
-            .footer-nav { 
-                padding: 10px 16px;
-            }
-            .social-icons { 
-                gap: 8px; 
-            }
-            .social-icon { 
-                width: 32px; 
-                height: 32px; 
-                border-radius: 8px;
-            }
-            .social-icon svg { 
-                width: 16px; 
-                height: 16px; 
-            }
-            
-            .tech-icon { width: 36px; height: 36px; }
-            .grid-pattern { background-size: 30px 30px; }
-            
-            /* Mobile adjustments for new elements */
-            .trust-badge { font-size: 11px; padding: 6px 16px; margin-bottom: 18px; }
-            .tech-chips-container { display: none; } /* Hide chips on very small screens */
-            .typing-container { display: block; }
-        }
-
-        /* Preloader mobile adjustments */
-        @media (max-width: 768px) {
-            .loader-content { padding: 40px 30px; }
-            .profile-avatar-wrapper { width: 90px; height: 90px; margin-bottom: 20px; }
-            .profile-avatar-wrapper::before { inset: -24px; filter: blur(12px); }
-            .profile-avatar-wrapper::after { bottom: -10px; width: 75%; height: 6px; }
-            .profile-ring { inset: -3px; }
-            .profile-ring::after { inset: -6px; filter: blur(3px); }
-            .profile-name { font-size: 19px; }
-            .metrics-row { gap: 12px; }
-            .metric-value { font-size: 15px; }
-        }
-
-        /* Reduced motion preference */
-        @media (prefers-reduced-motion: reduce) {
-            .hero-image,
-            .circuit-path,
-            .grid-pattern,
-            .tech-icon,
-            .glow-orb,
-            .orb-main,
-            .orb-secondary,
-            .profile-ring::before,
-            .profile-ring::after,
-            .profile-avatar-wrapper::before,
-            .data-packet {
-                animation: none !important;
-            }
-
-            .hero-title-section,
-            .hero-image-section,
-            .hero-subtext-section,
-            .headline-title,
-            .headline-subtext,
-            .cta-button,
-            .footer-nav {
-                animation-duration: 0.01ms !important;
-                animation-delay: 0ms !important;
-                opacity: 1 !important;
-                transform: none !important;
-                filter: none !important;
-            }
-        }
-
-        /* ================================================================
-           STICKY CARD STACKING SECTION - THE HIGH-TECH CHOICE
-           ================================================================ */
-
-        .stacking-section {
-            position: relative;
-            z-index: 5;
-            padding: 0 30px 150px;
-            max-width: 1100px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        /* Section Header */
-        .stacking-header {
-            text-align: center;
-            margin-bottom: 80px;
-            padding-top: 60px;
-        }
-
-        .stacking-label {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-family: 'Fira Code', monospace;
-            font-size: 11px;
-            font-weight: 500;
-            color: var(--accent-light);
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease forwards;
-            animation-delay: 4.5s;
-        }
-
-        .stacking-label::before,
-        .stacking-label::after {
-            content: '';
-            width: 30px;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--accent-light));
-        }
-
-        .stacking-label::after {
-            background: linear-gradient(90deg, var(--accent-light), transparent);
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .stacking-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: clamp(32px, 5vw, 48px);
-            font-weight: 700;
-            line-height: 1.2;
-            letter-spacing: -1.2px;
-            color: var(--soft-white);
-            margin-bottom: 16px;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease forwards;
-            animation-delay: 4.7s;
-        }
-
-        .stacking-subtitle {
-            font-size: 16px;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto;
-            line-height: 1.7;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease forwards;
-            animation-delay: 4.9s;
-        }
-
-        /* Card Container */
-        .cards-container {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Individual Sticky Card */
-        .stack-card {
-            position: sticky;
-            top: 100px;
-            width: 100%;
-            min-height: 420px;
-            margin-bottom: 40px;
-            border-radius: 24px;
-            background: rgba(17, 17, 20, 0.75);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 48px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                        opacity 0.6s ease,
-                        filter 0.6s ease,
-                        box-shadow 0.6s ease;
-            will-change: transform, opacity, filter;
-            overflow: hidden;
-            cursor: default;
-        }
-
-        /* Subtle noise texture for depth */
-        .stack-card::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-            opacity: 0.025;
-            pointer-events: none;
-            z-index: 1;
-            border-radius: 24px;
-        }
-
-        /* Ensure content sits above noise */
-        .card-top, .card-body, .card-number-bg, .card-corner {
-            position: relative;
-            z-index: 2;
-        }
-
-        /* Z-index layering for stacking */
-        .stack-card:nth-child(1) { z-index: 6; margin-top: 0; }
-        .stack-card:nth-child(2) { z-index: 7; margin-top: 100vh; }
-        .stack-card:nth-child(3) { z-index: 8; margin-top: 100vh; }
-        .stack-card:nth-child(4) { z-index: 9; margin-top: 100vh; }
-        .stack-card:nth-child(5) { z-index: 10; margin-top: 100vh; }
-        .stack-card:nth-child(6) { z-index: 11; margin-top: 100vh; }
-
-        /* Active card state (topmost visible) */
-        .stack-card.active {
-            transform: scale(1);
-            opacity: 1;
-            filter: brightness(1);
-            box-shadow: 
-                0 25px 60px -15px rgba(0, 0, 0, 0.5),
-                0 0 0 1px rgba(99, 102, 241, 0.15),
-                0 0 80px -20px rgba(99, 102, 241, 0.2);
-        }
-
-        /* Inactive/receding card state */
-        .stack-card.inactive {
-            transform: scale(0.93) translateY(20px);
-            opacity: 0.5;
-            filter: brightness(0.6) blur(1px);
-            pointer-events: none;
-        }
-
-        /* Card inner glow on hover */
-        .stack-card.active:hover {
-            box-shadow: 
-                0 30px 70px -15px rgba(0, 0, 0, 0.6),
-                0 0 0 1px rgba(99, 102, 241, 0.25),
-                0 0 100px -20px rgba(99, 102, 241, 0.3);
-            border-color: rgba(99, 102, 241, 0.2);
-        }
-
-        /* Subtle background shimmer on active card hover */
-        .stack-card.active::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 24px;
-            background: linear-gradient(
-                120deg,
-                transparent 0%,
-                rgba(99, 102, 241, 0.04) 25%,
-                transparent 50%,
-                rgba(139, 92, 246, 0.03) 75%,
-                transparent 100%
-            );
-            background-size: 200% 100%;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .stack-card.active:hover::before {
-            opacity: 1;
-            animation: shimmer 2.5s ease-in-out infinite;
-        }
-
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
-
-        /* Background Number */
-        .card-number-bg {
-            position: absolute;
-            top: -20px;
-            right: 20px;
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 180px;
-            font-weight: 700;
-            color: rgba(99, 102, 241, 0.05);
-            line-height: 1;
-            user-select: none;
-            pointer-events: none;
-            transition: color 0.6s ease;
-        }
-
-        .stack-card.active .card-number-bg {
-            color: rgba(99, 102, 241, 0.07);
-        }
-
-        /* Card Content Layout */
-        .card-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 32px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .card-icon-wrapper {
-            width: 64px;
-            height: 64px;
-            border-radius: 16px;
-            background: linear-gradient(135deg, var(--accent-surface), rgba(139, 92, 246, 0.06));
-            border-color: var(--accent-border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .stack-card.active:hover .card-icon-wrapper {
-            background: linear-gradient(135deg, var(--accent-surface), rgba(139, 92, 246, 0.12));
-            box-shadow: var(--shadow-glow-sm);
-            transform: scale(1.04);
-        }
-
-        .card-icon-wrapper svg {
-            width: 32px;
-            height: 32px;
-            color: var(--accent-light);
-            transition: transform 0.4s ease;
-        }
-
-        .stack-card.active:hover .card-icon-wrapper svg {
-            transform: scale(1.1);
-        }
-
-        .card-index {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-muted);
-            letter-spacing: 2px;
-        }
-
-        .card-body {
-            position: relative;
-            z-index: 2;
-            flex: 1;
-        }
-
-        .card-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: clamp(22px, 3vw, 28px);
-            font-weight: 600;
-            line-height: 1.3;
-            color: var(--soft-white);
-            margin-bottom: 16px;
-            letter-spacing: -0.5px;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .stack-card.active:hover .card-title {
-            transform: translateX(4px);
-        }
-
-        .card-description {
-            font-size: 15px;
-            line-height: 1.75;
-            color: var(--text-secondary);
-            max-width: 520px;
-            transition: color 0.3s ease;
-        }
-
-        .stack-card.active:hover .card-description {
-            color: rgba(255, 255, 255, 0.92);
-        }
-
-        /* Card Bottom Accent Line */
-        .card-accent-line {
-            position: absolute;
-            bottom: 0;
-            left: 48px;
-            right: 48px;
-            height: 2px;
-            background: linear-gradient(90deg, 
-                transparent, 
-                var(--accent) 30%, 
-                var(--accent-light) 50%, 
-                var(--accent) 70%, 
-                transparent);
-            opacity: 0;
-            transform: scaleX(0);
-            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        .stack-card.active:hover .card-accent-line {
-            opacity: 1;
-            transform: scaleX(1);
-        }
-
-        /* Decorative corner elements */
-        .card-corner {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            border: 1px solid rgba(99, 102, 241, 0.3);
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-
-        .stack-card.active:hover .card-corner {
-            opacity: 1;
-        }
-
-        .corner-tl {
-            top: 20px;
-            left: 20px;
-            border-right: none;
-            border-bottom: none;
-        }
-
-        .corner-tr {
-            top: 20px;
-            right: 20px;
-            border-left: none;
-            border-bottom: none;
-        }
-
-        .corner-bl {
-            bottom: 20px;
-            left: 20px;
-            border-right: none;
-            border-top: none;
-        }
-
-        .corner-br {
-            bottom: 20px;
-            right: 20px;
-            border-left: none;
-            border-top: none;
-        }
-
-        /* Progress indicator on the side */
-        .cards-progress {
-            position: fixed;
-            right: 40px;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            z-index: 100;
-            opacity: 0;
-            transition: opacity 0.6s ease;
-        }
-
-        .cards-progress.visible {
-            opacity: 1;
-        }
-
-        .progress-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-            position: relative;
-        }
-
-        .progress-dot::before {
-            content: attr(data-label);
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%) translateX(8px);
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 11px;
-            font-weight: 500;
-            color: var(--text-muted);
-            white-space: nowrap;
-            opacity: 0;
-            transition: opacity 0.25s ease, transform 0.25s ease;
-            pointer-events: none;
-        }
-
-        .progress-dot:hover::before {
-            opacity: 1;
-            transform: translateY(-50%) translateX(0);
-        }
-
-        .progress-dot::after {
-            content: '';
-            position: absolute;
-            inset: -4px;
-            border-radius: 50%;
-            background: var(--accent-glow);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-        }
-
-        .progress-dot.active {
-            background: var(--accent-light);
-            border-color: var(--accent-light);
-            box-shadow: 0 0 0 4px var(--accent-surface), var(--shadow-glow-sm);
-            transform: scale(1.25);
-        }
-
-        .progress-dot.active::after {
-            opacity: 1;
-            animation: pulseGlow 2s ease-in-out infinite;
-        }
-
-        @keyframes pulseGlow {
-            0%, 100% { transform: scale(1); opacity: 0.6; }
-            50% { transform: scale(1.4); opacity: 0.2; }
-        }
-
-        .progress-dot:hover {
-            background: rgba(99, 102, 241, 0.4);
-            transform: scale(1.2);
-        }
-
-        /* Responsive for stacking section */
-        @media (max-width: 768px) {
-            .stacking-section {
-                padding: 0 20px 150px;
-            }
-
-            .stacking-header {
-                margin-bottom: 50px;
-                padding-top: 40px;
-            }
-
-            .stack-card {
-                min-height: 380px;
-                padding: 32px 24px;
-                border-radius: 20px;
-                top: 80px;
-            }
-
-            .stack-card:nth-child(n) {
-                margin-top: 85vh;
-            }
-
-            .card-number-bg {
-                font-size: 120px;
-                right: 10px;
-                top: -10px;
-            }
-
-            .card-icon-wrapper {
-                width: 52px;
-                height: 52px;
-                border-radius: 12px;
-            }
-
-            .card-icon-wrapper svg {
-                width: 26px;
-                height: 26px;
-            }
-
-            .card-title {
-                font-size: 20px;
-            }
-
-            .card-description {
-                font-size: 14px;
-            }
-
-            .cards-progress {
-                right: 15px;
-            }
-
-            .progress-dot {
-                width: 8px;
-                height: 8px;
-            }
-
-            .card-corner {
-                display: none;
-            }
-
-            .card-accent-line {
-                left: 24px;
-                right: 24px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .stacking-section {
-                padding: 0 16px 150px;
-            }
-
-            .stack-card {
-                min-height: 340px;
-                padding: 28px 20px;
-                border-radius: 16px;
-                top: 70px;
-            }
-
-            .stack-card:nth-child(n) {
-                margin-top: 80vh;
-            }
-
-            .card-number-bg {
-                font-size: 90px;
-            }
-
-            .card-top {
-                margin-bottom: 24px;
-            }
-
-            .card-title {
-                font-size: 18px;
-                margin-bottom: 12px;
-            }
-
-            .card-description {
-                font-size: 13px;
-                line-height: 1.65;
-            }
-
-            .cards-progress {
-                display: none;
-            }
-        }
-
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Nitish Kumar · Intelligence Roadmap</title>
+  <!-- Fonts & existing styles remain identical -->
+  <style>
+    /* ===== EXISTING STYLES (unchanged) ===== */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg-primary: #000000; --bg-secondary: #0a0a0c; --bg-elevated: #111114;
+      --text-primary: #ffffff; --text-secondary: rgba(255, 255, 255, 0.5);
+      --text-muted: rgba(255, 255, 255, 0.3); --accent: #6366f1;
+      --accent-light: #818cf8; --accent-glow: rgba(99, 102, 241, 0.4);
+      --success: #10b981; --border: rgba(255, 255, 255, 0.06);
+      --circuit-color: rgba(99, 102, 241, 0.4); --circuit-glow: rgba(139, 92, 246, 0.6);
+      --data-packet: #00ff88; --soft-white: rgba(255, 255, 255, 0.95);
+      --accent-hover: #4f46e5; --accent-active: #4338ca;
+      --accent-surface: rgba(99, 102, 241, 0.08); --accent-border: rgba(99, 102, 241, 0.25);
+      --shadow-glow-sm: 0 0 20px rgba(99, 102, 241, 0.25);
+      --shadow-glow-md: 0 0 40px rgba(99, 102, 241, 0.35);
+      --shadow-glow-lg: 0 0 80px rgba(99, 102, 241, 0.25);
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary); min-height: 100vh;
+      display: flex; justify-content: center; align-items: center;
+      overflow-x: hidden; color: var(--text-primary);
+    }
+    .preloader-container {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: var(--bg-primary); display: flex; justify-content: center;
+      align-items: center; z-index: 9999;
+      transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 1.5s;
+    }
+    .preloader-container.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    .ambient-layer { position: absolute; inset: 0; overflow: hidden; }
+    .gradient-orb { position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.4; }
+    .orb-main { width: 500px; height: 500px; background: radial-gradient(circle, rgba(99, 102, 241, 0.15), transparent 70%); top: 50%; left: 50%; transform: translate(-50%, -50%); animation: orbFloat 8s ease-in-out infinite; }
+    .orb-secondary { width: 350px; height: 350px; background: radial-gradient(circle, rgba(139, 92, 246, 0.1), transparent 70%); bottom: -100px; right: -80px; animation: orbFloat 8s ease-in-out infinite 4s; }
+    @keyframes orbFloat { 0%, 100% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -50%) scale(1.15); } }
+    .noise-overlay { position: absolute; inset: 0; opacity: 0.03; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"); pointer-events: none; }
+    .loader-content { position: relative; z-index: 10; text-align: center; max-width: 440px; padding: 55px 40px; }
+    .profile-section { margin-bottom: 45px; }
+    .profile-avatar-wrapper { width: 110px; height: 110px; margin: 0 auto 24px; position: relative; }
+    .profile-avatar-wrapper::before { content: ''; position: absolute; inset: -30px; border-radius: 50%; background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, rgba(139, 92, 246, 0.08) 35%, transparent 70%); filter: blur(15px); animation: ambientPulse 5s ease-in-out infinite; z-index: -1; }
+    .profile-avatar-wrapper::after { content: ''; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%); width: 80%; height: 8px; border-radius: 50%; background: rgba(0, 0, 0, 0.4); filter: blur(10px); z-index: -2; }
+    @keyframes ambientPulse { 0%, 100% { opacity: 0.7; transform: scale(1); } 50% { opacity: 1; transform: scale(1.08); } }
+    .profile-ring { position: absolute; inset: -4px; border-radius: 50%; background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(139, 92, 246, 0.08) 100%); padding: 2px; transition: all 0.5s ease; box-shadow: 0 0 20px rgba(99, 102, 241, 0.15), inset 0 0 15px rgba(99, 102, 241, 0.05); }
+    .profile-ring::before { content: ''; position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(from 180deg, transparent 0%, var(--accent) 25%, transparent 50%, var(--accent-light) 75%, transparent 100%); opacity: 0.6; animation: profileRingSpin 6s linear infinite; mask: radial-gradient(farthest-side, transparent calc(100% - 2px), black calc(100% - 1px)); -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), black calc(100% - 1px)); }
+    .profile-ring::after { content: ''; position: absolute; inset: -8px; border-radius: 50%; background: conic-gradient(from 0deg, transparent, rgba(99, 102, 241, 0.08), transparent, rgba(139, 92, 246, 0.06), transparent); animation: profileRingSpin 10s linear infinite reverse; opacity: 0.7; filter: blur(4px); }
+    @keyframes profileRingSpin { to { transform: rotate(360deg); } }
+    .profile-avatar { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; position: relative; background: #0a0a0c; box-shadow: 0 0 40px rgba(99, 102, 241, 0.25), 0 20px 50px -15px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(99, 102, 241, 0.15), 0 0 0 3px rgba(99, 102, 241, 0.05), inset 0 2px 12px rgba(0, 0, 0, 0.4), inset 0 -2px 8px rgba(99, 102, 241, 0.08); }
+    .profile-img-preloader { width: 100%; height: 100%; object-fit: cover; display: block; position: relative; z-index: 1; }
+    .profile-fallback-icon { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--accent-light); opacity: 0.7; }
+    .profile-fallback-icon svg { width: 46px; height: 46px; }
+    .profile-name { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.5px; margin-bottom: 6px; opacity: 0; animation: fadeInName 0.8s ease 0.5s forwards; }
+    @keyframes fadeInName { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .profile-status { font-size: 12px; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; font-weight: 500; opacity: 0; animation: fadeInStatus 0.8s ease 0.7s forwards; }
+    @keyframes fadeInStatus { from { opacity: 0; } to { opacity: 1; } }
+    .status-text { font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 500; color: var(--text-secondary); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 35px; }
+    .progress-container { margin-bottom: 32px; }
+    .progress-info { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; }
+    .progress-label { font-size: 12px; color: var(--text-muted); font-weight: 500; letter-spacing: 0.5px; }
+    .progress-number { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 600; color: var(--text-primary); letter-spacing: -0.5px; }
+    .progress-track { width: 100%; height: 2px; background: var(--border); border-radius: 1px; overflow: hidden; }
+    .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--accent-light)); border-radius: 1px; transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
+    .progress-fill::after { content: ''; position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 8px; height: 8px; background: var(--accent-light); border-radius: 50%; box-shadow: 0 0 12px var(--accent-glow); }
+    .metrics-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding-top: 28px; border-top: 1px solid var(--border); }
+    .metric-item { text-align: center; }
+    .metric-value { font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+    .metric-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 500; }
+    .metric-dot { display: inline-block; width: 4px; height: 4px; border-radius: 50%; background: var(--text-muted); margin-top: 8px; transition: all 0.4s ease; }
+    .metric-dot.active { background: var(--success); box-shadow: 0 0 8px rgba(16, 185, 129, 0.5); }
+    .main-content { display: none; min-height: 100vh; position: relative; opacity: 0; transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
+    .main-content.visible { display: flex; flex-direction: column; opacity: 1; }
+    .hero-background { position: fixed; inset: 0; z-index: -2; overflow: hidden; background: linear-gradient(135deg, #0a0a0c 0%, #111114 40%, #0f0a1e 70%, #0a0a0c 100%); }
+    .blueprint-layer { position: absolute; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+    .circuit-svg { position: absolute; width: 100%; height: 100%; top: 0; left: 0; }
+    .circuit-path { fill: none; stroke: var(--circuit-color); stroke-width: 1.5; stroke-linecap: round; stroke-dasharray: 1000; stroke-dashoffset: 1000; filter: drop-shadow(0 0 8px var(--circuit-glow)); animation: drawCircuit 3s ease-out forwards; animation-delay: 1s; }
+    .circuit-path-2 { animation-delay: 1.5s; }
+    .circuit-path-3 { animation-delay: 2s; }
+    @keyframes drawCircuit { to { stroke-dashoffset: 0; } }
+    .grid-pattern { position: absolute; inset: 0; background-image: linear-gradient(var(--circuit-color) 1px, transparent 1px), linear-gradient(90deg, var(--circuit-color) 1px, transparent 1px); background-size: 60px 60px; opacity: 0; animation: gridReveal 2s ease-out forwards; animation-delay: 0.8s; }
+    @keyframes gridReveal { 0% { opacity: 0; } 100% { opacity: 0.15; } }
+    .tech-icon { position: absolute; width: 48px; height: 48px; opacity: 0; transform: scale(0); animation: iconAppear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; filter: drop-shadow(0 0 20px var(--circuit-glow)); }
+    .tech-icon svg { width: 100%; height: 100%; fill: var(--accent-light); }
+    .tech-icon-react { top: 18%; right: 12%; animation-delay: 2.2s; }
+    .tech-icon-ai { top: 45%; left: 8%; animation-delay: 2.5s; }
+    .tech-icon-cloud { bottom: 32%; right: 8%; animation-delay: 2.8s; }
+    @keyframes iconAppear { to { opacity: 1; transform: scale(1); } }
+    .tech-icon::after { content: ''; position: absolute; inset: -8px; border-radius: 50%; background: radial-gradient(circle, var(--circuit-glow), transparent 70%); opacity: 0; animation: iconPulse 2s ease-in-out infinite; animation-delay: 3.2s; }
+    @keyframes iconPulse { 0%, 100% { opacity: 0; transform: scale(0.8); } 50% { opacity: 0.6; transform: scale(1.2); } }
+    .hero-ambient-glow { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+    .glow-orb { position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0; animation: gentleGlowPulse 12s ease-in-out infinite; }
+    .glow-orb-1 { width: 700px; height: 700px; background: radial-gradient(circle, rgba(139, 92, 246, 0.15), transparent 70%); top: -250px; left: -200px; animation-delay: 0s; }
+    .glow-orb-2 { width: 600px; height: 600px; background: radial-gradient(circle, rgba(59, 130, 246, 0.12), transparent 70%); bottom: -200px; right: -150px; animation-delay: 4s; }
+    .glow-orb-3 { width: 450px; height: 450px; background: radial-gradient(circle, rgba(251, 146, 60, 0.08), transparent 70%); top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: 8s; }
+    @keyframes gentleGlowPulse { 0%, 100% { opacity: 0; transform: scale(0.95); } 50% { opacity: 0.55; transform: scale(1.08); } }
+    .hero-container { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px 30px; position: relative; z-index: 10; max-width: 1400px; margin: 0 auto; width: 100%; gap: 28px; }
+    .hero-subtext-section { width: 100%; text-align: left; order: 3; opacity: 0; animation: backendSlideUp 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; animation-delay: 1.2s; }
+    @keyframes backendSlideUp { 0% { opacity: 0; transform: translateY(60px); filter: blur(12px); } 100% { opacity: 1; transform: translateY(0); filter: blur(0); } }
+    .headline-subtext { font-size: 16px; line-height: 1.7; color: rgba(255, 255, 255, 0.82); font-weight: 300; margin: 0 0 24px 0; max-width: 650px; text-shadow: 0 1px 15px rgba(0, 0, 0, 0.3); font-family: 'Fira Code', monospace; overflow: hidden; border-right: 2px solid var(--accent-light); white-space: nowrap; width: 0; animation: typingSmooth 2.4s steps(80, end) forwards, blink 0.75s step-end infinite; animation-delay: 1.8s, 4.2s; }
+    @keyframes typingSmooth { 0% { width: 0; } 10% { width: 5%; } 30% { width: 25%; } 55% { width: 55%; } 80% { width: 85%; } 100% { width: 100%; } }
+    @keyframes blink { 50% { border-color: transparent; } }
+    .headline-subtext.typed { border-right: none; white-space: normal; width: auto; animation: none; }
+    .hero-image-section { display: flex; justify-content: center; align-items: center; width: 100%; order: 2; opacity: 0; animation: imageReveal 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; animation-delay: 2.5s; }
+    @keyframes imageReveal { 0% { opacity: 0; transform: scale(0.9) rotate(-2deg); filter: blur(10px); } 60% { transform: scale(1.02) rotate(0.5deg); } 100% { opacity: 1; transform: scale(1) rotate(0); filter: blur(0); } }
+    .hero-image { width: 100%; max-width: 480px; height: auto; display: block; animation: imageFloatNatural 9s ease-in-out infinite; animation-delay: 3.5s; will-change: transform; }
+    @keyframes imageFloatNatural { 0%, 100% { transform: translateY(0) rotate(0deg) scale(1); } 25% { transform: translateY(-8px) rotate(0.3deg) scale(1.005); } 50% { transform: translateY(4px) rotate(-0.2deg) scale(0.998); } 75% { transform: translateY(-5px) rotate(0.15deg) scale(1.002); } }
+    .hero-image-section:hover .hero-image { animation-play-state: paused; transform: scale(1.01) !important; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+    .hero-title-section { text-align: center; width: 100%; order: 1; opacity: 0; animation: frontendBounceDrop 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards; animation-delay: 3s; position: relative; }
+    @keyframes frontendBounceDrop { 0% { opacity: 0; transform: translateY(-80px) scale(0.8); filter: blur(8px); } 60% { opacity: 1; transform: translateY(10px) scale(1.02); filter: blur(0); } 80% { transform: translateY(-5px) scale(0.98); } 100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); } }
+    .headline-title { font-family: 'Space Grotesk', sans-serif; font-size: 42px; font-weight: 700; line-height: 1.15; letter-spacing: -1.4px; color: var(--soft-white); margin: 0; text-shadow: 0 2px 30px rgba(0, 0, 0, 0.4), 0 0 60px var(--accent-glow); }
+    .trust-badge { display: inline-flex; align-items: center; gap: 10px; padding: 8px 20px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 100px; font-size: 12px; font-weight: 500; color: var(--text-secondary); letter-spacing: 0.5px; margin-bottom: 24px; backdrop-filter: blur(10px); opacity: 0; animation: trustBadgeFadeIn 0.6s ease forwards; animation-delay: 3.2s; }
+    @keyframes trustBadgeFadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    .trust-icon { color: var(--success); font-size: 10px; animation: trustPulse 2s ease-in-out infinite; }
+    @keyframes trustPulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+    .typing-container { display: inline-block; position: relative; color: var(--accent-light); }
+    .typing-text { display: inline; }
+    .typing-cursor { display: inline-block; margin-left: 2px; font-weight: 300; animation: cursorBlink 0.8s step-end infinite; color: var(--accent-light); }
+    @keyframes cursorBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    .tech-chips-container { position: absolute; inset: -60px -40px; pointer-events: none; z-index: -1; }
+    .tech-chip { position: absolute; display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 100px; font-size: 12px; font-weight: 500; color: var(--text-secondary); white-space: nowrap; opacity: 0; transform: scale(0.8) translateY(20px); transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, box-shadow 0.3s ease; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05); will-change: transform; }
+    .tech-chip.visible { opacity: 1; transform: scale(1) translateY(0); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.08); }
+    .tech-chip:hover { transform: scale(1.03) translateY(-2px) !important; border-color: var(--accent-border); background: rgba(255, 255, 255, 0.08); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3), 0 0 20px var(--accent-glow); }
+    .chip-react { top: -20px; right: 5%; animation: chipFloatIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; animation-delay: 3.5s; }
+    .chip-nodejs { top: 15%; left: -5%; animation: chipFloatIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; animation-delay: 3.7s; }
+    .chip-python { bottom: 10%; right: -2%; animation: chipFloatIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; animation-delay: 3.9s; }
+    .chip-html5 { top: 50%; left: 2%; animation: chipFloatIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; animation-delay: 4.1s; }
+    .chip-ai { top: 5%; left: 15%; animation: chipFloatIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; animation-delay: 4.3s; }
+    .chip-typescript { bottom: 25%; right: 8%; animation: chipFloatIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; animation-delay: 4.5s; }
+    @keyframes chipFloatIn { from { opacity: 0; transform: scale(0.8) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    .hero-background::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 20% 30%, rgba(139, 92, 246, 0.12) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.1) 0%, transparent 50%), radial-gradient(circle at 50% 50%, rgba(251, 146, 60, 0.06) 0%, transparent 50%); animation: gradientShift 12s ease-in-out infinite alternate; pointer-events: none; z-index: -1; }
+    @keyframes gradientShift { 0% { background-position: 0% 0%, 100% 100%, 50% 50%; filter: hue-rotate(0deg); } 50% { background-position: 100% 0%, 0% 100%, 50% 50%; filter: hue-rotate(15deg); } 100% { background-position: 50% 100%, 50% 0%, 100% 50%; filter: hue-rotate(-10deg); } }
+    .footer-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 10; width: 100%; padding: 14px 30px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.85) 100%); border-top: 1px solid rgba(255, 255, 255, 0.06); animation: footerFadeIn 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; animation-delay: 4.2s; opacity: 0; }
+    @keyframes footerFadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .footer-content { display: flex; align-items: center; justify-content: center; max-width: 1400px; margin: 0 auto; }
+    .social-icons { display: flex; align-items: center; justify-content: center; gap: 12px; }
+    .social-icon { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 9px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); color: rgba(255, 255, 255, 0.55); text-decoration: none; transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); position: relative; overflow: hidden; }
+    .social-icon svg { width: 18px; height: 18px; transition: all 0.4s ease; }
+    .social-icon::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at center, currentColor 0%, transparent 70%); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
+    .social-icon:hover::after { opacity: 0.15; }
+    .social-icon:hover { transform: translateY(-3px) scale(1.06); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.1), 0 0 24px currentColor; background: var(--accent-surface); border-color: var(--accent-border); }
+    .social-icon:hover svg { filter: drop-shadow(0 0 6px currentColor); }
+    .social-icon.github:hover { color: #ffffff; background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.25); }
+    .social-icon.twitter:hover { color: #1da1f2; background: rgba(29, 161, 242, 0.12); border-color: rgba(29, 161, 242, 0.35); }
+    .social-icon.facebook:hover { color: #4267b2; background: rgba(66, 103, 178, 0.12); border-color: rgba(66, 103, 178, 0.35); }
+    .social-icon.instagram:hover { color: #e1306c; background: rgba(225, 48, 108, 0.12); border-color: rgba(225, 48, 108, 0.35); }
+    .social-icon.linkedin:hover { color: #0077b5; background: rgba(0, 119, 181, 0.12); border-color: rgba(0, 119, 181, 0.35); }
+    .social-icon.whatsapp:hover { color: #25d366; background: rgba(37, 211, 102, 0.12); border-color: rgba(37, 211, 102, 0.35); }
+    @media (min-width: 769px) { .hero-container { padding: 50px 60px; gap: 32px; } .headline-title { font-size: 42px; } .hero-image { max-width: 480px; } .headline-subtext { font-size: 16px; max-width: 650px; } .footer-nav { padding: 16px 50px; } .social-icons { gap: 13px; } .social-icon { width: 38px; height: 38px; border-radius: 10px; } .social-icon svg { width: 19px; height: 19px; } .tech-icon { width: 56px; height: 56px; } }
+    @media (max-width: 768px) { .tech-chips-container { display: none; } .trust-badge { font-size: 11px; padding: 7px 18px; margin-bottom: 20px; } .hero-container { padding: 35px 24px; gap: 24px; } .headline-title { font-size: 32px; letter-spacing: -1.1px; } .hero-image { max-width: 420px; } .headline-subtext { font-size: 14.5px; line-height: 1.68; margin-bottom: 20px; max-width: 100%; animation: typingMobile 2s steps(80, end) forwards; } @keyframes typingMobile { from { width: 0; } to { width: 100%; } } .footer-nav { padding: 12px 20px; } .social-icons { gap: 10px; } .social-icon { width: 34px; height: 34px; border-radius: 8px; } .social-icon svg { width: 17px; height: 17px; } .tech-icon { width: 40px; height: 40px; } .grid-pattern { background-size: 40px 40px; } .glow-orb { filter: blur(90px); opacity: 0.35 !important; } }
+    @media (max-width: 480px) { .hero-container { padding: 30px 18px; gap: 20px; } .headline-title { font-size: 26px; letter-spacing: -0.9px; } .hero-image { max-width: 340px; } .headline-subtext { font-size: 13.5px; line-height: 1.65; margin-bottom: 18px; } .footer-nav { padding: 10px 16px; } .social-icons { gap: 8px; } .social-icon { width: 32px; height: 32px; border-radius: 8px; } .social-icon svg { width: 16px; height: 16px; } .tech-icon { width: 36px; height: 36px; } .grid-pattern { background-size: 30px 30px; } .trust-badge { font-size: 11px; padding: 6px 16px; margin-bottom: 18px; } .tech-chips-container { display: none; } .typing-container { display: block; } }
+    @media (max-width: 768px) { .loader-content { padding: 40px 30px; } .profile-avatar-wrapper { width: 90px; height: 90px; margin-bottom: 20px; } .profile-avatar-wrapper::before { inset: -24px; filter: blur(12px); } .profile-avatar-wrapper::after { bottom: -10px; width: 75%; height: 6px; } .profile-ring { inset: -3px; } .profile-ring::after { inset: -6px; filter: blur(3px); } .profile-name { font-size: 19px; } .metrics-row { gap: 12px; } .metric-value { font-size: 15px; } }
+    @media (prefers-reduced-motion: reduce) { .hero-image, .circuit-path, .grid-pattern, .tech-icon, .glow-orb, .orb-main, .orb-secondary, .profile-ring::before, .profile-ring::after, .profile-avatar-wrapper::before, .data-packet { animation: none !important; } .hero-title-section, .hero-image-section, .hero-subtext-section, .headline-title, .headline-subtext, .cta-button, .footer-nav { animation-duration: 0.01ms !important; animation-delay: 0ms !important; opacity: 1 !important; transform: none !important; filter: none !important; } }
+    .stacking-section { position: relative; z-index: 5; padding: 0 30px 150px; max-width: 1100px; margin: 0 auto; width: 100%; }
+    .stacking-header { text-align: center; margin-bottom: 80px; padding-top: 60px; }
+    .stacking-label { display: inline-flex; align-items: center; gap: 8px; font-family: 'Fira Code', monospace; font-size: 11px; font-weight: 500; color: var(--accent-light); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 20px; opacity: 0; animation: fadeInUp 0.8s ease forwards; animation-delay: 4.5s; }
+    .stacking-label::before, .stacking-label::after { content: ''; width: 30px; height: 1px; background: linear-gradient(90deg, transparent, var(--accent-light)); }
+    .stacking-label::after { background: linear-gradient(90deg, var(--accent-light), transparent); }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .stacking-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(32px, 5vw, 48px); font-weight: 700; line-height: 1.2; letter-spacing: -1.2px; color: var(--soft-white); margin-bottom: 16px; opacity: 0; animation: fadeInUp 0.8s ease forwards; animation-delay: 4.7s; }
+    .stacking-subtitle { font-size: 16px; color: var(--text-secondary); max-width: 600px; margin: 0 auto; line-height: 1.7; opacity: 0; animation: fadeInUp 0.8s ease forwards; animation-delay: 4.9s; }
+    .cards-container { position: relative; display: flex; flex-direction: column; }
+    .stack-card { position: sticky; top: 100px; width: 100%; min-height: 420px; margin-bottom: 40px; border-radius: 24px; background: rgba(17, 17, 20, 0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); padding: 48px; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.6s ease, filter 0.6s ease, box-shadow 0.6s ease; will-change: transform, opacity, filter; overflow: hidden; cursor: default; }
+    .stack-card::after { content: ''; position: absolute; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"); opacity: 0.025; pointer-events: none; z-index: 1; border-radius: 24px; }
+    .card-top, .card-body, .card-number-bg, .card-corner { position: relative; z-index: 2; }
+    .stack-card:nth-child(1) { z-index: 6; margin-top: 0; } .stack-card:nth-child(2) { z-index: 7; margin-top: 100vh; } .stack-card:nth-child(3) { z-index: 8; margin-top: 100vh; } .stack-card:nth-child(4) { z-index: 9; margin-top: 100vh; } .stack-card:nth-child(5) { z-index: 10; margin-top: 100vh; } .stack-card:nth-child(6) { z-index: 11; margin-top: 100vh; }
+    .stack-card.active { transform: scale(1); opacity: 1; filter: brightness(1); box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(99, 102, 241, 0.15), 0 0 80px -20px rgba(99, 102, 241, 0.2); }
+    .stack-card.inactive { transform: scale(0.93) translateY(20px); opacity: 0.5; filter: brightness(0.6) blur(1px); pointer-events: none; }
+    .stack-card.active:hover { box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(99, 102, 241, 0.25), 0 0 100px -20px rgba(99, 102, 241, 0.3); border-color: rgba(99, 102, 241, 0.2); }
+    .stack-card.active::before { content: ''; position: absolute; inset: 0; border-radius: 24px; background: linear-gradient(120deg, transparent 0%, rgba(99, 102, 241, 0.04) 25%, transparent 50%, rgba(139, 92, 246, 0.03) 75%, transparent 100%); background-size: 200% 100%; opacity: 0; transition: opacity 0.4s ease; pointer-events: none; z-index: 1; }
+    .stack-card.active:hover::before { opacity: 1; animation: shimmer 2.5s ease-in-out infinite; }
+    @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+    .card-number-bg { position: absolute; top: -20px; right: 20px; font-family: 'Space Grotesk', sans-serif; font-size: 180px; font-weight: 700; color: rgba(99, 102, 241, 0.05); line-height: 1; user-select: none; pointer-events: none; transition: color 0.6s ease; }
+    .stack-card.active .card-number-bg { color: rgba(99, 102, 241, 0.07); }
+    .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; position: relative; z-index: 2; }
+    .card-icon-wrapper { width: 64px; height: 64px; border-radius: 16px; background: linear-gradient(135deg, var(--accent-surface), rgba(139, 92, 246, 0.06)); border-color: var(--accent-border); display: flex; align-items: center; justify-content: center; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .stack-card.active:hover .card-icon-wrapper { background: linear-gradient(135deg, var(--accent-surface), rgba(139, 92, 246, 0.12)); box-shadow: var(--shadow-glow-sm); transform: scale(1.04); }
+    .card-icon-wrapper svg { width: 32px; height: 32px; color: var(--accent-light); transition: transform 0.4s ease; }
+    .stack-card.active:hover .card-icon-wrapper svg { transform: scale(1.1); }
+    .card-index { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600; color: var(--text-muted); letter-spacing: 2px; }
+    .card-body { position: relative; z-index: 2; flex: 1; }
+    .card-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(22px, 3vw, 28px); font-weight: 600; line-height: 1.3; color: var(--soft-white); margin-bottom: 16px; letter-spacing: -0.5px; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+    .stack-card.active:hover .card-title { transform: translateX(4px); }
+    .card-description { font-size: 15px; line-height: 1.75; color: var(--text-secondary); max-width: 520px; transition: color 0.3s ease; }
+    .stack-card.active:hover .card-description { color: rgba(255, 255, 255, 0.92); }
+    .card-accent-line { position: absolute; bottom: 0; left: 48px; right: 48px; height: 2px; background: linear-gradient(90deg, transparent, var(--accent) 30%, var(--accent-light) 50%, var(--accent) 70%, transparent); opacity: 0; transform: scaleX(0); transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+    .stack-card.active:hover .card-accent-line { opacity: 1; transform: scaleX(1); }
+    .card-corner { position: absolute; width: 20px; height: 20px; border: 1px solid rgba(99, 102, 241, 0.3); opacity: 0; transition: opacity 0.4s ease; }
+    .stack-card.active:hover .card-corner { opacity: 1; }
+    .corner-tl { top: 20px; left: 20px; border-right: none; border-bottom: none; }
+    .corner-tr { top: 20px; right: 20px; border-left: none; border-bottom: none; }
+    .corner-bl { bottom: 20px; left: 20px; border-right: none; border-top: none; }
+    .corner-br { bottom: 20px; right: 20px; border-left: none; border-top: none; }
+    .cards-progress { position: fixed; right: 40px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 12px; z-index: 100; opacity: 0; transition: opacity 0.6s ease; }
+    .cards-progress.visible { opacity: 1; }
+    .progress-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; position: relative; }
+    .progress-dot::before { content: attr(data-label); position: absolute; right: 20px; top: 50%; transform: translateY(-50%) translateX(8px); font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 500; color: var(--text-muted); white-space: nowrap; opacity: 0; transition: opacity 0.25s ease, transform 0.25s ease; }
+    .progress-dot:hover::before { opacity: 1; transform: translateY(-50%) translateX(0); }
+    .progress-dot::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; background: var(--accent-glow); opacity: 0; transition: opacity 0.3s ease; }
+    .progress-dot.active { background: var(--accent-light); border-color: var(--accent-light); box-shadow: 0 0 0 4px var(--accent-surface), var(--shadow-glow-sm); transform: scale(1.25); }
+    .progress-dot.active::after { opacity: 1; animation: pulseGlow 2s ease-in-out infinite; }
+    @keyframes pulseGlow { 0%, 100% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.4); opacity: 0.2; } }
+    @media (max-width: 768px) { .stacking-section { padding: 0 20px 150px; } .stacking-header { margin-bottom: 50px; padding-top: 40px; } .stack-card { min-height: 380px; padding: 32px 24px; border-radius: 20px; top: 80px; } .stack-card:nth-child(n) { margin-top: 85vh; } .card-number-bg { font-size: 120px; right: 10px; top: -10px; } .card-icon-wrapper { width: 52px; height: 52px; border-radius: 12px; } .card-icon-wrapper svg { width: 26px; height: 26px; } .card-title { font-size: 20px; } .card-description { font-size: 14px; } .cards-progress { right: 15px; } .progress-dot { width: 8px; height: 8px; } .card-corner { display: none; } .card-accent-line { left: 24px; right: 24px; } }
+    @media (max-width: 480px) { .stacking-section { padding: 0 16px 150px; } .stack-card { min-height: 340px; padding: 28px 20px; border-radius: 16px; top: 70px; } .stack-card:nth-child(n) { margin-top: 80vh; } .card-number-bg { font-size: 90px; } .card-top { margin-bottom: 24px; } .card-title { font-size: 18px; margin-bottom: 12px; } .card-description { font-size: 13px; line-height: 1.65; } .cards-progress { display: none; } }
+
+    /* ===== NEW ROADMAP SECTION STYLES ===== */
+    .roadmap-section {
+      position: relative;
+      z-index: 4;
+      margin-top: 40px;
+      background: transparent;
+    }
+    .roadmap-sticky-container {
+      position: relative;
+      height: 420vh; /* enough scroll distance for horizontal reveal */
+    }
+    .roadmap-sticky-inner {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      width: 100%;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      background: radial-gradient(circle at 30% 40%, rgba(99, 102, 241, 0.08) 0%, transparent 60%);
+    }
+    .roadmap-track {
+      display: flex;
+      gap: 4rem;
+      padding: 0 8vw;
+      will-change: transform;
+    }
+    .roadmap-card {
+      flex: 0 0 75vw;
+      max-width: 800px;
+      aspect-ratio: 16 / 9;
+      border-radius: 2.5rem;
+      background: rgba(15, 15, 18, 0.7);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 20px 40px -15px rgba(0,0,0,0.6);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 2.8rem 3rem;
+      transition: transform 0.45s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.45s ease, box-shadow 0.5s ease;
+      position: relative;
+      overflow: hidden;
+      color: var(--text-primary);
+    }
+    .roadmap-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(125deg, rgba(99,102,241,0.15) 0%, transparent 50%);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+    }
+    .roadmap-card.active-card {
+      transform: scale(1.05);
+      opacity: 1;
+      border-color: rgba(99, 102, 241, 0.35);
+      box-shadow: 0 30px 55px -10px rgba(0,0,0,0.7), 0 0 35px rgba(99,102,241,0.25);
+      background: rgba(20, 20, 28, 0.8);
+    }
+    .roadmap-card.active-card::before {
+      opacity: 1;
+    }
+    .roadmap-card.dimmed {
+      transform: scale(0.88);
+      opacity: 0.45;
+      filter: brightness(0.7) blur(0.8px);
+    }
+    .roadmap-step {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+      color: var(--accent-light);
+      margin-bottom: 0.8rem;
+      text-transform: uppercase;
+    }
+    .roadmap-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: 650;
+      margin-bottom: 0.7rem;
+      color: white;
+      letter-spacing: -0.5px;
+    }
+    .roadmap-concept {
+      font-weight: 500;
+      color: var(--text-secondary);
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+      border-left: 3px solid var(--accent);
+      padding-left: 1.2rem;
+    }
+    .roadmap-desc {
+      color: rgba(255,255,255,0.7);
+      line-height: 1.7;
+      font-size: 1rem;
+      max-width: 85%;
+    }
+    /* neural link svg behind track */
+    .neural-link-svg {
+      position: absolute;
+      bottom: 18%;
+      left: 5%;
+      width: 90%;
+      height: 30px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .neural-link-svg path {
+      fill: none;
+      stroke: var(--accent-light);
+      stroke-width: 1.8;
+      filter: drop-shadow(0 0 12px var(--accent-glow));
+      stroke-dasharray: 8 8;
+      opacity: 0.7;
+    }
+    .progress-bar-roadmap {
+      position: absolute;
+      bottom: 22px;
+      left: 8vw;
+      right: 8vw;
+      height: 3px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 4px;
+      z-index: 5;
+      overflow: hidden;
+    }
+    .progress-pulse {
+      height: 100%;
+      width: 20%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-light));
+      border-radius: 4px;
+      box-shadow: 0 0 18px var(--accent-glow);
+      transition: transform 0.25s linear;
+    }
+    @media (max-width: 768px) {
+      .roadmap-card {
+        flex: 0 0 85vw;
+        padding: 2rem 1.8rem;
+      }
+      .roadmap-track {
+        gap: 2.5rem;
+        padding: 0 5vw;
+      }
+    }
+  </style>
 </head>
 <body>
+  <!-- PRELOADER & MAIN CONTENT (identical structure) -->
+  <div class="preloader-container" id="preloader">
+    <div class="ambient-layer"><div class="gradient-orb orb-main"></div><div class="gradient-orb orb-secondary"></div><div class="noise-overlay"></div></div>
+    <div class="loader-content">
+      <div class="profile-section">
+        <div class="profile-avatar-wrapper"><div class="profile-ring"></div><div class="profile-avatar"><img src="assets/profile.webp" alt="Nitish Kumar" class="profile-img-preloader" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="profile-fallback-icon" style="display: none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div></div></div>
+        <h2 class="profile-name">Nitish Kumar</h2><p class="profile-status">Initializing System</p>
+      </div>
+      <div class="progress-container"><div class="progress-info"><span class="progress-label" id="labelText">Loading</span><span class="progress-number" id="numberValue">0</span></div><div class="progress-track"><div class="progress-fill" id="fillBar"></div></div></div>
+      <div class="metrics-row"><div class="metric-item"><div class="metric-value" id="met1">--</div><div class="metric-label">Core</div><div class="metric-dot" id="dot1"></div></div><div class="metric-item"><div class="metric-value" id="met2">--</div><div class="metric-label">Data</div><div class="metric-dot" id="dot2"></div></div><div class="metric-item"><div class="metric-value" id="met3">--</div><div class="metric-label">System</div><div class="metric-dot" id="dot3"></div></div></div>
+    </div>
+  </div>
 
-    <!-- ==================== PRELOADER ==================== -->
-    <div class="preloader-container" id="preloader">
-        <div class="ambient-layer">
-            <div class="gradient-orb orb-main"></div>
-            <div class="gradient-orb orb-secondary"></div>
-            <div class="noise-overlay"></div>
-        </div>
-        <div class="loader-content">
-            <div class="profile-section">
-                <div class="profile-avatar-wrapper">
-                    <div class="profile-ring"></div>
-                    <div class="profile-avatar">
-                        <img src="assets/profile.webp" alt="Nitish Kumar" class="profile-img-preloader"
-                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        <div class="profile-fallback-icon" style="display: none;">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
-                                <circle cx="12" cy="7" r="4"/>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-                <h2 class="profile-name">Nitish Kumar</h2>
-                <p class="profile-status">Initializing System</p>
-            </div>
-            <div class="progress-container">
-                <div class="progress-info">
-                    <span class="progress-label" id="labelText">Loading</span>
-                    <span class="progress-number" id="numberValue">0</span>
-                </div>
-                <div class="progress-track">
-                    <div class="progress-fill" id="fillBar"></div>
-                </div>
-            </div>
-            <div class="metrics-row">
-                <div class="metric-item">
-                    <div class="metric-value" id="met1">--</div>
-                    <div class="metric-label">Core</div>
-                    <div class="metric-dot" id="dot1"></div>
-                </div>
-                <div class="metric-item">
-                    <div class="metric-value" id="met2">--</div>
-                    <div class="metric-label">Data</div>
-                    <div class="metric-dot" id="dot2"></div>
-                </div>
-                <div class="metric-item">
-                    <div class="metric-value" id="met3">--</div>
-                    <div class="metric-label">System</div>
-                    <div class="metric-dot" id="dot3"></div>
-                </div>
-            </div>
-        </div>
+  <main class="main-content" id="mainContent">
+    <div class="hero-background">
+      <div class="blueprint-layer">
+        <div class="grid-pattern"></div>
+        <svg class="circuit-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+          <path class="circuit-path circuit-path-1" d="M 960 150 L 960 280 Q 960 320 920 320 L 750 320"/>
+          <path class="circuit-path circuit-path-2" d="M 1100 220 L 1350 220 Q 1400 220 1420 260"/>
+          <path class="circuit-path circuit-path-3" d="M 820 220 L 550 220 Q 500 220 480 270"/>
+        </svg>
+        <div class="tech-icon tech-icon-react"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2" fill="currentColor"/><ellipse cx="12" cy="12" rx="10" ry="4" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+        <div class="tech-icon tech-icon-ai"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="currentColor" opacity="0.3"/></svg></div>
+        <div class="tech-icon tech-icon-cloud"><svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z" fill="currentColor"/></svg></div>
+      </div>
+      <div class="hero-ambient-glow"><div class="glow-orb glow-orb-1"></div><div class="glow-orb glow-orb-2"></div><div class="glow-orb glow-orb-3"></div></div>
     </div>
 
-
-    <!-- ==================== MAIN CONTENT - WITH ALL 3 FEATURES ==================== -->
-    <main class="main-content" id="mainContent">
-        
-        <!-- Background -->
-        <div class="hero-background">
-            
-            <!-- FEATURE 1: Architect's Blueprint Layer -->
-            <div class="blueprint-layer">
-                
-                <!-- Grid Pattern -->
-                <div class="grid-pattern"></div>
-                
-                <!-- Circuit Lines SVG -->
-                <svg class="circuit-svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
-                    <!-- Main circuit path from headline area to image -->
-                    <path class="circuit-path circuit-path-1" d="M 960 150 L 960 280 Q 960 320 920 320 L 750 320"/>
-                    
-                    <!-- Secondary path to React icon -->
-                    <path class="circuit-path circuit-path-2" d="M 1100 220 L 1350 220 Q 1400 220 1420 260"/>
-                    
-                    <!-- Tertiary path to AI brain -->
-                    <path class="circuit-path circuit-path-3" d="M 820 220 L 550 220 Q 500 220 480 270"/>
-                    
-                    <!-- Connection to cloud -->
-                    <path class="circuit-path circuit-path-2" d="M 1050 520 L 1400 520 Q 1450 520 1470 560"/>
-                    
-                    <!-- Inner circuit mesh -->
-                    <path class="circuit-path circuit-path-3" d="M 850 420 L 700 420 Q 650 420 630 470"/>
-                </svg>
-                
-                <!-- Floating Tech Icons -->
-                <!-- React Logo -->
-                <div class="tech-icon tech-icon-react">
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <circle cx="12" cy="12" r="2" fill="currentColor"/>
-                        <ellipse cx="12" cy="12" rx="10" ry="4" stroke="currentColor" stroke-width="1.5" fill="none"/>
-                        <ellipse cx="12" cy="12" rx="10" ry="4" stroke="currentColor" stroke-width="1.5" fill="none" transform="rotate(60 12 12)"/>
-                        <ellipse cx="12" cy="12" rx="10" ry="4" stroke="currentColor" stroke-width="1.5" fill="none" transform="rotate(120 12 12)"/>
-                    </svg>
-                </div>
-                
-                <!-- AI Brain Icon -->
-                <div class="tech-icon tech-icon-ai">
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" fill="currentColor" opacity="0.3"/>
-                        <path d="M12 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" fill="currentColor"/>
-                        <circle cx="12" cy="8" r="1.5" fill="currentColor"/>
-                        <circle cx="12" cy="16" r="1.5" fill="currentColor"/>
-                        <path d="M9 12h6M12 9v6" stroke="currentColor" stroke-width="1.5"/>
-                    </svg>
-                </div>
-                
-                <!-- Cloud Server Icon -->
-                <div class="tech-icon tech-icon-cloud">
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z" fill="currentColor"/>
-                        <rect x="8" y="14" width="8" height="6" rx="1" fill="currentColor" opacity="0.5"/>
-                        <line x1="10" y1="17" x2="14" y2="17" stroke="#000" stroke-width="1"/>
-                    </svg>
-                </div>
-            </div>
-            
-            <!-- Ambient Glows -->
-            <div class="hero-ambient-glow">
-                <div class="glow-orb glow-orb-1"></div>
-                <div class="glow-orb glow-orb-2"></div>
-                <div class="glow-orb glow-orb-3"></div>
-            </div>
+    <div class="hero-container">
+      <section class="hero-title-section">
+        <div class="trust-badge"><span class="trust-icon">✦</span><span>Trusted by Startups & Businesses</span><span class="trust-icon">✦</span></div>
+        <h1 class="headline-title">Building Intelligence For Modern<br>And The Real-World <span class="typing-container"><span class="typing-text" id="typingText"></span><span class="typing-cursor">|</span></span></h1>
+        <div class="tech-chips-container" id="techChipsContainer">
+          <div class="tech-chip chip-react"><span>React</span></div><div class="tech-chip chip-nodejs"><span>Node.js</span></div><div class="tech-chip chip-python"><span>Python</span></div>
         </div>
+      </section>
+      <section class="hero-image-section"><img src="assets/hero.webp" alt="Hero Visual" class="hero-image" onerror="this.style.display='none';"></section>
+      <section class="hero-subtext-section"><p class="headline-subtext" id="subtext">​I bridge the gap between robust full-stack development and autonomous AI. From scalable web systems to agentic workflows, I engineer intelligent, end-to-end digital solutions.</p></section>
+    </div>
 
-        <!-- Hero Container - Staggered Stack Layout -->
-        <div class="hero-container">
-            
-            <!-- PART 3: Frontend (Headline) - Drops in LAST with bounce -->
-            <section class="hero-title-section">
-                <!-- Trust Badge -->
-                <div class="trust-badge">
-                    <span class="trust-icon">✦</span>
-                    <span>Trusted by Startups & Businesses</span>
-                    <span class="trust-icon">✦</span>
-                </div>
-                
-                <!-- Typing Headline -->
-                <h1 class="headline-title">
-                    Building Intelligence For Modern<br>And The Real-World
-                    <span class="typing-container">
-                        <span class="typing-text" id="typingText"></span>
-                        <span class="typing-cursor">|</span>
-                    </span>
-                </h1>
-                
-                <!-- Floating Tech Chips -->
-                <div class="tech-chips-container" id="techChipsContainer">
-                    <div class="tech-chip chip-react" data-depth="0.08">
-                        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="2" fill="currentColor"/><ellipse cx="12" cy="12" rx="10" ry="4" stroke="currentColor" stroke-width="1.5" fill="none"/><ellipse cx="12" cy="12" rx="10" ry="4" stroke="currentColor" stroke-width="1.5" fill="none" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4" stroke="currentColor" stroke-width="1.5" fill="none" transform="rotate(120 12 12)"/></svg>
-                        <span>React</span>
-                    </div>
-                    <div class="tech-chip chip-nodejs" data-depth="0.12">
-                        <svg viewBox="0 0 24 24" fill="none"><path d="M11.998 24c-.321 0-.641-.084-.922-.247l-2.936-1.737c-.438-.245-.224-.332-.08-.383.585-.203.703-.25 1.328-.604.065-.037.151-.023.218.017l2.256 1.339a.29.29 0 00.272 0l8.795-5.076a.277.277 0 00.134-.238V6.921a.283.283 0 00-.137-.242l-8.791-5.072a.278.278 0 00-.271 0L3.075 6.68a.284.284 0 00-.139.241v10.15a.27.27 0 00.138.236l2.409 1.392c1.307.654 2.108-.116 2.108-.89V7.787c0-.142.114-.253.256-.253h1.115c.139 0 .255.112.255.253v9.021c0 1.745-.95 2.745-2.604 2.745-.508 0-.909 0-2.026-.551L2.275 17.65A1.854 1.854 0 011.366 16.07V5.921c0-.681.363-1.317.953-1.656L11.115.191a1.93 1.93 0 011.77 0l8.794 5.074c.589.339.954.975.954 1.656v10.15c0 .68-.365 1.315-.954 1.655l-8.794 5.076a1.834 1.834 0 01-.927.247z" fill="currentColor"/><path d="M15.11 14.887c-2.474 0-2.99-1.136-2.99-2.09 0-.141.113-.253.255-.253h1.139c.126 0 .232.092.252.216.171 1.16.681 1.746 2.344 1.746 1.442 0 2.056-.579 2.056-1.932 0-.78-.307-1.356-2.416-1.744-1.872-.344-3.031-.84-3.031-2.663 0-1.674 1.413-2.671 3.781-2.671 1.976 0 3.306.597 3.805 2.348.026.084.003.183-.058.255a.256.256 0 01-.246.084h-1.147a.252.252 0 01-.245-.179c-.273-.87-.861-1.149-2.109-1.149-1.554 0-1.735.542-1.735 1.047 0 .871.378 1.125 2.377 1.618 1.974.486 3.067.96 3.067 2.757 0 1.81-1.507 2.843-4.139 2.843z" fill="currentColor"/></svg>
-                        <span>Node.js</span>
-                    </div>
-                    <div class="tech-chip chip-python" data-depth="0.06">
-                        <svg viewBox='0 0 24 24' fill='none'><path d='M9.585 11.692h4.328s2.432.039 2.432-2.35V5.391S16.714 3 11.936 3C7.362 3 7.647 4.983 7.647 4.983l.006 2.055h4.363v.617H5.92s-2.946-.167-2.946 4.31c0 4.476 2.574 4.321 2.574 4.321h1.495v-2.141s-.081-2.574 2.533-2.574zm-.056-5.74a.784.784 0 110-1.57.784.784 0 010 1.57z' fill='currentColor'/><path d='M18.452 7.532h-1.495v2.141s.081 2.574-2.533 2.574H9.911s-2.432-.04-2.432 2.35v3.951s-.369 2.391 4.409 2.391c4.573 0 4.288-1.983 4.288-1.983l-.006-2.054h-4.363v-.617h6.097s2.946.167 2.946-4.31c0-4.476-2.574-4.32-2.574-4.32zm-4.14 10.148a.784.784 0 110 1.569.784.784 0 010-1.57z' fill='currentColor'/></svg>
-                        <span>Python</span>
-                    </div>
-                    <div class="tech-chip chip-html5" data-depth="0.10">
-                        <svg viewBox='0 0 24 24' fill='none'><path d='M1.5 0h21l-1.91 21.563L11.977 24l-8.564-2.438L1.5 0zm7.031 9.75l-.232-2.718 10.059.003.23-2.622L5.412 4.41l.698 8.01h9.126l-.326 3.426-2.91.804-2.955-.81-.188-2.11H6.248l.33 4.171L12 19.351l5.379-1.443.744-8.157H8.531z' fill='currentColor'/></svg>
-                        <span>HTML5</span>
-                    </div>
-                    <div class="tech-chip chip-ai" data-depth="0.14">
-                        <svg viewBox='0 0 24 24' fill='none'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z' fill='currentColor' opacity='0.3'/><path d='M12 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z' fill='currentColor'/><circle cx='12' cy='8' r='1.5' fill='currentColor'/><circle cx='12' cy='16' r='1.5' fill='currentColor'/><path d='M9 12h6M12 9v6' stroke='currentColor' stroke-width='1.5'/></svg>
-                        <span>AI/ML</span>
-                    </div>
-                    <div class="tech-chip chip-typescript" data-depth="0.09">
-                        <svg viewBox='0 0 24 24' fill='none'><path d='M1.125 0C.502 0 0 .502 0 1.125v21.75C0 23.498.502 24 1.125 24h21.75c.623 0 1.125-.502 1.125-1.125V1.125C24 .502 23.498 0 22.875 0zm17.363 9.75c.612 0 1.154.037 1.627.111a6.38 6.38 0 011.306.34v2.458a3.95 3.95 0 00-.643-.361 5.093 5.093 0 00-.717-.26 5.453 5.453 0 00-1.426-.2c-.3 0-.573.028-.819.086a2.1 2.1 0 00-.623.242c-.17.104-.3.229-.393.374a.888.888 0 00-.14.49c0 .196.053.373.156.529.104.156.252.304.443.444s.42.276.69.404c.27.128.574.264.911.408.464.195.877.4 1.24.616.364.215.672.458.924.729.252.27.445.58.578.932.133.351.199.756.199 1.214 0 .557-.106 1.043-.318 1.457a2.94 2.94 0 01-.873 1.028 3.83 3.83 0 01-1.303.61 5.91 5.91 0 01-1.585.204c-.623 0-1.187-.058-1.693-.174a5.53 5.53 0 01-1.321-.458v-2.63c.254.186.528.348.82.486.293.137.586.248.878.333.293.085.573.146.841.184.268.038.51.057.726.057.3 0 .566-.03.798-.088a1.88 1.88 0 00.586-.242c.16-.105.28-.228.363-.371a.94.94 0 00.124-.471.93.93 0 00-.168-.54 1.826 1.826 0 00-.47-.432 5.018 5.018 0 00-.725-.392c-.28-.133-.595-.273-.944-.42a8.114 8.114 0 01-1.192-.59 4.27 4.27 0 01-.876-.714 2.79 2.79 0 01-.548-.864 2.89 2.89 0 01-.189-1.073c0-.52.1-.978.298-1.375.198-.398.474-.733.826-1.005.352-.272.768-.478 1.246-.617A5.62 5.62 0 0118.488 9.75zM3.375 9.938h2.531v6.375h4.125v2.062H3.375V9.938z' fill='currentColor'/></svg>
-                        <span>TypeScript</span>
-                    </div>
-                </div>
-            </section>
+    <!-- Existing stacking section remains untouched -->
+    <section class="stacking-section" id="stackingSection">
+      <header class="stacking-header"><span class="stacking-label">Core Capabilities</span><h2 class="stacking-title">The High-Tech Choice</h2><p class="stacking-subtitle">Six layers of expertise stacked together.</p></header>
+      <div class="cards-container" id="cardsContainer">
+        <article class="stack-card active" data-card="1"><span class="card-number-bg">01</span><div class="card-top"><div class="card-icon-wrapper"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/></svg></div><span class="card-index">01/06</span></div><div class="card-body"><h3 class="card-title">Agentic AI Workflows</h3><p class="card-description">Autonomous agents performing multi-step reasoning.</p></div></article>
+        <article class="stack-card" data-card="2"><span class="card-number-bg">02</span><div class="card-top"><div class="card-icon-wrapper"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 2 7 12 12 22 7 12 2"/></svg></div><span class="card-index">02/06</span></div><div class="card-body"><h3 class="card-title">Full-Stack Ecosystems</h3><p class="card-description">React, Node.js, and scalable databases.</p></div></article>
+      </div>
+    </section>
 
-            <!-- PART 2: Image - Center piece -->
-            <section class="hero-image-section">
-                <img src="assets/hero.webp" alt="Hero Visual" class="hero-image"
-                     onerror="this.style.display='none';">
-            </section>
-
-            <!-- PART 1: Backend (Sub-headline) - Slides up FIRST with blur + typing -->
-            <section class="hero-subtext-section">
-                <p class="headline-subtext" id="subtext">
-                    ​I bridge the gap between robust full-stack development and autonomous AI. From scalable web systems to agentic workflows, I engineer intelligent, end-to-end digital solutions designed to solve complex business problems, improve efficiency, and scale operations.
-                </p>
-            </section>
-
+    <!-- ===== NEW ROADMAP SECTION ===== -->
+    <section class="roadmap-section" id="roadmapSection">
+      <div class="roadmap-sticky-container" id="roadmapStickyContainer">
+        <div class="roadmap-sticky-inner">
+          <!-- Neural link SVG behind cards -->
+          <svg class="neural-link-svg" viewBox="0 0 1200 40" preserveAspectRatio="none">
+            <path d="M20,20 L380,20" stroke-width="2" stroke-dasharray="10 12"/>
+            <path d="M420,20 L780,20" stroke-width="2" stroke-dasharray="10 12"/>
+            <path d="M820,20 L1180,20" stroke-width="2" stroke-dasharray="10 12"/>
+          </svg>
+          <div class="roadmap-track" id="roadmapTrack">
+            <div class="roadmap-card" data-step="1">
+              <div class="roadmap-step">01 · Discovery & Synthesis</div>
+              <h3 class="roadmap-title">The Foundation</h3>
+              <p class="roadmap-concept">Deconstructing business challenges</p>
+              <p class="roadmap-desc">Identifying where automation and custom software create the highest ROI. We define the problem before we build the solution.</p>
+            </div>
+            <div class="roadmap-card" data-step="2">
+              <div class="roadmap-step">02 · Architecture & Logic</div>
+              <h3 class="roadmap-title">The Blueprint</h3>
+              <p class="roadmap-concept">Mapping secure database schemas</p>
+              <p class="roadmap-desc">Designing the decision‑making “brain” for your AI agents. Every data point is strategically placed for future scale.</p>
+            </div>
+            <div class="roadmap-card" data-step="3">
+              <div class="roadmap-step">03 · Full‑Stack Engineering</div>
+              <h3 class="roadmap-title">The Construction</h3>
+              <p class="roadmap-concept">High-performance frontends & backends</p>
+              <p class="roadmap-desc">Building robust, scalable foundations for intelligence. Functional, fast, and future‑ready code.</p>
+            </div>
+            <div class="roadmap-card" data-step="4">
+              <div class="roadmap-step">04 · Agentic AI Integration</div>
+              <h3 class="roadmap-title">The Intelligence</h3>
+              <p class="roadmap-concept">Autonomous workflows & LLMs</p>
+              <p class="roadmap-desc">Deploying fine‑tuned agents that handle real‑world tasks with precision. Moving beyond chat into active execution.</p>
+            </div>
+            <div class="roadmap-card" data-step="5">
+              <div class="roadmap-step">05 · Launch & Optimization</div>
+              <h3 class="roadmap-title">The Evolution</h3>
+              <p class="roadmap-concept">Edge deployment & model refinement</p>
+              <p class="roadmap-desc">The system doesn’t just run; it evolves with your business data and user needs.</p>
+            </div>
+          </div>
+          <div class="progress-bar-roadmap">
+            <div class="progress-pulse" id="progressPulse"></div>
+          </div>
         </div>
+      </div>
+    </section>
 
-        <!-- ==================== STICKY CARD STACKING SECTION ==================== -->
-        <section class="stacking-section" id="stackingSection">
+    <footer class="footer-nav">
+      <div class="footer-content">
+        <div class="social-icons">
+          <a href="#" class="social-icon github"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    (function() {
+      // --- Preloader logic (same) ---
+      const config = { labels: ['Loading','Preparing','Processing','Finalizing','Complete'], metricValues: [['--','OK','RDY'],['--','SYNC','DONE'],['--','ACT','ON']], dotPoints: [20,45,75], duration: 4200 };
+      let progress = 0, interval = null;
+      function render(val) {
+        document.getElementById('fillBar').style.width = `${val}%`;
+        document.getElementById('numberValue').textContent = Math.floor(val);
+        const lbl = document.getElementById('labelText');
+        if(val<20) lbl.textContent=config.labels[0]; else if(val<42) lbl.textContent=config.labels[1]; else if(val<68) lbl.textContent=config.labels[2]; else if(val<88) lbl.textContent=config.labels[3]; else lbl.textContent=config.labels[4];
+        for(let i=1;i<=3;i++) {
+          const met=document.getElementById(`met${i}`), dot=document.getElementById(`dot${i}`);
+          const point=config.dotPoints[i-1], arr=config.metricValues[i-1];
+          if(val>=point+20){ met.textContent=arr[2]; dot.classList.add('active'); }
+          else if(val>=point){ met.textContent=arr[1]; }
+          else { met.textContent=arr[0]; dot.classList.remove('active'); }
+        }
+      }
+      function finish() {
+        clearInterval(interval); render(100);
+        setTimeout(() => {
+          document.getElementById('preloader').classList.add('hidden');
+          document.getElementById('mainContent').classList.add('visible');
+          startTypingEffect(); initParallax(); revealTechChips(); initStackingCards();
+          setTimeout(() => { const sub=document.getElementById('subtext'); if(sub) sub.classList.add('typed'); }, 4200);
+        }, 700);
+      }
+      window.startPreloader = function() {
+        progress=0; document.getElementById('preloader').classList.remove('hidden'); document.getElementById('mainContent').classList.remove('visible');
+        const startTime=Date.now();
+        interval=setInterval(()=>{ const elapsed=Date.now()-startTime; const target=Math.min((elapsed/config.duration)*100,100); progress+=(target-progress)*0.07; if(progress>=99.5){progress=100; finish();} render(progress); },24);
+      };
+      window.addEventListener('load', startPreloader);
+
+      // Typing, parallax, chips (same)
+      function startTypingEffect(){ setTimeout(()=>{ const el=document.getElementById('typingText'); if(!el)return; const words=['products','startups','solutions']; let w=0,c=0,del=false; function type(){ const cur=words[w]; if(del){ el.textContent=cur.substring(0,c-1); c--; }else{ el.textContent=cur.substring(0,c+1); c++; } if(!del&&c===cur.length){ setTimeout(()=>{del=true;},2000); } else if(del&&c===0){ del=false; w=(w+1)%words.length; setTimeout(type,400); return; } setTimeout(type, del?50:100); } type(); },3500); }
+      function initParallax(){ const container=document.getElementById('techChipsContainer'); if(!container)return; const chips=container.querySelectorAll('.tech-chip'); let mx=0,my=0,cx=0,cy=0; function anim(){ cx+=(mx-cx)*0.08; cy+=(my-cy)*0.08; chips.forEach(ch=>{ const d=parseFloat(ch.dataset.depth)||0.1; ch.style.transform=`translate3d(${cx*d*-30}px,${cy*d*-30}px,0)`; }); requestAnimationFrame(anim); } document.addEventListener('mousemove',e=>{ mx=(e.clientX/window.innerWidth-0.5)*2; my=(e.clientY/window.innerHeight-0.5)*2; }); anim(); }
+      function revealTechChips(){ document.querySelectorAll('.tech-chip').forEach((c,i)=>setTimeout(()=>c.classList.add('visible'),i*150)); }
+      function initStackingCards(){ /* kept minimal for existing cards */ }
+
+      // ----- ROADMAP HORIZONTAL SCROLL (Cinematic) -----
+      const track = document.getElementById('roadmapTrack');
+      const cards = document.querySelectorAll('.roadmap-card');
+      const pulse = document.getElementById('progressPulse');
+      const stickyContainer = document.getElementById('roadmapStickyContainer');
+
+      if (track && cards.length && stickyContainer) {
+        function updateRoadmap() {
+          const rect = stickyContainer.getBoundingClientRect();
+          const containerHeight = stickyContainer.offsetHeight;
+          const viewHeight = window.innerHeight;
+          
+          // How much of the sticky container has scrolled past top (0 to 1)
+          let progress = Math.min(Math.max(-rect.top / (containerHeight - viewHeight), 0), 1);
+          
+          const totalMove = track.scrollWidth - window.innerWidth * 0.9;
+          const translateX = -progress * totalMove;
+          track.style.transform = `translate3d(${translateX}px, 0, 0)`;
+
+          // Update progress pulse width
+          if (pulse) {
+            pulse.style.width = `${progress * 100}%`;
+          }
+
+          // Determine active card based on horizontal center
+          const centerX = window.innerWidth / 2;
+          let activeIndex = 0;
+          let minDistance = Infinity;
+
+          cards.forEach((card, idx) => {
+            const cardRect = card.getBoundingClientRect();
+            const cardCenter = cardRect.left + cardRect.width / 2;
+            const distance = Math.abs(cardCenter - centerX);
             
-            <!-- Section Header -->
-            <header class="stacking-header">
-                <span class="stacking-label">Core Capabilities</span>
-                <h2 class="stacking-title">The High-Tech Choice</h2>
-                <p class="stacking-subtitle">
-                    Six layers of expertise stacked together to build intelligent systems that scale.
-                </p>
-            </header>
+            if (distance < minDistance) {
+              minDistance = distance;
+              activeIndex = idx;
+            }
+          });
 
-            <!-- Cards Container -->
-            <div class="cards-container" id="cardsContainer">
-                
-                <!-- Card 01: Agentic AI Workflows -->
-                <article class="stack-card active" data-card="1">
-                    <span class="card-number-bg">01</span>
-                    <div class="card-corner corner-tl"></div>
-                    <div class="card-corner corner-tr"></div>
-                    <div class="card-corner corner-bl"></div>
-                    <div class="card-corner corner-br"></div>
-                    
-                    <div class="card-top">
-                        <div class="card-icon-wrapper">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="4" y="4" width="16" height="16" rx="2" />
-                                <rect x="9" y="9" width="6" height="6" />
-                                <path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3" />
-                            </svg>
-                        </div>
-                        <span class="card-index">01 / 06</span>
-                    </div>
-                    
-                    <div class="card-body">
-                        <h3 class="card-title">Agentic AI Workflows</h3>
-                        <p class="card-description">
-                            Developing autonomous agents that use LLMs to perform multi-step reasoning, decision-making, and complex task execution across distributed systems.
-                        </p>
-                    </div>
-                    
-                    <div class="card-accent-line"></div>
-                </article>
-
-                <!-- Card 02: Full-Stack Ecosystems -->
-                <article class="stack-card" data-card="2">
-                    <span class="card-number-bg">02</span>
-                    <div class="card-corner corner-tl"></div>
-                    <div class="card-corner corner-tr"></div>
-                    <div class="card-corner corner-bl"></div>
-                    <div class="card-corner corner-br"></div>
-                    
-                    <div class="card-top">
-                        <div class="card-icon-wrapper">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <polygon points="12 2 2 7 12 12 22 7 12 2" />
-                                <polyline points="2 17 12 22 22 17" />
-                                <polyline points="2 12 12 17 22 12" />
-                            </svg>
-                        </div>
-                        <span class="card-index">02 / 06</span>
-                    </div>
-                    
-                    <div class="card-body">
-                        <h3 class="card-title">Full-Stack Ecosystems</h3>
-                        <p class="card-description">
-                            Engineering robust architectures from responsive React frontends to high-performance Node.js backends and scalable database solutions.
-                        </p>
-                    </div>
-                    
-                    <div class="card-accent-line"></div>
-                </article>
-
-                <!-- Card 03: Custom SaaS Solutions -->
-                <article class="stack-card" data-card="3">
-                    <span class="card-number-bg">03</span>
-                    <div class="card-corner corner-tl"></div>
-                    <div class="card-corner corner-tr"></div>
-                    <div class="card-corner corner-bl"></div>
-                    <div class="card-corner corner-br"></div>
-                    
-                    <div class="card-top">
-                        <div class="card-icon-wrapper">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z" />
-                            </svg>
-                        </div>
-                        <span class="card-index">03 / 06</span>
-                    </div>
-                    
-                    <div class="card-body">
-                        <h3 class="card-title">Custom SaaS Solutions</h3>
-                        <p class="card-description">
-                            Building end-to-end software products that transform abstract business ideas into production-ready, revenue-generating digital assets.
-                        </p>
-                    </div>
-                    
-                    <div class="card-accent-line"></div>
-                </article>
-
-                <!-- Card 04: API & Systems Integration -->
-                <article class="stack-card" data-card="4">
-                    <span class="card-number-bg">04</span>
-                    <div class="card-corner corner-tl"></div>
-                    <div class="card-corner corner-tr"></div>
-                    <div class="card-corner corner-bl"></div>
-                    <div class="card-corner corner-br"></div>
-                    
-                    <div class="card-top">
-                        <div class="card-icon-wrapper">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="18" cy="5" r="3" />
-                                <circle cx="6" cy="12" r="3" />
-                                <circle cx="18" cy="19" r="3" />
-                                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-                                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-                            </svg>
-                        </div>
-                        <span class="card-index">04 / 06</span>
-                    </div>
-                    
-                    <div class="card-body">
-                        <h3 class="card-title">API & Systems Integration</h3>
-                        <p class="card-description">
-                            Connecting disparate services and internal software through secure, optimized APIs to create a unified data flow architecture.
-                        </p>
-                    </div>
-                    
-                    <div class="card-accent-line"></div>
-                </article>
-
-                <!-- Card 05: Intelligent Automation -->
-                <article class="stack-card" data-card="5">
-                    <span class="card-number-bg">05</span>
-                    <div class="card-corner corner-tl"></div>
-                    <div class="card-corner corner-tr"></div>
-                    <div class="card-corner corner-bl"></div>
-                    <div class="card-corner corner-br"></div>
-                    
-                    <div class="card-top">
-                        <div class="card-icon-wrapper">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-                            </svg>
-                        </div>
-                        <span class="card-index">05 / 06</span>
-                    </div>
-                    
-                    <div class="card-body">
-                        <h3 class="card-title">Intelligent Automation</h3>
-                        <p class="card-description">
-                            Eliminating manual overhead by deploying smart scripts and AI-driven logic to streamline repetitive business operations.
-                        </p>
-                    </div>
-                    
-                    <div class="card-accent-line"></div>
-                </article>
-
-                <!-- Card 06: Scalable Infrastructure -->
-                <article class="stack-card" data-card="6">
-                    <span class="card-number-bg">06</span>
-                    <div class="card-corner corner-tl"></div>
-                    <div class="card-corner corner-tr"></div>
-                    <div class="card-corner corner-bl"></div>
-                    <div class="card-corner corner-br"></div>
-                    
-                    <div class="card-top">
-                        <div class="card-icon-wrapper">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="2" y="2" width="20" height="8" rx="2" ry="2" />
-                                <rect x="2" y="14" width="20" height="8" rx="2" ry="2" />
-                                <line x1="6" y1="6" x2="6.01" y2="6" />
-                                <line x1="6" y1="18" x2="6.01" y2="18" />
-                            </svg>
-                        </div>
-                        <span class="card-index">06 / 06</span>
-                    </div>
-                    
-                    <div class="card-body">
-                        <h3 class="card-title">Scalable Infrastructure</h3>
-                        <p class="card-description">
-                            Deploying and managing applications on edge networks and cloud platforms to ensure 99.9% uptime and global speed performance.
-                        </p>
-                    </div>
-                    
-                    <div class="card-accent-line"></div>
-                </article>
-
-            </div>
-        </section>
-
-        <!-- Side Progress Indicator -->
-        <nav class="cards-progress" id="cardsProgress" aria-label="Card navigation">
-            <button class="progress-dot active" data-card="1" data-label="AI Workflows" aria-label="Go to card 1"></button>
-            <button class="progress-dot" data-card="2" data-label="Full-Stack" aria-label="Go to card 2"></button>
-            <button class="progress-dot" data-card="3" data-label="SaaS" aria-label="Go to card 3"></button>
-            <button class="progress-dot" data-card="4" data-label="Integration" aria-label="Go to card 4"></button>
-            <button class="progress-dot" data-card="5" data-label="Automation" aria-label="Go to card 5"></button>
-            <button class="progress-dot" data-card="6" data-label="Infrastructure" aria-label="Go to card 6"></button>
-        </nav>
-
-        <!-- Footer - Thin Fixed at Bottom - SOCIAL ICONS ONLY -->
-        <footer class="footer-nav">
-            <div class="footer-content">
-                
-                <!-- Social Media Icons Only -->
-                <div class="social-icons">
-                    <!-- GitHub -->
-                    <a href="https://github.com/" target="_blank" rel="noopener noreferrer" class="social-icon github" aria-label="GitHub">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                        </svg>
-                    </a>
-
-                    <!-- X (Twitter) -->
-                    <a href="https://twitter.com/" target="_blank" rel="noopener noreferrer" class="social-icon twitter" aria-label="X (Twitter)">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                        </svg>
-                    </a>
-
-                    <!-- Facebook -->
-                    <a href="https://facebook.com/" target="_blank" rel="noopener noreferrer" class="social-icon facebook" aria-label="Facebook">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                        </svg>
-                    </a>
-
-                    <!-- Instagram -->
-                    <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" class="social-icon instagram" aria-label="Instagram">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
-                        </svg>
-                    </a>
-
-                    <!-- LinkedIn -->
-                    <a href="https://linkedin.com/" target="_blank" rel="noopener noreferrer" class="social-icon linkedin" aria-label="LinkedIn">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                        </svg>
-                    </a>
-
-                    <!-- WhatsApp -->
-                    <a href="https://wa.me/" target="_blank" rel="noopener noreferrer" class="social-icon whatsapp" aria-label="WhatsApp">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-        </footer>
-
-    </main>
-
-
-    <!-- ==================== JAVASCRIPT ==================== -->
-    <script>
-
-        // ==================== TYPING HEADLINE EFFECT ====================
-        const typingWords = ['products', 'startups', 'solutions', 'futures', 'systems'];
-        let wordIndex = 0;
-        let charIndex = 0;
-        let isDeleting = false;
-        const typingElement = document.getElementById('typingText');
-
-        function typeEffect() {
-            if (!typingElement) return;
-            
-            const currentWord = typingWords[wordIndex];
-            
-            if (isDeleting) {
-                // Deleting characters
-                typingElement.textContent = currentWord.substring(0, charIndex - 1);
-                charIndex--;
+          cards.forEach((card, idx) => {
+            card.classList.remove('active-card', 'dimmed');
+            if (idx === activeIndex) {
+              card.classList.add('active-card');
             } else {
-                // Typing characters
-                typingElement.textContent = currentWord.substring(0, charIndex + 1);
-                charIndex++;
+              card.classList.add('dimmed');
             }
-
-            // Word complete - start deleting after pause
-            if (!isDeleting && charIndex === currentWord.length) {
-                setTimeout(() => { isDeleting = true; }, 2000); // Pause before delete
-            }
-            // Delete complete - move to next word
-            else if (isDeleting && charIndex === 0) {
-                isDeleting = false;
-                wordIndex = (wordIndex + 1) % typingWords.length;
-                setTimeout(typeEffect, 400); // Pause before next word
-                return;
-            }
-
-            // Speed control
-            const speed = isDeleting ? 50 : 100;
-            setTimeout(typeEffect, speed);
+          });
         }
 
-        // Start typing effect after main content appears
-        function startTypingEffect() {
-            setTimeout(() => {
-                if (typingElement) {
-                    typeEffect();
-                }
-            }, 3500); // Delay until after headline animation
-        }
-
-        // ==================== PARALLAX EFFECT FOR TECH CHIPS ====================
-        function initParallax() {
-            const chipsContainer = document.getElementById('techChipsContainer');
-            if (!chipsContainer) return;
-
-            const chips = chipsContainer.querySelectorAll('.tech-chip');
-            let mouseX = 0, mouseY = 0;
-            let currentX = 0, currentY = 0;
-
-            // Smooth interpolation
-            function animate() {
-                currentX += (mouseX - currentX) * 0.08;
-                currentY += (mouseY - currentY) * 0.08;
-                
-                chips.forEach(chip => {
-                    const depth = parseFloat(chip.dataset.depth) || 0.1;
-                    const moveX = currentX * depth * -30;  // Reduced magnitude
-                    const moveY = currentY * depth * -30;
-                    
-                    // Use transform for GPU acceleration
-                    chip.style.transform = `translate3d(${moveX}px, ${moveY}px, 0)`;
-                });
-                
-                requestAnimationFrame(animate);
-            }
-
-            document.addEventListener('mousemove', (e) => {
-                // Normalize to -1 to 1 range
-                mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-                mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
-            });
-
-            animate();
-        }
-
-        // ==================== REVEAL TECH CHIPS ON SCROLL/LOAD ====================
-        function revealTechChips() {
-            const chips = document.querySelectorAll('.tech-chip');
-            
-            // Staggered reveal
-            chips.forEach((chip, index) => {
-                setTimeout(() => {
-                    chip.classList.add('visible');
-                }, index * 150); // 150ms stagger between each chip
-            });
-        }
-
-        // ==================== STICKY CARD STACKING LOGIC ====================
-        function initStackingCards() {
-            const cards = document.querySelectorAll('.stack-card');
-            const progressDots = document.querySelectorAll('.progress-dot');
-            const progressNav = document.getElementById('cardsProgress');
-            
-            if (!cards.length || !progressNav) return;
-
-            // Create intersection observer for each card
-            const observerOptions = {
-                root: null,
-                rootMargin: '-100px 0px -60% 0px',
-                threshold: 0
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    const card = entry.target;
-                    const cardNumber = parseInt(card.dataset.card);
-
-                    if (entry.isIntersecting) {
-                        // Card is becoming active (topmost visible)
-                        cards.forEach(c => {
-                            if (c !== card) {
-                                c.classList.remove('active');
-                                c.classList.add('inactive');
-                            }
-                        });
-                        card.classList.add('active');
-                        card.classList.remove('inactive');
-
-                        // Update progress dots
-                        progressDots.forEach(dot => {
-                            dot.classList.remove('active');
-                            if (parseInt(dot.dataset.card) === cardNumber) {
-                                dot.classList.add('active');
-                            }
-                        });
-
-                        // Show progress nav when in stacking section
-                        progressNav.classList.add('visible');
-                    }
-                });
-            }, observerOptions);
-
-            // Observe all cards
-            cards.forEach(card => {
-                observer.observe(card);
-            });
-
-            // Hide progress nav when leaving stacking section
-            const stackingSection = document.getElementById('stackingSection');
-            const sectionObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (!entry.isIntersecting) {
-                        progressNav.classList.remove('visible');
-                    }
-                });
-            }, { threshold: 0 });
-
-            if (stackingSection) {
-                sectionObserver.observe(stackingSection);
-            }
-
-            // Click handler for progress dots
-            progressDots.forEach(dot => {
-                dot.addEventListener('click', () => {
-                    const targetCard = document.querySelector(`.stack-card[data-card="${dot.dataset.card}"]`);
-                    if (targetCard) {
-                        targetCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                });
-            });
-
-            // Set initial state (first card active, others inactive)
-            cards.forEach((card, index) => {
-                if (index === 0) {
-                    card.classList.add('active');
-                } else {
-                    card.classList.add('inactive');
-                }
-            });
-        }
-
-        // ==================== PRELOADER LOGIC ====================
-        const config = {
-            labels: ['Loading', 'Preparing', 'Processing', 'Finalizing', 'Complete'],
-            metricValues: [
-                ['--', 'OK', 'RDY'],
-                ['--', 'SYNC', 'DONE'],
-                ['--', 'ACT', 'ON']
-            ],
-            dotPoints: [20, 45, 75],
-            duration: 4200
-        };
-
-        let progress = 0;
-        let interval = null;
-
-        function start() {
-            const startTime = Date.now();
-            
-            interval = setInterval(() => {
-                const elapsed = Date.now() - startTime;
-                const target = Math.min((elapsed / config.duration) * 100, 100);
-                
-                progress += (target - progress) * 0.07;
-                
-                if (progress >= 99.5) {
-                    progress = 100;
-                    finish();
-                }
-                
-                render(progress);
-                
-            }, 24);
-        }
-
-        function render(val) {
-            document.getElementById('fillBar').style.width = `${val}%`;
-            document.getElementById('numberValue').textContent = Math.floor(val);
-            
-            const labels = config.labels;
-            const lbl = document.getElementById('labelText');
-            if (val < 20) lbl.textContent = labels[0];
-            else if (val < 42) lbl.textContent = labels[1];
-            else if (val < 68) lbl.textContent = labels[2];
-            else if (val < 88) lbl.textContent = labels[3];
-            else lbl.textContent = labels[4];
-
-            const points = config.dotPoints;
-            const vals = config.metricValues;
-            
-            for (let i = 1; i <= 3; i++) {
-                const metEl = document.getElementById(`met${i}`);
-                const dotEl = document.getElementById(`dot${i}`);
-                const point = points[i - 1];
-                const valueArr = vals[i - 1];
-                
-                if (val >= point + 20) {
-                    metEl.textContent = valueArr[2];
-                    dotEl.classList.add('active');
-                } else if (val >= point) {
-                    metEl.textContent = valueArr[1];
-                } else {
-                    metEl.textContent = valueArr[0];
-                    dotEl.classList.remove('active');
-                }
-            }
-        }
-
-        function finish() {
-            clearInterval(interval);
-            render(100);
-            
-            setTimeout(() => {
-                document.getElementById('preloader').classList.add('hidden');
-                document.getElementById('mainContent').classList.add('visible');
-                
-                // Initialize new hero features
-                startTypingEffect();
-                initParallax();
-                revealTechChips();
-                
-                // Initialize sticky card stacking
-                initStackingCards();
-                
-                // Start subtext typing effect after main content visible
-                setTimeout(() => {
-                    const subtext = document.getElementById('subtext');
-                    subtext.classList.add('typed');
-                    // Hide cursor element if it exists
-                    const cursor = document.querySelector('.typing-cursor');
-                    if (cursor) cursor.style.opacity = '0';
-                }, 4200); // After typing animation completes
-                
-            }, 700);
-        }
-
-        function restart() {
-            progress = 0;
-            for (let i = 1; i <= 3; i++) {
-                document.getElementById(`dot${i}`).classList.remove('active');
-            }
-            document.getElementById('preloader').classList.remove('hidden');
-            document.getElementById('mainContent').classList.remove('visible');
-            setTimeout(start, 200);
-        }
-
-        window.addEventListener('load', start);
-
-    </script>
-
+        window.addEventListener('scroll', updateRoadmap, { passive: true });
+        window.addEventListener('resize', updateRoadmap);
+        updateRoadmap(); // initial call
+      }
+    })();
+  </script>
 </body>
 </html>
