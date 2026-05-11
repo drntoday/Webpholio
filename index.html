@@ -701,6 +701,7 @@
             opacity: 0;
             animation: frontendBounceDrop 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
             animation-delay: 3s;
+            position: relative;
         }
 
         @keyframes frontendBounceDrop {
@@ -733,6 +734,198 @@
             color: var(--soft-white);
             margin: 0;
             text-shadow: 0 2px 30px rgba(0, 0, 0, 0.4), 0 0 60px var(--accent-glow);
+        }
+
+        /* ========== NEW HERO SECTION ENHANCEMENTS ========== */
+        
+        /* Trust Badge */
+        .trust-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 20px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+            margin-bottom: 24px;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            animation: trustBadgeFadeIn 0.6s ease forwards;
+            animation-delay: 3.2s;
+        }
+
+        @keyframes trustBadgeFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .trust-icon {
+            color: var(--success);
+            font-size: 10px;
+            animation: trustPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes trustPulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        /* Typing Headline Effect */
+        .typing-container {
+            display: inline-block;
+            position: relative;
+            color: var(--accent-light);
+        }
+
+        .typing-text {
+            display: inline;
+        }
+
+        .typing-cursor {
+            display: inline-block;
+            margin-left: 2px;
+            font-weight: 300;
+            animation: cursorBlink 0.8s step-end infinite;
+            color: var(--accent-light);
+        }
+
+        @keyframes cursorBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Floating Tech Chips */
+        .tech-chips-container {
+            position: absolute;
+            inset: -60px -40px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .tech-chip {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            opacity: 0;
+            transform: scale(0.8) translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            will-change: transform;
+        }
+
+        .tech-chip.visible {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        .tech-chip svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+
+        /* Chip Positions - Scattered around heading */
+        .chip-react {
+            top: -20px;
+            right: 5%;
+            animation: chipFloatIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 3.5s;
+        }
+
+        .chip-nodejs {
+            top: 15%;
+            left: -5%;
+            animation: chipFloatIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 3.7s;
+        }
+
+        .chip-python {
+            bottom: 10%;
+            right: -2%;
+            animation: chipFloatIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 3.9s;
+        }
+
+        .chip-html5 {
+            top: 50%;
+            left: 2%;
+            animation: chipFloatIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 4.1s;
+        }
+
+        .chip-ai {
+            top: 5%;
+            left: 15%;
+            animation: chipFloatIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 4.3s;
+        }
+
+        .chip-typescript {
+            bottom: 25%;
+            right: 8%;
+            animation: chipFloatIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 4.5s;
+        }
+
+        @keyframes chipFloatIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* Gradient Shift Animation for Background */
+        .hero-background::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(251, 146, 60, 0.06) 0%, transparent 50%);
+            animation: gradientShift 12s ease-in-out infinite alternate;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 0%, 100% 100%, 50% 50%;
+                filter: hue-rotate(0deg);
+            }
+            50% {
+                background-position: 100% 0%, 0% 100%, 50% 50%;
+                filter: hue-rotate(15deg);
+            }
+            100% {
+                background-position: 50% 100%, 50% 0%, 100% 50%;
+                filter: hue-rotate(-10deg);
+            }
         }
 
         /* Footer - THIN & FIXED AT BOTTOM - SOCIAL ICONS ONLY */
@@ -881,6 +1074,9 @@
         }
 
         @media (max-width: 768px) {
+            .tech-chips-container { display: none; } /* Hide chips on mobile */
+            .trust-badge { font-size: 11px; padding: 7px 18px; margin-bottom: 20px; }
+            
             .hero-container {
                 padding: 35px 24px;
                 gap: 24px;
@@ -947,6 +1143,11 @@
             
             .tech-icon { width: 36px; height: 36px; }
             .grid-pattern { background-size: 30px 30px; }
+            
+            /* Mobile adjustments for new elements */
+            .trust-badge { font-size: 11px; padding: 6px 16px; margin-bottom: 18px; }
+            .tech-chips-container { display: none; } /* Hide chips on very small screens */
+            .typing-container { display: block; }
         }
 
         /* Preloader mobile adjustments */
@@ -1126,7 +1327,49 @@
             
             <!-- PART 3: Frontend (Headline) - Drops in LAST with bounce -->
             <section class="hero-title-section">
-                <h1 class="headline-title">Full-stack systems thinking<br>for real-world products</h1>
+                <!-- Trust Badge -->
+                <div class="trust-badge">
+                    <span class="trust-icon">✦</span>
+                    <span>Trusted by Startups & Businesses</span>
+                    <span class="trust-icon">✦</span>
+                </div>
+                
+                <!-- Typing Headline -->
+                <h1 class="headline-title">
+                    Full-stack systems thinking<br>for real-world
+                    <span class="typing-container">
+                        <span class="typing-text" id="typingText"></span>
+                        <span class="typing-cursor">|</span>
+                    </span>
+                </h1>
+                
+                <!-- Floating Tech Chips -->
+                <div class="tech-chips-container" id="techChipsContainer">
+                    <div class="tech-chip chip-react" data-depth="0.08">
+                        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="2" fill="currentColor"/><ellipse cx="12" cy="12" rx="10" ry="4" stroke="currentColor" stroke-width="1.5" fill="none"/><ellipse cx="12" cy="12" rx="10" ry="4" stroke="currentColor" stroke-width="1.5" fill="none" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4" stroke="currentColor" stroke-width="1.5" fill="none" transform="rotate(120 12 12)"/></svg>
+                        <span>React</span>
+                    </div>
+                    <div class="tech-chip chip-nodejs" data-depth="0.12">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M11.998 24c-.321 0-.641-.084-.922-.247l-2.936-1.737c-.438-.245-.224-.332-.08-.383.585-.203.703-.25 1.328-.604.065-.037.151-.023.218.017l2.256 1.339a.29.29 0 00.272 0l8.795-5.076a.277.277 0 00.134-.238V6.921a.283.283 0 00-.137-.242l-8.791-5.072a.278.278 0 00-.271 0L3.075 6.68a.284.284 0 00-.139.241v10.15a.27.27 0 00.138.236l2.409 1.392c1.307.654 2.108-.116 2.108-.89V7.787c0-.142.114-.253.256-.253h1.115c.139 0 .255.112.255.253v9.021c0 1.745-.95 2.745-2.604 2.745-.508 0-.909 0-2.026-.551L2.275 17.65A1.854 1.854 0 011.366 16.07V5.921c0-.681.363-1.317.953-1.656L11.115.191a1.93 1.93 0 011.77 0l8.794 5.074c.589.339.954.975.954 1.656v10.15c0 .68-.365 1.315-.954 1.655l-8.794 5.076a1.834 1.834 0 01-.927.247z" fill="currentColor"/><path d="M15.11 14.887c-2.474 0-2.99-1.136-2.99-2.09 0-.141.113-.253.255-.253h1.139c.126 0 .232.092.252.216.171 1.16.681 1.746 2.344 1.746 1.442 0 2.056-.579 2.056-1.932 0-.78-.307-1.356-2.416-1.744-1.872-.344-3.031-.84-3.031-2.663 0-1.674 1.413-2.671 3.781-2.671 1.976 0 3.306.597 3.805 2.348.026.084.003.183-.058.255a.256.256 0 01-.246.084h-1.147a.252.252 0 01-.245-.179c-.273-.87-.861-1.149-2.109-1.149-1.554 0-1.735.542-1.735 1.047 0 .871.378 1.125 2.377 1.618 1.974.486 3.067.96 3.067 2.757 0 1.81-1.507 2.843-4.139 2.843z" fill="currentColor"/></svg>
+                        <span>Node.js</span>
+                    </div>
+                    <div class="tech-chip chip-python" data-depth="0.06">
+                        <svg viewBox='0 0 24 24' fill='none'><path d='M9.585 11.692h4.328s2.432.039 2.432-2.35V5.391S16.714 3 11.936 3C7.362 3 7.647 4.983 7.647 4.983l.006 2.055h4.363v.617H5.92s-2.946-.167-2.946 4.31c0 4.476 2.574 4.321 2.574 4.321h1.495v-2.141s-.081-2.574 2.533-2.574zm-.056-5.74a.784.784 0 110-1.57.784.784 0 010 1.57z' fill='currentColor'/><path d='M18.452 7.532h-1.495v2.141s.081 2.574-2.533 2.574H9.911s-2.432-.04-2.432 2.35v3.951s-.369 2.391 4.409 2.391c4.573 0 4.288-1.983 4.288-1.983l-.006-2.054h-4.363v-.617h6.097s2.946.167 2.946-4.31c0-4.476-2.574-4.32-2.574-4.32zm-4.14 10.148a.784.784 0 110 1.569.784.784 0 010-1.57z' fill='currentColor'/></svg>
+                        <span>Python</span>
+                    </div>
+                    <div class="tech-chip chip-html5" data-depth="0.10">
+                        <svg viewBox='0 0 24 24' fill='none'><path d='M1.5 0h21l-1.91 21.563L11.977 24l-8.564-2.438L1.5 0zm7.031 9.75l-.232-2.718 10.059.003.23-2.622L5.412 4.41l.698 8.01h9.126l-.326 3.426-2.91.804-2.955-.81-.188-2.11H6.248l.33 4.171L12 19.351l5.379-1.443.744-8.157H8.531z' fill='currentColor'/></svg>
+                        <span>HTML5</span>
+                    </div>
+                    <div class="tech-chip chip-ai" data-depth="0.14">
+                        <svg viewBox='0 0 24 24' fill='none'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z' fill='currentColor' opacity='0.3'/><path d='M12 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z' fill='currentColor'/><circle cx='12' cy='8' r='1.5' fill='currentColor'/><circle cx='12' cy='16' r='1.5' fill='currentColor'/><path d='M9 12h6M12 9v6' stroke='currentColor' stroke-width='1.5'/></svg>
+                        <span>AI/ML</span>
+                    </div>
+                    <div class="tech-chip chip-typescript" data-depth="0.09">
+                        <svg viewBox='0 0 24 24' fill='none'><path d='M1.125 0C.502 0 0 .502 0 1.125v21.75C0 23.498.502 24 1.125 24h21.75c.623 0 1.125-.502 1.125-1.125V1.125C24 .502 23.498 0 22.875 0zm17.363 9.75c.612 0 1.154.037 1.627.111a6.38 6.38 0 011.306.34v2.458a3.95 3.95 0 00-.643-.361 5.093 5.093 0 00-.717-.26 5.453 5.453 0 00-1.426-.2c-.3 0-.573.028-.819.086a2.1 2.1 0 00-.623.242c-.17.104-.3.229-.393.374a.888.888 0 00-.14.49c0 .196.053.373.156.529.104.156.252.304.443.444s.42.276.69.404c.27.128.574.264.911.408.464.195.877.4 1.24.616.364.215.672.458.924.729.252.27.445.58.578.932.133.351.199.756.199 1.214 0 .557-.106 1.043-.318 1.457a2.94 2.94 0 01-.873 1.028 3.83 3.83 0 01-1.303.61 5.91 5.91 0 01-1.585.204c-.623 0-1.187-.058-1.693-.174a5.53 5.53 0 01-1.321-.458v-2.63c.254.186.528.348.82.486.293.137.586.248.878.333.293.085.573.146.841.184.268.038.51.057.726.057.3 0 .566-.03.798-.088a1.88 1.88 0 00.586-.242c.16-.105.28-.228.363-.371a.94.94 0 00.124-.471.93.93 0 00-.168-.54 1.826 1.826 0 00-.47-.432 5.018 5.018 0 00-.725-.392c-.28-.133-.595-.273-.944-.42a8.114 8.114 0 01-1.192-.59 4.27 4.27 0 01-.876-.714 2.79 2.79 0 01-.548-.864 2.89 2.89 0 01-.189-1.073c0-.52.1-.978.298-1.375.198-.398.474-.733.826-1.005.352-.272.768-.478 1.246-.617A5.62 5.62 0 0118.488 9.75zM3.375 9.938h2.531v6.375h4.125v2.062H3.375V9.938z' fill='currentColor'/></svg>
+                        <span>TypeScript</span>
+                    </div>
+                </div>
             </section>
 
             <!-- PART 2: Image - Center piece -->
@@ -1203,7 +1446,88 @@
     <!-- ==================== JAVASCRIPT ==================== -->
     <script>
 
-        // Preloader Logic
+        // ==================== TYPING HEADLINE EFFECT ====================
+        const typingWords = ['products', 'startups', 'solutions', 'futures', 'systems'];
+        let wordIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        const typingElement = document.getElementById('typingText');
+
+        function typeEffect() {
+            if (!typingElement) return;
+            
+            const currentWord = typingWords[wordIndex];
+            
+            if (isDeleting) {
+                // Deleting characters
+                typingElement.textContent = currentWord.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                // Typing characters
+                typingElement.textContent = currentWord.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            // Word complete - start deleting after pause
+            if (!isDeleting && charIndex === currentWord.length) {
+                setTimeout(() => { isDeleting = true; }, 2000); // Pause before delete
+            }
+            // Delete complete - move to next word
+            else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                wordIndex = (wordIndex + 1) % typingWords.length;
+                setTimeout(typeEffect, 400); // Pause before next word
+                return;
+            }
+
+            // Speed control
+            const speed = isDeleting ? 50 : 100;
+            setTimeout(typeEffect, speed);
+        }
+
+        // Start typing effect after main content appears
+        function startTypingEffect() {
+            setTimeout(() => {
+                if (typingElement) {
+                    typeEffect();
+                }
+            }, 3500); // Delay until after headline animation
+        }
+
+        // ==================== PARALLAX EFFECT FOR TECH CHIPS ====================
+        function initParallax() {
+            const chipsContainer = document.getElementById('techChipsContainer');
+            if (!chipsContainer) return;
+
+            const chips = chipsContainer.querySelectorAll('.tech-chip');
+            
+            document.addEventListener('mousemove', (e) => {
+                const mouseX = e.clientX / window.innerWidth - 0.5;
+                const mouseY = e.clientY / window.innerHeight - 0.5;
+
+                chips.forEach(chip => {
+                    const depth = parseFloat(chip.dataset.depth) || 0.1;
+                    const moveX = mouseX * depth * -100;
+                    const moveY = mouseY * depth * -100;
+                    
+                    chip.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                });
+            });
+        }
+
+        // ==================== REVEAL TECH CHIPS ON SCROLL/LOAD ====================
+        function revealTechChips() {
+            const chips = document.querySelectorAll('.tech-chip');
+            
+            // Staggered reveal
+            chips.forEach((chip, index) => {
+                setTimeout(() => {
+                    chip.classList.add('visible');
+                }, index * 150); // 150ms stagger between each chip
+            });
+        }
+
+        // ==================== PRELOADER LOGIC ====================
         const config = {
             labels: ['Loading', 'Preparing', 'Processing', 'Finalizing', 'Complete'],
             metricValues: [
@@ -1278,7 +1602,12 @@
                 document.getElementById('preloader').classList.add('hidden');
                 document.getElementById('mainContent').classList.add('visible');
                 
-                // Start typing effect after main content visible
+                // Initialize new hero features
+                startTypingEffect();
+                initParallax();
+                revealTechChips();
+                
+                // Start subtext typing effect after main content visible
                 setTimeout(() => {
                     const subtext = document.getElementById('subtext');
                     subtext.classList.add('typed');
