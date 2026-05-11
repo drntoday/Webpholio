@@ -1821,6 +1821,589 @@
             }
         }
 
+        /* ================================================================
+           INTELLIGENCE ROADMAP - CINEMATIC HORIZONTAL SCROLL
+           ================================================================ */
+
+        .intelligence-roadmap {
+            position: relative;
+            z-index: 5;
+            padding: 0 0 0;
+            overflow: hidden;
+        }
+
+        /* Section Header */
+        .roadmap-header {
+            text-align: center;
+            padding: 80px 30px 60px;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards;
+            animation-delay: 5.1s;
+        }
+
+        .roadmap-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 16px;
+            font-family: 'Fira Code', monospace;
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--accent-light);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .label-line {
+            width: 40px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-light));
+        }
+
+        .label-line:last-child {
+            background: linear-gradient(90deg, var(--accent-light), transparent);
+        }
+
+        .roadmap-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(32px, 5vw, 48px);
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: -1.2px;
+            color: var(--soft-white);
+            margin-bottom: 16px;
+        }
+
+        .roadmap-subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            font-style: italic;
+        }
+
+        /* Scroll Container - Creates vertical scroll space */
+        .roadmap-scroll-container {
+            height: 400vh;
+            position: relative;
+        }
+
+        /* Sticky Wrapper - Locks in place during scroll */
+        .roadmap-sticky-wrapper {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Neural Link SVG Background */
+        .neural-link-svg {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            width: 100%;
+            height: 400px;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .neural-link-svg.visible {
+            opacity: 1;
+        }
+
+        .neural-path-bg {
+            stroke-dasharray: 8 12;
+            animation: dashFlow 20s linear infinite;
+        }
+
+        @keyframes dashFlow {
+            to { stroke-dashoffset: -200; }
+        }
+
+        .neural-path-active {
+            stroke-dasharray: 4000;
+            stroke-dashoffset: 4000;
+            transition: stroke-dashoffset 0.1s linear;
+        }
+
+        .neural-node {
+            fill: rgba(99, 102, 241, 0.15);
+            stroke: var(--accent);
+            stroke-width: 1.5;
+            transition: all 0.4s ease;
+        }
+
+        .neural-node.active {
+            fill: var(--accent);
+            r: 10;
+            filter: drop-shadow(0 0 12px var(--accent-glow));
+        }
+
+        .neural-pulse-ring {
+            fill: none;
+            stroke: var(--accent-light);
+            stroke-width: 1;
+            opacity: 0;
+        }
+
+        .neural-pulse-ring.active {
+            animation: nodePulse 2s ease-out infinite;
+        }
+
+        @keyframes nodePulse {
+            0% { 
+                r: 8; 
+                opacity: 0.6; 
+                stroke-width: 2;
+            }
+            100% { 
+                r: 35; 
+                opacity: 0; 
+                stroke-width: 0.5;
+            }
+        }
+
+        /* Cards Track - Slides horizontally */
+        .roadmap-cards-track {
+            display: flex;
+            gap: 60px;
+            padding: 0 calc((100vw - 900px) / 2);
+            will-change: transform;
+            z-index: 2;
+            position: relative;
+        }
+
+        /* Individual Roadmap Card */
+        .roadmap-card {
+            flex: 0 0 900px;
+            height: 500px;
+            border-radius: 24px;
+            position: relative;
+            overflow: hidden;
+            cursor: default;
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        opacity 0.6s ease;
+            will-change: transform, opacity;
+        }
+
+        /* Glass Background Layer */
+        .card-inner-glass {
+            position: absolute;
+            inset: 0;
+            background: rgba(17, 17, 20, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            transition: all 0.5s ease;
+            z-index: 1;
+        }
+
+        /* Noise texture overlay */
+        .card-inner-glass::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.025;
+            pointer-events: none;
+            border-radius: 24px;
+        }
+
+        /* Active Card State - Focus Lens Effect */
+        .roadmap-card.active {
+            transform: scale(1.08);
+            opacity: 1;
+        }
+
+        .roadmap-card.active .card-inner-glass {
+            background: rgba(17, 17, 20, 0.55);
+            border-color: rgba(99, 102, 241, 0.35);
+            box-shadow: 
+                0 30px 80px -20px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(99, 102, 241, 0.2),
+                0 0 100px -30px rgba(99, 102, 241, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        }
+
+        /* Subtle shimmer on active card */
+        .roadmap-card.active::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 24px;
+            background: linear-gradient(
+                120deg,
+                transparent 0%,
+                rgba(99, 102, 241, 0.05) 25%,
+                transparent 50%,
+                rgba(139, 92, 246, 0.04) 75%,
+                transparent 100%
+            );
+            background-size: 200% 100%;
+            animation: cardShimmer 3s ease-in-out infinite;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        @keyframes cardShimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        /* Inactive Card State */
+        .roadmap-card.inactive {
+            transform: scale(0.9);
+            opacity: 0.4;
+        }
+
+        /* Card Content */
+        .card-content {
+            position: relative;
+            z-index: 3;
+            padding: 48px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: opacity 0.4s ease;
+        }
+
+        .roadmap-card.inactive .card-content {
+            opacity: 0.6;
+        }
+
+        /* Step Indicator */
+        .card-step-indicator {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .step-number {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 64px;
+            font-weight: 700;
+            color: var(--accent);
+            opacity: 0.25;
+            line-height: 1;
+            transition: all 0.5s ease;
+        }
+
+        .roadmap-card.active .step-number {
+            opacity: 0.5;
+            text-shadow: 0 0 40px var(--accent-glow);
+        }
+
+        .step-concept {
+            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--accent-light);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0.7;
+            position: relative;
+            top: 8px;
+        }
+
+        /* Step Title */
+        .card-step-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(24px, 3vw, 32px);
+            font-weight: 600;
+            color: var(--soft-white);
+            margin-bottom: 20px;
+            letter-spacing: -0.5px;
+            line-height: 1.3;
+            transition: transform 0.4s ease;
+        }
+
+        .roadmap-card.active .card-step-title {
+            transform: translateX(6px);
+        }
+
+        /* Step Description */
+        .card-step-description {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            max-width: 480px;
+            transition: color 0.3s ease;
+        }
+
+        .roadmap-card.active .card-step-description {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Step Visual (decorative SVG) */
+        .card-step-visual {
+            position: absolute;
+            bottom: 40px;
+            right: 48px;
+            width: 100px;
+            height: 100px;
+            color: var(--accent-light);
+            opacity: 0.3;
+            transition: all 0.5s ease;
+        }
+
+        .roadmap-card.active .card-step-visual {
+            opacity: 0.6;
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 20px var(--accent-glow));
+        }
+
+        .card-step-visual svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Progress Bar Container */
+        .roadmap-progress-container {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 500px;
+            max-width: 80vw;
+            z-index: 10;
+        }
+
+        .roadmap-progress-track {
+            width: 100%;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 1px;
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .roadmap-progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+            border-radius: 1px;
+            transition: width 0.1s linear;
+        }
+
+        .roadmap-progress-head {
+            position: absolute;
+            top: 50%;
+            left: 0%;
+            transform: translate(-50%, -50%);
+            width: 12px;
+            height: 12px;
+            background: var(--accent-light);
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--accent-glow), 0 0 40px rgba(99, 102, 241, 0.2);
+            transition: left 0.1s linear;
+        }
+
+        /* Step Markers */
+        .roadmap-step-markers {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 2px;
+        }
+
+        .step-marker {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .step-marker.active {
+            color: var(--accent-light);
+            text-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .step-marker.active::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            background: var(--accent-light);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        /* Corner decorations on active card */
+        .roadmap-card.active .card-inner-glass::before {
+            content: '';
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            width: 24px;
+            height: 24px;
+            border-top: 1px solid var(--accent-border);
+            border-left: 1px solid var(--accent-border);
+            z-index: 5;
+        }
+
+        .roadmap-card.active .card-inner-glass::after {
+            border-radius: 0 24px 24px 24px;
+        }
+
+        /* Add corner element for bottom-right */
+        .roadmap-card.active .card-content::after {
+            content: '';
+            position: absolute;
+            bottom: 24px;
+            right: 24px;
+            width: 24px;
+            height: 24px;
+            border-bottom: 1px solid var(--accent-border);
+            border-right: 1px solid var(--accent-border);
+            z-index: 5;
+        }
+
+        /* ==================== RESPONSIVE ==================== */
+
+        @media (max-width: 1100px) {
+            .roadmap-cards-track {
+                padding: 0 calc((100vw - 700px) / 2);
+                gap: 40px;
+            }
+            
+            .roadmap-card {
+                flex: 0 0 700px;
+                height: 440px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .roadmap-header {
+                padding: 60px 24px 40px;
+            }
+            
+            .roadmap-scroll-container {
+                height: 350vh;
+            }
+            
+            .roadmap-cards-track {
+                padding: 0 calc((100vw - 340px) / 2);
+                gap: 24px;
+            }
+            
+            .roadmap-card {
+                flex: 0 0 340px;
+                height: 460px;
+            }
+            
+            .card-content {
+                padding: 28px 24px;
+            }
+            
+            .step-number {
+                font-size: 48px;
+            }
+            
+            .card-step-title {
+                font-size: 20px;
+                margin-bottom: 14px;
+            }
+            
+            .card-step-description {
+                font-size: 14px;
+                line-height: 1.7;
+            }
+            
+            .card-step-visual {
+                width: 70px;
+                height: 70px;
+                right: 24px;
+                bottom: 28px;
+            }
+            
+            .roadmap-progress-container {
+                bottom: 40px;
+            }
+            
+            .neural-link-svg {
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .roadmap-scroll-container {
+                height: 300vh;
+            }
+            
+            .roadmap-cards-track {
+                padding: 0 calc((100vw - 290px) / 2);
+                gap: 20px;
+            }
+            
+            .roadmap-card {
+                flex: 0 0 290px;
+                height: 420px;
+            }
+            
+            .card-content {
+                padding: 24px 20px;
+            }
+            
+            .step-number {
+                font-size: 40px;
+            }
+            
+            .step-concept {
+                font-size: 10px;
+            }
+            
+            .card-step-title {
+                font-size: 18px;
+            }
+            
+            .card-step-description {
+                font-size: 13px;
+            }
+            
+            .card-step-visual {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .roadmap-progress-container {
+                width: 280px;
+                bottom: 32px;
+            }
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            .roadmap-card,
+            .card-inner-glass,
+            .neural-path-active,
+            .roadmap-progress-fill,
+            .roadmap-progress-head {
+                transition-duration: 0.01ms !important;
+            }
+            
+            .neural-path-bg,
+            .neural-pulse-ring,
+            .roadmap-card.active::before {
+                animation: none !important;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -2206,6 +2789,229 @@
             </div>
         </section>
 
+        <!-- ==================== INTELLIGENCE ROADMAP SECTION ==================== -->
+        <section class="intelligence-roadmap" id="intelligenceRoadmap">
+            
+            <!-- Section Header -->
+            <header class="roadmap-header">
+                <span class="roadmap-label">
+                    <span class="label-line"></span>
+                    The Process
+                    <span class="label-line"></span>
+                </span>
+                <h2 class="roadmap-title">The Intelligence Roadmap</h2>
+                <p class="roadmap-subtitle">A systematic journey from abstract logic to autonomous reality.</p>
+            </header>
+
+            <!-- Scroll Container (creates the vertical scroll space) -->
+            <div class="roadmap-scroll-container">
+                
+                <!-- Sticky Wrapper (locks in place during scroll) -->
+                <div class="roadmap-sticky-wrapper">
+                    
+                    <!-- Neural Link SVG Background -->
+                    <svg class="neural-link-svg" viewBox="0 0 5000 600" preserveAspectRatio="xMidYMid meet">
+                        <defs>
+                            <linearGradient id="neuralGradient" x1="0%" y1="50%" x2="100%" y2="50%">
+                                <stop offset="0%" stop-color="transparent" />
+                                <stop offset="15%" stop-color="var(--accent)" />
+                                <stop offset="50%" stop-color="var(--accent-light)" />
+                                <stop offset="85%" stop-color="var(--accent)" />
+                                <stop offset="100%" stop-color="transparent" />
+                            </linearGradient>
+                            <filter id="neuralGlow">
+                                <feGaussianBlur stdDeviation="8" result="blur" />
+                                <feMerge>
+                                    <feMergeNode in="blur" />
+                                    <feMergeNode in="SourceGraphic" />
+                                </feMerge>
+                            </filter>
+                        </defs>
+                        
+                        <!-- Main energy beam path -->
+                        <path 
+                            class="neural-path-bg"
+                            d="M 300 300 L 1300 300 L 2300 300 L 3300 300 L 4300 300" 
+                            fill="none" 
+                            stroke="rgba(99, 102, 241, 0.08)" 
+                            stroke-width="2"
+                        />
+                        
+                        <!-- Animated energy pulse path -->
+                        <path 
+                            class="neural-path-active"
+                            d="M 300 300 L 1300 300 L 2300 300 L 3300 300 L 4300 300" 
+                            fill="none" 
+                            stroke="url(#neuralGradient)" 
+                            stroke-width="3"
+                            stroke-linecap="round"
+                            filter="url(#neuralGlow)"
+                        />
+                        
+                        <!-- Connection nodes at each step -->
+                        <circle class="neural-node" cx="300" cy="300" r="8" />
+                        <circle class="neural-node" cx="1300" cy="300" r="8" />
+                        <circle class="neural-node" cx="2300" cy="300" r="8" />
+                        <circle class="neural-node" cx="3300" cy="300" r="8" />
+                        <circle class="neural-node" cx="4300" cy="300" r="8" />
+                        
+                        <!-- Node pulse rings -->
+                        <circle class="neural-pulse-ring" cx="300" cy="300" r="8" />
+                        <circle class="neural-pulse-ring" cx="1300" cy="300" r="8" />
+                        <circle class="neural-pulse-ring" cx="2300" cy="300" r="8" />
+                        <circle class="neural-pulse-ring" cx="3300" cy="300" r="8" />
+                        <circle class="neural-pulse-ring" cx="4300" cy="300" r="8" />
+                    </svg>
+
+                    <!-- Cards Track (slides horizontally) -->
+                    <div class="roadmap-cards-track" id="roadmapCardsTrack">
+                        
+                        <!-- Card 01: Discovery & Synthesis -->
+                        <article class="roadmap-card" data-step="1">
+                            <div class="card-inner-glass"></div>
+                            <div class="card-content">
+                                <div class="card-step-indicator">
+                                    <span class="step-number">01</span>
+                                    <span class="step-concept">The Foundation</span>
+                                </div>
+                                <h3 class="card-step-title">Discovery & Synthesis</h3>
+                                <p class="card-step-description">
+                                    Deconstructing business challenges to identify where automation and custom software create the highest ROI. We define the problem before we build the solution.
+                                </p>
+                                <div class="card-step-visual">
+                                    <svg viewBox="0 0 80 80" fill="none">
+                                        <circle cx="40" cy="40" r="35" stroke="currentColor" stroke-width="1.5" opacity="0.3"/>
+                                        <circle cx="40" cy="40" r="20" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
+                                        <circle cx="40" cy="40" r="6" fill="currentColor" opacity="0.8"/>
+                                        <line x1="40" y1="5" x2="40" y2="20" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
+                                        <line x1="40" y1="60" x2="40" y2="75" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
+                                        <line x1="5" y1="40" x2="20" y2="40" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
+                                        <line x1="60" y1="40" x2="75" y2="40" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Card 02: Architecture & Logic -->
+                        <article class="roadmap-card" data-step="2">
+                            <div class="card-inner-glass"></div>
+                            <div class="card-content">
+                                <div class="card-step-indicator">
+                                    <span class="step-number">02</span>
+                                    <span class="step-concept">The Blueprint</span>
+                                </div>
+                                <h3 class="card-step-title">Architecture & Logic</h3>
+                                <p class="card-step-description">
+                                    Mapping secure database schemas and designing the decision-making "brain" for your AI agents. Every data point is strategically placed for future scale.
+                                </p>
+                                <div class="card-step-visual">
+                                    <svg viewBox="0 0 80 80" fill="none">
+                                        <rect x="10" y="10" width="25" height="25" rx="4" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
+                                        <rect x="45" y="10" width="25" height="25" rx="4" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
+                                        <rect x="10" y="45" width="25" height="25" rx="4" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
+                                        <rect x="45" y="45" width="25" height="25" rx="4" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
+                                        <line x1="35" y1="22" x2="45" y2="22" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+                                        <line x1="22" y1="35" x2="22" y2="45" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+                                        <line x1="57" y1="35" x2="57" y2="45" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+                                        <line x1="35" y1="57" x2="45" y2="57" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Card 03: Full-Stack Engineering -->
+                        <article class="roadmap-card" data-step="3">
+                            <div class="card-inner-glass"></div>
+                            <div class="card-content">
+                                <div class="card-step-indicator">
+                                    <span class="step-number">03</span>
+                                    <span class="step-concept">The Construction</span>
+                                </div>
+                                <h3 class="card-step-title">Full-Stack Engineering</h3>
+                                <p class="card-step-description">
+                                    Building high-performance frontends and robust backends that serve as a scalable foundation for intelligence. Functional, fast, and future-ready code.
+                                </p>
+                                <div class="card-step-visual">
+                                    <svg viewBox="0 0 80 80" fill="none">
+                                        <polygon points="40,8 72,28 72,52 40,72 8,52 8,28" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.4"/>
+                                        <polygon points="40,20 58,32 58,48 40,60 22,48 22,32" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.6"/>
+                                        <polygon points="40,32 50,38 50,46 40,52 30,46 30,38" fill="currentColor" opacity="0.3"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Card 04: Agentic AI Integration -->
+                        <article class="roadmap-card" data-step="4">
+                            <div class="card-inner-glass"></div>
+                            <div class="card-content">
+                                <div class="card-step-indicator">
+                                    <span class="step-number">04</span>
+                                    <span class="step-concept">The Intelligence</span>
+                                </div>
+                                <h3 class="card-step-title">Agentic AI Integration</h3>
+                                <p class="card-step-description">
+                                    Deploying autonomous workflows and LLMs, fine-tuned to handle real-world tasks with precision. Moving beyond simple chat into active execution.
+                                </p>
+                                <div class="card-step-visual">
+                                    <svg viewBox="0 0 80 80" fill="none">
+                                        <circle cx="40" cy="35" r="18" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
+                                        <circle cx="32" cy="32" r="3" fill="currentColor" opacity="0.6"/>
+                                        <circle cx="48" cy="32" r="3" fill="currentColor" opacity="0.6"/>
+                                        <circle cx="40" cy="42" r="3" fill="currentColor" opacity="0.6"/>
+                                        <line x1="34" y1="33" x2="46" y2="33" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+                                        <line x1="33" y1="40" x2="47" y2="40" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+                                        <path d="M25 55 L35 60 L45 55 L55 60" stroke="currentColor" stroke-width="1.5" opacity="0.4" fill="none"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </article>
+
+                        <!-- Card 05: Launch & Optimization -->
+                        <article class="roadmap-card" data-step="5">
+                            <div class="card-inner-glass"></div>
+                            <div class="card-content">
+                                <div class="card-step-indicator">
+                                    <span class="step-number">05</span>
+                                    <span class="step-concept">The Evolution</span>
+                                </div>
+                                <h3 class="card-step-title">Launch & Optimization</h3>
+                                <p class="card-step-description">
+                                    Deploying to the edge and refining AI models post-launch. The system doesn't just run; it evolves with your business data and user needs.
+                                </p>
+                                <div class="card-step-visual">
+                                    <svg viewBox="0 0 80 80" fill="none">
+                                        <path d="M40 10 L40 45" stroke="currentColor" stroke-width="2" opacity="0.6"/>
+                                        <path d="M28 35 L40 45 L52 35" stroke="currentColor" stroke-width="2" opacity="0.6" fill="none"/>
+                                        <circle cx="40" cy="60" r="12" stroke="currentColor" stroke-width="1.5" opacity="0.4" fill="none"/>
+                                        <path d="M36 60 L40 56 L44 60 L40 64 Z" fill="currentColor" opacity="0.5"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </article>
+
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="roadmap-progress-container">
+                        <div class="roadmap-progress-track">
+                            <div class="roadmap-progress-fill" id="roadmapProgressFill"></div>
+                            <div class="roadmap-progress-head" id="roadmapProgressHead"></div>
+                        </div>
+                        <div class="roadmap-step-markers">
+                            <span class="step-marker" data-step="1">01</span>
+                            <span class="step-marker" data-step="2">02</span>
+                            <span class="step-marker" data-step="3">03</span>
+                            <span class="step-marker" data-step="4">04</span>
+                            <span class="step-marker" data-step="5">05</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
         <!-- Side Progress Indicator -->
         <nav class="cards-progress" id="cardsProgress" aria-label="Card navigation">
             <button class="progress-dot active" data-card="1" data-label="AI Workflows" aria-label="Go to card 1"></button>
@@ -2519,6 +3325,137 @@
             }
         }
 
+        // ==================== INTELLIGENCE ROADMAP - CINEMATIC SCROLL ====================
+        function initIntelligenceRoadmap() {
+            const scrollContainer = document.querySelector('.roadmap-scroll-container');
+            const stickyWrapper = document.querySelector('.roadmap-sticky-wrapper');
+            const cardsTrack = document.getElementById('roadmapCardsTrack');
+            const progressFill = document.getElementById('roadmapProgressFill');
+            const progressHead = document.getElementById('roadmapProgressHead');
+            const neuralSvg = document.querySelector('.neural-link-svg');
+            const neuralPathActive = document.querySelector('.neural-path-active');
+            const neuralNodes = document.querySelectorAll('.neural-node');
+            const neuralPulseRings = document.querySelectorAll('.neural-pulse-ring');
+            const stepMarkers = document.querySelectorAll('.step-marker');
+            const roadmapCards = document.querySelectorAll('.roadmap-card');
+            
+            if (!scrollContainer || !cardsTrack) return;
+            
+            const totalCards = roadmapCards.length;
+            const totalPathLength = 4000; // Matches SVG stroke-dasharray
+            
+            // Calculate scrollable distance
+            const containerHeight = scrollContainer.offsetHeight;
+            const wrapperHeight = stickyWrapper.offsetHeight;
+            const scrollDistance = containerHeight - wrapperHeight;
+            
+            let currentActiveStep = 0;
+            
+            function updateRoadmap() {
+                const rect = scrollContainer.getBoundingClientRect();
+                const containerTop = -rect.top;
+                
+                // Calculate progress (0 to 1)
+                const progress = Math.max(0, Math.min(1, containerTop / scrollDistance));
+                
+                // Calculate which cards are visible and their positions
+                const trackWidth = cardsTrack.scrollWidth - window.innerWidth;
+                const translateX = -progress * trackWidth;
+                
+                // Apply transform
+                cardsTrack.style.transform = `translateX(${translateX}px)`;
+                
+                // Update progress bar
+                const progressPercent = progress * 100;
+                if (progressFill) progressFill.style.width = `${progressPercent}%`;
+                if (progressHead) progressHead.style.left = `${progressPercent}%`;
+                
+                // Update neural path
+                if (neuralPathActive) {
+                    const pathProgress = progress * totalPathLength;
+                    neuralPathActive.style.strokeDashoffset = totalPathLength - pathProgress;
+                }
+                
+                // Show SVG when scrolling starts
+                if (progress > 0.01) {
+                    neuralSvg.classList.add('visible');
+                } else {
+                    neuralSvg.classList.remove('visible');
+                }
+                
+                // Determine active card based on progress
+                const stepProgress = progress * (totalCards - 1);
+                const activeStep = Math.round(stepProgress);
+                
+                // Update card states
+                roadmapCards.forEach((card, index) => {
+                    const distanceFromCenter = Math.abs(index - stepProgress);
+                    
+                    card.classList.remove('active', 'inactive');
+                    
+                    if (distanceFromCenter < 0.6) {
+                        card.classList.add('active');
+                    } else {
+                        card.classList.add('inactive');
+                    }
+                });
+                
+                // Update neural nodes
+                neuralNodes.forEach((node, index) => {
+                    node.classList.remove('active');
+                    if (index <= activeStep) {
+                        node.classList.add('active');
+                    }
+                });
+                
+                // Update pulse rings (only on active node)
+                neuralPulseRings.forEach((ring, index) => {
+                    ring.classList.remove('active');
+                    if (index === activeStep) {
+                        ring.classList.add('active');
+                    }
+                });
+                
+                // Update step markers
+                stepMarkers.forEach((marker, index) => {
+                    marker.classList.remove('active');
+                    if (index <= activeStep) {
+                        marker.classList.add('active');
+                    }
+                });
+                
+                currentActiveStep = activeStep;
+            }
+            
+            // Use requestAnimationFrame for smooth updates
+            let ticking = false;
+            
+            function onScroll() {
+                if (!ticking) {
+                    requestAnimationFrame(() => {
+                        updateRoadmap();
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            }
+            
+            // Listen for scroll
+            window.addEventListener('scroll', onScroll, { passive: true });
+            
+            // Initial update
+            updateRoadmap();
+            
+            // Handle resize
+            let resizeTimeout;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    updateRoadmap();
+                }, 100);
+            });
+        }
+
         function finish() {
             clearInterval(interval);
             render(100);
@@ -2534,6 +3471,9 @@
                 
                 // Initialize sticky card stacking
                 initStackingCards();
+                
+                // Initialize intelligence roadmap
+                initIntelligenceRoadmap();
                 
                 // Start subtext typing effect after main content visible
                 setTimeout(() => {
